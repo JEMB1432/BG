@@ -1,6 +1,6 @@
 .sidebar {
     -fx-background-color: white;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 2, 0);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 2, 0);
     -fx-padding: 20 0 20 0;
     -fx-pref-width: 250px;
     -fx-min-width: 250px;
@@ -49,14 +49,23 @@
 }
 
 .sidebar-menu {
-    -fx-spacing: 8;
+    -fx-spacing: 5px;
+    -fx-padding: 10px 0;
+    -fx-alignment: center-left;
+}
+
+.menu-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
     -fx-padding: 0;
 }
+
 
 .menu-button {
     -fx-background-color: white;
     -fx-padding: 12 20 12 20;
-    -fx-alignment: center;
+    -fx-alignment: center-left;
+    -fx-content-display: left;
     -fx-spacing: 10;
     -fx-font-size: 16px;
     -fx-text-fill: #000501;
@@ -73,7 +82,9 @@
 }
 
 .menu-button .icon {
-    -fx-fill: #000501;
+    -fx-fill: #232323;
+    -fx-alignment: center-left;
+    -fx-spacing: 10;
 }
 
 .icon {

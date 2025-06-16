@@ -1,15 +1,18 @@
 package jemb.bistrogurmand.views.Admin;
 
+import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
+import java.util.Arrays;
+
 
 public class Sidebar extends VBox {
     private Button btnDashboard;
@@ -36,7 +39,26 @@ public class Sidebar extends VBox {
         logoIcon.setContent("M2 5C0 5 0 2 2 2q2-2 4 0c2 0 2 3 0 3v3H2");
         logoIcon.getStyleClass().add("logo-icon");
 
-        Label logoText = new Label("Bistro Gurmand");
+        // Calcular la relación de aspecto original
+        Bounds bounds = logoIcon.getBoundsInLocal();
+        double originalAspectRatio = bounds.getWidth() / bounds.getHeight();
+
+        // Tamaño deseado (usaremos el mismo para ancho y alto como área máxima)
+        double desiredSize = 20;
+
+        // Calcular el escalado manteniendo la relación de aspecto
+        double scale;
+        if (bounds.getWidth() > bounds.getHeight()) {
+            scale = desiredSize / bounds.getWidth();
+        } else {
+            scale = desiredSize / bounds.getHeight();
+        }
+
+        // Aplicar el mismo factor de escala en ambos ejes
+        logoIcon.setScaleX(scale);
+        logoIcon.setScaleY(scale);
+
+        Label logoText = new Label("Bistro");
         logoText.getStyleClass().add("logo-text");
 
         HBox logo = new HBox(10, logoIcon, logoText);
@@ -88,43 +110,44 @@ public class Sidebar extends VBox {
     }
 
     private Button crearMenuButton(String text, String svgPath) {
-        SVGPath icon = new SVGPath();
-        icon.setContent(svgPath);
-        icon.getStyleClass().add("icon");
+        SVGPath icon = createScaledSvgIcon(svgPath, 24);
 
-        // Define el tamaño deseado
-        double desiredWidth = 20;
-        double desiredHeight = 20;
-
-        // Calcula los factores de escala
-        double scaleX = desiredWidth / icon.getBoundsInLocal().getWidth();
-        double scaleY = desiredHeight / icon.getBoundsInLocal().getHeight();
-
-        // Aplica los factores de escala
-        icon.setScaleX(scaleX);
-        icon.setScaleY(scaleY);
+        StackPane iconContainer = new StackPane(icon);
+        iconContainer.setPrefSize(24, 24);
+        iconContainer.getStyleClass().add("icon-container");
 
         Label label = new Label(text);
+        label.getStyleClass().add("menu-label");
 
-        HBox content = new HBox(10, icon, label);
+        HBox content = new HBox(10, iconContainer, label);
         content.setAlignment(Pos.CENTER_LEFT);
+        content.getStyleClass().add("button-content");
 
         Button button = new Button();
         button.setGraphic(content);
+        button.setMaxWidth(Double.MAX_VALUE);
         button.getStyleClass().add("menu-button");
-
-        // Set action to toggle active state
-        button.setOnAction(e -> {
-            // Remove active class from all buttons
-            btnDashboard.getStyleClass().remove("active");
-            btnMenu.getStyleClass().remove("active");
-            btnMesas.getStyleClass().remove("active");
-            btnMeseros.getStyleClass().remove("active");
-
-            // Add active class to clicked button
-            button.getStyleClass().add("active");
-        });
+        button.setOnAction(e -> setActiveButton(button));
 
         return button;
+    }
+
+    private SVGPath createScaledSvgIcon(String path, double size) {
+        SVGPath icon = new SVGPath();
+        icon.setContent(path);
+        icon.getStyleClass().add("icon");
+
+        Bounds bounds = icon.getBoundsInLocal();
+        double scale = size / Math.max(bounds.getWidth(), bounds.getHeight());
+        icon.setScaleX(scale);
+        icon.setScaleY(scale);
+
+        return icon;
+    }
+
+    private void setActiveButton(Button activeButton) {
+        Arrays.asList(btnDashboard, btnMenu, btnMesas, btnMeseros)
+                .forEach(btn -> btn.getStyleClass().remove("active"));
+        activeButton.getStyleClass().add("active");
     }
 }

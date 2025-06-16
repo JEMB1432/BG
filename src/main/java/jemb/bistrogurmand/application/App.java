@@ -1,10 +1,11 @@
 package jemb.bistrogurmand.application;
 
 import javafx.application.Application;
-import javafx.geometry.Rectangle2D; // Importar esta clase
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.stage.Screen; // Importar esta clase
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import jemb.bistrogurmand.views.Admin.DashboardView;
 import jemb.bistrogurmand.views.LoginView;
@@ -18,7 +19,10 @@ public class App extends Application {
     public void start(Stage stage) {
         primaryStage = stage;
 
+        Image image = new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/logo.png"));
+
         primaryStage.setTitle("Bistro Gurmand");
+        primaryStage.getIcons().add(image);
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
         primaryStage.setResizable(true);

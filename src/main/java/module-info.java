@@ -9,6 +9,7 @@ module jemb.bistrogurmand {
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
+    requires javafxsvg;
 
     exports jemb.bistrogurmand.application;
 }
