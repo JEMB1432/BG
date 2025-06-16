@@ -1,0 +1,87 @@
+.sidebar {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 2, 0);
+    -fx-padding: 20 0 20 0;
+    -fx-pref-width: 250px;
+    -fx-min-width: 250px;
+    -fx-max-width: 250px;
+}
+
+.logo {
+    -fx-padding: 0 20 20 20;
+    -fx-border-color: #eee;
+    -fx-border-width: 0 0 1 0;
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+}
+
+.logo-icon {
+    -fx-fill: #990D35;
+    -fx-font-size: 24px;
+}
+
+.logo-text {
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-text-fill: #990D35;
+}
+
+.user-info {
+    -fx-padding: 0 20 20 20;
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+}
+
+.user-avatar {
+    -fx-fit-width: 40px;
+    -fx-fit-height: 40px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+}
+
+.user-name {
+    -fx-font-size: 14px;
+}
+
+.user-role {
+    -fx-font-size: 12px;
+    -fx-text-fill: #777;
+}
+
+.sidebar-menu {
+    -fx-spacing: 8;
+    -fx-padding: 0;
+}
+
+.menu-button {
+    -fx-background-color: white;
+    -fx-padding: 12 20 12 20;
+    -fx-alignment: center;
+    -fx-spacing: 10;
+    -fx-font-size: 16px;
+    -fx-text-fill: #000501;
+    -fx-border-width: 0 0 0 0;
+    -fx-cursor: hand;
+    -fx-min-width: 250px ;
+}
+
+.menu-button:hover, .menu-button.active {
+    -fx-background-color: rgba(153, 13, 53, 0.1);
+    -fx-text-fill: #990D35;
+    -fx-border-color: #990D35;
+    -fx-border-width: 0 0 0 3;
+}
+
+.menu-button .icon {
+    -fx-fill: #000501;
+}
+
+.icon {
+    -fx-padding: 0;
+    -fx-start-margin: 0;
+}
+
+.menu-button:hover .icon,
+.menu-button.active .icon {
+    -fx-fill: #990D35;
+}

@@ -1,0 +1,122 @@
+/* Variables CSS (similar a :root en web) */
+.root {
+    -fx-primary: #990D35;
+    -fx-secondary: #1C7C54;
+    -fx-accent: #FF7043;
+    -fx-dark: #000501;
+    -fx-light: #EFF2F1;
+    -fx-background-color: #f5f5f5;
+}
+
+* {
+    -fx-box-sizing: border-box;
+}
+
+/* Contenedor principal del login */
+.login-container {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0.5, 4, 4);
+    -fx-padding: 40px;
+    -fx-max-width: 400px;
+}
+
+/* Sección del logo */
+.logo-section {
+    -fx-alignment: center;
+    -fx-spacing: 5px;
+    -fx-padding: 0 0 30px 0;
+}
+
+.logo {
+    -fx-text-fill: -fx-primary;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.tagline {
+    -fx-text-fill: -fx-secondary;
+    -fx-font-size: 13px;
+}
+
+/* Grupos de entrada */
+.input-group {
+    -fx-spacing: 8px;
+}
+
+.input-label {
+    -fx-text-fill: -fx-dark;
+    -fx-font-weight: 500;
+    -fx-font-size: 16px;
+}
+
+.input-container {
+    -fx-background-color: #fafafa;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4px;
+    -fx-border-width: 1px;
+    -fx-padding: 0px 10px;
+    -fx-alignment: center-left;
+}
+
+.input-container:focused {
+    -fx-border-color: -fx-secondary;
+    -fx-effect: dropshadow(gaussian, rgba(28, 124, 84, 0.2), 0, 0, 0, 2px, 0);
+}
+
+.input-icon {
+    -fx-text-fill: -fx-secondary;
+    -fx-font-size: 16px;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+}
+
+.text-field, .password-field {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-font-size: 14px;
+    -fx-padding: 12px ;
+    -fx-min-width: 250px;
+}
+
+/* Botón de login */
+.login-button {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 12px;
+    -fx-background-radius: 4px;
+    -fx-max-width: infinity;
+}
+
+.login-button:hover {
+    -fx-background-color: #800a2c;
+}
+
+/* Enlaces del footer */
+.footer-links {
+    -fx-spacing: 15px;
+    -fx-alignment: center;
+    -fx-padding: 20px 0 0 0;
+}
+
+.hyperlink {
+    -fx-text-fill: -fx-secondary;
+    -fx-font-size: 12px;
+    -fx-underline: false;
+}
+
+.hyperlink:hover {
+    -fx-text-fill: -fx-accent;
+    -fx-underline: true;
+}
+
+/* Versión */
+.version {
+    -fx-text-fill: #888;
+    -fx-font-size: 11px;
+    -fx-padding: 30px 0 0 0;
+    -fx-alignment: center;
+}

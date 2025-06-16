@@ -4,12 +4,65 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9f8dec4d-4ac8-4fea-8cf2-12c6327726d2" name="Changes" comment="" />
+    <list default="true" id="9f8dec4d-4ac8-4fea-8cf2-12c6327726d2" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/application/App.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/model/Login.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utilities/Paths.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/DashboardView.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/Sidebar.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/LoginView.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/sidebar.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/styles.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/dashboard.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/fluent--food-20-filled.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/fluent--people-48-filled (1).svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/fluent--person-24-filled.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/hugeicons--waiter.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/ic--round-email.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/ic--round-email.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/lets-icons--user-fill.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/lsicon--work-order-filled.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/material-symbols--table-bar.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/mdi--password.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/mdi--password.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/pal.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/picon--chef.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/ri--dashboard-fill.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/user.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/Icons/weui--shop-filled.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "JEMB1432"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/JEMB1432/BG.git",
+    "accountId": "ab40d7dc-f8ad-4b08-9ba1-d246de5e7ac4"
+  }
+}]]></component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -25,21 +78,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.App.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/PC-Escritorio/Documents/BistroGurmand/src/main/resources/jemb/bistrogurmand&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.App.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "Merging main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/PC-Escritorio/Documents/BistroGurmand",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\PC-Escritorio\Documents\BistroGurmand\src\main\resources\jemb\bistrogurmand" />
@@ -86,6 +140,7 @@
       <workItem from="1750014519951" duration="3194000" />
       <workItem from="1750048671091" duration="19000" />
       <workItem from="1750049236792" duration="11000" />
+      <workItem from="1750050066181" duration="68000" />
     </task>
     <servers />
   </component>
