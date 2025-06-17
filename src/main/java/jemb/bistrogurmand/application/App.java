@@ -8,9 +8,20 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import jemb.bistrogurmand.views.Admin.DashboardView;
+import jemb.bistrogurmand.views.Admin.MenuView;
+import jemb.bistrogurmand.views.Admin.User;
 import jemb.bistrogurmand.views.LoginView;
 
 public class App extends Application {
+    private static User currentUser;
+
+    public static void setCurrentUser(User usuario) {
+        currentUser = usuario;
+    }
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
 
     private static Stage primaryStage;
     private static Scene mainScene;
@@ -51,7 +62,8 @@ public class App extends Application {
                 case "dashboard":
                     root = new DashboardView().getView();
                     break;
-                // Añadir más vistas según sea necesario
+                case "menu":
+                    root = new MenuView().getView();
                 default:
                     throw new IllegalArgumentException("Vista no encontrada: " + nombreVista);
             }
