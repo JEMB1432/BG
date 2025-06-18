@@ -1,5 +1,6 @@
 package jemb.bistrogurmand.views;
 
+import jemb.bistrogurmand.Controllers.LoginController;
 import jemb.bistrogurmand.application.App;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -113,8 +114,15 @@ public class LoginView {
 
         loginButton.setOnAction(e -> {
             // Lógica de validación
-            System.out.println("CLICK LOGIN");
-            App.loadView("dashboard");
+            LoginController loginController = new LoginController();
+            boolean loginIsValid = loginController.TryLogin(usernameField.getText(), passwordField.getText());
+            if (loginIsValid) {
+                App.loadView("dashboard");
+            }else {
+                App.loadView("login");
+                System.out.println("Datos invalidos");
+            }
+
         });
     }
 
