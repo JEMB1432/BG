@@ -1,6 +1,7 @@
 package jemb.bistrogurmand.views;
 
 import jemb.bistrogurmand.Controllers.LoginController;
+import jemb.bistrogurmand.Controllers.UserSession;
 import jemb.bistrogurmand.application.App;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -8,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import jemb.bistrogurmand.views.Admin.User;
 
 public class LoginView {
     private VBox view;
@@ -115,8 +117,9 @@ public class LoginView {
         loginButton.setOnAction(e -> {
             // Lógica de validación
             LoginController loginController = new LoginController();
-            boolean loginIsValid = loginController.TryLogin(usernameField.getText(), passwordField.getText());
-            if (loginIsValid) {
+            User userLoged = loginController.tryLogin(usernameField.getText(), passwordField.getText());
+            if (userLoged != null) {
+                UserSession.setCurrentUser(userLoged);
                 App.loadView("dashboard");
             }else {
                 App.loadView("login");

@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
+import jemb.bistrogurmand.Controllers.UserSession;
 import jemb.bistrogurmand.application.App;
 
 import java.util.Arrays;
@@ -22,6 +23,8 @@ public class Sidebar extends VBox {
     private Button btnMeseros;
     private Button btnMenu;
     private Button btnMesas;
+
+    User currentUser = new UserSession().getCurrentUser();
 
     private Consumer<String> viewChangeListener;
 
@@ -78,7 +81,8 @@ public class Sidebar extends VBox {
     }
 
     private void createUserInfo() {
-        ImageView userAvatar = new ImageView(new Image("https://randomuser.me/api/portraits/men/32.jpg"));
+        String imageURL = currentUser.getImageUser();
+        ImageView userAvatar = new ImageView(new Image(imageURL));
         userAvatar.setFitWidth(40);
         userAvatar.setFitHeight(40);
         userAvatar.getStyleClass().add("user-avatar");
@@ -86,10 +90,12 @@ public class Sidebar extends VBox {
         Circle clip = new Circle(userAvatar.getFitWidth() / 2, userAvatar.getFitHeight() / 2, userAvatar.getFitWidth() / 2);
         userAvatar.setClip(clip);
 
-        Label userName = new Label("Carlos Mendoza");
+        String cUserName = currentUser.getNameUser() + " " + currentUser.getLastNameUser() ;
+        Label userName = new Label(cUserName);
         userName.getStyleClass().add("user-name");
 
-        Label userRole = new Label("Líder de Meseros");
+        String cUserRol = currentUser.getRolUser();
+        Label userRole = new Label(cUserRol);
         userRole.getStyleClass().add("user-role");
 
         VBox userDetails = new VBox(10, userName, userRole);
@@ -148,7 +154,6 @@ public class Sidebar extends VBox {
         return button;
     }
 
-
     private SVGPath createScaledSvgIcon(String path, double size) {
         SVGPath icon = new SVGPath();
         icon.setContent(path);
@@ -170,7 +175,6 @@ public class Sidebar extends VBox {
 
         return icon;
     }
-
 
     private void setActiveButton(Button activeButton) {
         Arrays.asList(btnDashboard, btnMenu, btnMesas, btnMeseros)
