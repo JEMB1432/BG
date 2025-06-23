@@ -4,7 +4,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 
 public class DashboardView {
     private BorderPane view;
@@ -23,22 +25,22 @@ public class DashboardView {
         principalContent.setStyle("-fx-background-color: #f5f5f5;");
         principalContent.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
-        //BorderPane.setAlignment(principalContent, Pos.CENTER);
         view.setLeft(sidebar);
         view.setCenter(principalContent);
+        changeCentralContent("dashboard");
     }
 
     private void changeCentralContent(String views) {
-        Region newContent;
+        Region newContent = null;
         switch (views.toLowerCase()) {
             case "dashboard":
-                newContent = new Label("Vista de Dashboard");
+                newContent = new GenerateDashboardInfo().getView();
                 break;
             case "meseros":
-                newContent = new Label("Vista de Meseros");
+                newContent = new WaiterView().getView();
                 break;
             case "productos":
-                newContent = new MenuView().getView(); // si MenuView extiende Pane
+                newContent = new MenuView().getView();
                 break;
             case "reportes":
                 newContent = new Label("Vista de Reportes");

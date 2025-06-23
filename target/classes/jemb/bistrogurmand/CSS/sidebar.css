@@ -1,3 +1,12 @@
+.root {
+    -fx-primary: #990D35;
+    -fx-secondary: #1C7C54;
+    -fx-accent: #FF7043;
+    -fx-dark: #000501;
+    -fx-light: #EFF2F1;
+    -fx-background-color: #f5f5f5;
+}
+
 .sidebar {
     -fx-background-color: white;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 2, 0);
@@ -5,6 +14,7 @@
     -fx-pref-width: 250px;
     -fx-min-width: 250px;
     -fx-max-width: 250px;
+    -z-index: 10;
 }
 
 .logo {
@@ -16,14 +26,14 @@
 }
 
 .logo-icon {
-    -fx-fill: #990D35;
+    -fx-fill: -fx-primary;
     -fx-font-size: 24px;
 }
 
 .logo-text {
     -fx-font-weight: bold;
     -fx-font-size: 18px;
-    -fx-text-fill: #990D35;
+    -fx-text-fill: -fx-primary;
 }
 
 .user-info {
@@ -76,8 +86,8 @@
 
 .menu-button:hover, .menu-button.active {
     -fx-background-color: rgba(153, 13, 53, 0.1);
-    -fx-text-fill: #990D35;
-    -fx-border-color: #990D35;
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-primary;
     -fx-border-width: 0 0 0 3;
 }
 
@@ -94,5 +104,18 @@
 
 .menu-button:hover .icon,
 .menu-button.active .icon {
-    -fx-fill: #990D35;
+    -fx-fill: -fx-primary;
+}
+
+.title-card, .total-card{
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+}
+
+.title-card {
+    -fx-text-fill: -fx-dark;
+}
+
+.total-card {
+    -fx-text-fill: -fx-primary;
 }

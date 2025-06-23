@@ -1,0 +1,295 @@
+/* waiterView.css - Estilos optimizados para la vista de meseros */
+
+/* Variables de color (Globales para JavaFX) */
+.root {
+    -fx-primary-color: #990D35;
+    -fx-secondary-color: #1C7C54;
+    -fx-accent-color: #FF7043;
+    -fx-dark-color: #000501;
+    -fx-light-color: #EFF2F1;
+    -fx-danger-color: #d32f2f;
+    -fx-warning-color: #ff9800;
+    -fx-success-color: #4caf50;
+}
+
+/* Estilos base */
+.root {
+    -fx-background-color: #f5f5f5;
+    -fx-padding: 30;
+}
+
+/* Título principal */
+.title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-dark-color;
+}
+
+/* Barra superior */
+.top-section {
+    -fx-spacing: 20;
+    -fx-alignment: center-left;
+    -fx-padding: 0 0 20 0;
+}
+
+.search-field {
+    -fx-pref-width: 500;
+    -fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);
+    -fx-background-color: #fff;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1;
+    -fx-padding: 5;
+}
+.search-field:hover {
+    -fx-border-color: #c5c5c5;
+    -fx-border-width: 2;
+    -fx-transition: -fx-background-color 0.3s ease,
+    -fx-text-fill 0.3s ease,
+    -fx-scale-x 0.3s ease,
+    -fx-scale-y 0.3s ease;
+}
+
+/* Tabla de meseros */
+.table-view {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-padding: 0;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #e8e8e8;
+    -fx-background-radius: 8 8 0 0;
+    -fx-background-insets: 0 0 0 0;
+    -fx-padding: 5 0 5 0;
+    -fx-alignment: center-left;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-text-fill: #d2d2d2;
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+    -fx-padding: 20 0 20 0;
+}
+
+.table-view .table-cell {
+    -fx-padding: 10 20 !important;
+    -fx-border-color: transparent;
+    -fx-alignment: center-left;
+}
+
+.table-row-cell {
+    -fx-border-color: transparent;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0;
+    -fx-background-color: white;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f9f9f9;
+    -fx-text-fill: #232323;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: rgba(153, 13, 53, 0.2);
+    -fx-text-fill: #232323 !important;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: rgba(153, 13, 53, 0.1);
+    -fx-text-fill: -fx-dark-color;
+}
+
+
+/* Columnas específicas*/
+.index-column {
+   -fx-text-fill: #b7b7b7;
+}
+
+.text-column, .text-column-email {
+    -fx-text-fill: #000501;
+}
+
+/*
+.text-column-email {
+    -fx-pref-width: 300;
+}
+*/
+
+/* Paginación */
+.pagination {
+    -fx-page-information-visible: false;
+    -fx-padding: 15 0 0 0;
+}
+
+.pagination .pagination-control {
+    -fx-background-color: transparent;
+}
+
+.pagination .button {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4;
+    -fx-min-width: 30;
+    -fx-min-height: 30;
+}
+
+.pagination .button:hover {
+    -fx-background-color: #f0f7f4;
+    -fx-text-fill: -fx-dark-color;
+}
+
+.pagination .button:selected {
+    -fx-background-color: -fx-dark-color; /* Usar la variable con -fx- */
+    -fx-text-fill: white;
+}
+
+/* Botones */
+.button {
+    -fx-background-radius: 5;
+    -fx-padding: 8 15;
+    -fx-font-weight: 500;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
+    -fx-font-size: 14;
+}
+
+.button:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1);
+}
+
+.primary-button {
+    -fx-background-color: -fx-primary-color; /* Usar la variable con -fx- */
+    -fx-text-fill: white;
+}
+
+.primary-button:hover {
+    -fx-background-color: #800a2c;
+}
+
+.secondary-button {
+    -fx-background-color: -fx-secondary-color; /* Usar la variable con -fx- */
+    -fx-text-fill: white;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #156a46;
+}
+
+.danger-button {
+    -fx-background-color: -fx-danger-color; /* Usar la variable con -fx- */
+    -fx-text-fill: white;
+}
+
+.danger-button:hover {
+    -fx-background-color: #b71c1c;
+}
+
+/* Sección inferior */
+.bottom-section {
+    -fx-spacing: 20;
+    -fx-alignment: center-right;
+    -fx-padding: 20 0 0 0;
+}
+
+/* Roles (etiquetas) */
+.role-waiter {
+    -fx-background-color: rgba(28, 124, 84, 0.1);
+    -fx-text-fill: -fx-secondary-color; /* Usar la variable con -fx- */
+    -fx-padding: 3 8;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+}
+
+.role-leader {
+    -fx-background-color: rgba(255, 112, 67, 0.1);
+    -fx-text-fill: -fx-accent-color; /* Usar la variable con -fx- */
+    -fx-padding: 3 8;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+}
+
+.role-admin {
+    -fx-background-color: rgba(153, 13, 53, 0.1);
+    -fx-text-fill: -fx-primary-color; /* Usar la variable con -fx- */
+    -fx-padding: 3 8;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+}
+
+/* Barra de desplazamiento */
+.scroll-bar:horizontal, .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:horizontal .track, .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-bar:horizontal .thumb, .scroll-bar:vertical .thumb {
+    -fx-background-color: #ddd;
+    -fx-background-radius: 5;
+}
+
+.scroll-bar:horizontal .thumb:hover, .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #ccc;
+}
+
+/* Alertas y diálogos */
+.dialog-pane {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 8 8 0 0;
+}
+
+.dialog-pane .content {
+    -fx-padding: 15;
+    -fx-font-size: 14;
+}
+
+.dialog-pane .button-bar .button {
+    -fx-background-radius: 4;
+    -fx-padding: 8 15;
+    -fx-font-size: 14;
+}
+
+/* Efectos para botones de acción en celdas */
+.action-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4;
+    -fx-min-width: 30;
+    -fx-min-height: 30;
+    -fx-padding: 0;
+}
+
+.action-button:hover {
+    -fx-background-color: #f5f5f5;
+}
+
+.edit-button {
+    -fx-border-color: -fx-secondary-color; /* Usar la variable con -fx- */
+    -fx-text-fill: -fx-secondary-color; /* Usar la variable con -fx- */
+}
+
+.delete-button {
+    -fx-border-color: -fx-danger-color; /* Usar la variable con -fx- */
+    -fx-text-fill: -fx-danger-color; /* Usar la variable con -fx- */
+}
