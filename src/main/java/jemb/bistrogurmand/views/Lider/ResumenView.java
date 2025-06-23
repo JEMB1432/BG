@@ -1,8 +1,8 @@
 package jemb.bistrogurmand.views.Lider;
 
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
-import jemb.bistrogurmand.views.Admin.Sidebar;
 
 public class ResumenView {
 
@@ -15,7 +15,7 @@ public class ResumenView {
     private void createResumen() {
         view = new BorderPane();
 
-        Sidebar sidebar = new Sidebar();
+        SidebarLider sidebar = new SidebarLider();
         sidebar.setViewChangeListener(this::changeCentralContent);
 
         Region principalContent = new Region();
@@ -27,4 +27,28 @@ public class ResumenView {
         view.setCenter(principalContent);
     }
 
+
+    private void changeCentralContent(String views) {
+        Region newContent;
+        switch (views.toLowerCase()) {
+            case "resumen":
+                newContent = new Label("Vista de Dashboard");
+                break;
+            case "cambio":
+                newContent = new Label("Vista de Meseros");
+                break;
+            case "planificacion":
+                newContent = new Label("Vista de Reportes");
+                break;
+            default:
+                newContent = new Label("Vista no encontrada");
+        }
+
+        view.setCenter(newContent);
+    }
+
+    public BorderPane getView() {
+        return view;
+    }
 }
+
