@@ -32,13 +32,13 @@ public class ResumenView {
         Region newContent;
         switch (views.toLowerCase()) {
             case "resumen":
-                newContent = new Label("Vista de Dashboard");
+                newContent = new Label("Vista de Resumen");
                 break;
             case "cambio":
-                newContent = new Label("Vista de Meseros");
+                newContent = new Label("Vista de Cambio de pedido");
                 break;
             case "planificacion":
-                newContent = new Label("Vista de Reportes");
+                newContent = new Label("Vista de Planificacion");
                 break;
             default:
                 newContent = new Label("Vista no encontrada");
