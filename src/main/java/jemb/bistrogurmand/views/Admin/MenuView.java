@@ -12,7 +12,7 @@ public class MenuView {
         view = new BorderPane();
 
         Region principalContent = new Region();
-        principalContent.setStyle("-fx-background-color: #f5f5f5;");
+        principalContent.setStyle("-fx-background-color: transparent;");
         principalContent.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
         principalContent.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 

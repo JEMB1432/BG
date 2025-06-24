@@ -81,7 +81,7 @@ public class Sidebar extends VBox {
     }
 
     private void createUserInfo() {
-        String imageURL = currentUser.getImageUser();
+        String imageURL = currentUser.getUserImage();
         ImageView userAvatar = new ImageView(new Image(imageURL));
         userAvatar.setFitWidth(40);
         userAvatar.setFitHeight(40);
@@ -90,7 +90,7 @@ public class Sidebar extends VBox {
         Circle clip = new Circle(userAvatar.getFitWidth() / 2, userAvatar.getFitHeight() / 2, userAvatar.getFitWidth() / 2);
         userAvatar.setClip(clip);
 
-        String cUserName = currentUser.getNameUser() + " " + currentUser.getLastNameUser() ;
+        String cUserName = currentUser.getFirstName() + " " + currentUser.getLastName() ;
         Label userName = new Label(cUserName);
         userName.getStyleClass().add("user-name");
 

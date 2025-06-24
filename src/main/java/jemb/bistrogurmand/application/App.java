@@ -5,6 +5,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import jemb.bistrogurmand.views.Admin.DashboardView;
@@ -31,7 +32,7 @@ public class App extends Application {
     public void start(Stage stage) {
         primaryStage = stage;
 
-        Image image = new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/logo.png"));
+        Image image = new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/ico.png"));
 
         primaryStage.setTitle("Bistro Gurmand");
         primaryStage.getIcons().add(image);
@@ -75,8 +76,9 @@ public class App extends Application {
 
             if (mainScene == null) {
                 mainScene = new Scene(root);
+                mainScene.setFill(Color.web("#232323"));
                 mainScene.getStylesheets().add(
-                        App.class.getResource("/jemb/bistrogurmand/CSS/styles.css").toExternalForm()
+                        App.class.getResource("/jemb/bistrogurmand/CSS/login.css").toExternalForm()
                 );
                 primaryStage.setScene(mainScene);
             } else {
