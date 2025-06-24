@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import jemb.bistrogurmand.views.Admin.DashboardView;
 import jemb.bistrogurmand.views.Admin.MenuView;
 import jemb.bistrogurmand.views.Admin.User;
+import jemb.bistrogurmand.views.Lider.ResumenView;
 import jemb.bistrogurmand.views.LoginView;
 
 public class App extends Application {
@@ -64,6 +65,10 @@ public class App extends Application {
                     break;
                 case "menu":
                     root = new MenuView().getView();
+                    break;
+                case "test":
+                    root = new ResumenView().getView();
+                    break;
                 default:
                     throw new IllegalArgumentException("Vista no encontrada: " + nombreVista);
             }

@@ -120,7 +120,7 @@ public class LoginView {
             User userLoged = loginController.tryLogin(usernameField.getText(), passwordField.getText());
             if (userLoged != null) {
                 UserSession.setCurrentUser(userLoged);
-                App.loadView("dashboard");
+                App.loadView("test");
             }else {
                 App.loadView("login");
                 System.out.println("Datos invalidos");

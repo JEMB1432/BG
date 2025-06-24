@@ -6,6 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="9f8dec4d-4ac8-4fea-8cf2-12c6327726d2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/DbConection/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/DbConection/DatabaseConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/application/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/application/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Lider/SidebarLider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Lider/SidebarLider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Lider/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/LoginView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/LoginView.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +138,9 @@
       <workItem from="1750304965891" duration="1768000" />
       <workItem from="1750307494680" duration="1259000" />
       <workItem from="1750670364719" duration="1132000" />
-      <workItem from="1750675156017" duration="5048000" />
+      <workItem from="1750675156017" duration="5885000" />
+      <workItem from="1750700906882" duration="273000" />
+      <workItem from="1750701279984" duration="3428000" />
     </task>
     <servers />
   </component>
