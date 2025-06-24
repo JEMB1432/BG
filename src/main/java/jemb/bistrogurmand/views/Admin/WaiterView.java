@@ -6,6 +6,8 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import jemb.bistrogurmand.Controllers.WaiterController;
@@ -56,6 +58,8 @@ public class WaiterView {
         topBox.setAlignment(Pos.CENTER_LEFT);
         topBox.setPadding(new Insets(0, 0, 20, 0));
 
+
+
         Label title = new Label("Gestión de Meseros");
         title.getStyleClass().add("title");
         title.setFont(new Font(20));
@@ -65,11 +69,23 @@ public class WaiterView {
         searchField.setPrefWidth(Double.MAX_VALUE);
         searchField.textProperty().addListener((obs, oldVal, newVal) -> filterTable());
 
+        ImageView imageViewAdd = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/add.png").toString()));
+        imageViewAdd.setFitHeight(16);
+        imageViewAdd.setFitWidth(16);
+        Button addbutton = new Button("Agregar Mesero");
+        addbutton.setGraphic(imageViewAdd);
+        addbutton.getStyleClass().add("primary-button");
+        addbutton.setOnAction(event -> addWaiterForm());
+
+        ImageView imageViewUpdate = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/update.png").toString()));
+        imageViewUpdate.setFitHeight(16);
+        imageViewUpdate.setFitWidth(16);
         Button refreshButton = new Button("Actualizar");
+        refreshButton.setGraphic(imageViewUpdate);
         refreshButton.getStyleClass().add("secondary-button");
         refreshButton.setOnAction(e -> refreshTable());
 
-        topBox.getChildren().addAll(title, searchField, refreshButton);
+        topBox.getChildren().addAll(title, searchField, addbutton, refreshButton);
         view.setTop(topBox);
     }
 
@@ -79,6 +95,7 @@ public class WaiterView {
 
         // Columna de número (contador)
         TableColumn<User, Void> indexColumn = new TableColumn<>("#");
+        indexColumn.setStyle("-fx-alignment: center-right;");
         indexColumn.getStyleClass().add("index-column");
         indexColumn.setCellFactory(col -> new TableCell<>() {
             @Override
@@ -124,6 +141,7 @@ public class WaiterView {
         });*/
 
         TableColumn<User, String> firstNameColumn = new TableColumn<>("Nombre");
+        firstNameColumn.setPrefWidth(50);
         firstNameColumn.setStyle("-fx-alignment: center-left");
         firstNameColumn.getStyleClass().add("text-column");
         firstNameColumn.setCellValueFactory(cellData -> {
@@ -132,6 +150,7 @@ public class WaiterView {
         });
 
         TableColumn<User, String> lastNameColumn = new TableColumn<>("Apellido");
+        lastNameColumn.setPrefWidth(50);
         lastNameColumn.setStyle("-fx-alignment: center-left");
         lastNameColumn.getStyleClass().add("text-column");
         lastNameColumn.setCellValueFactory(cellData -> {
@@ -140,7 +159,7 @@ public class WaiterView {
         });
 
         TableColumn<User, String> phoneColumn = new TableColumn<>("Teléfono");
-        phoneColumn.setStyle("-fx-alignment: center-left");
+        phoneColumn.setStyle("-fx-alignment: center-right");
         phoneColumn.getStyleClass().add("text-column");
         phoneColumn.setCellValueFactory(cellData -> {
             User user = cellData.getValue();
@@ -156,6 +175,9 @@ public class WaiterView {
         });
 
         TableColumn<User, String> rolColumn = new TableColumn<>("Rol");
+        rolColumn.setPrefWidth(50);
+        rolColumn.setStyle("-fx-alignment: center");
+        rolColumn.getStyleClass().add("text-column");
         rolColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRolUser()));
         rolColumn.setCellFactory(col -> new TableCell<>() {
             @Override
@@ -175,8 +197,32 @@ public class WaiterView {
             }
         });
 
+        TableColumn<User, String> stateColumn = new TableColumn<>("Estado");
+        stateColumn.setPrefWidth(50);
+        stateColumn.setStyle("-fx-alignment: center");
+        stateColumn.getStyleClass().add("text-column");
+
+        stateColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getStateUser())
+        );
+
+        stateColumn.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String estado, boolean empty) {
+                super.updateItem(estado, empty);
+                if (empty || estado == null) {
+                    setGraphic(null);
+                } else {
+                    String status = estado.equals("1") ? "Activo" : "Inactivo";
+                    Label label = new Label(status);
+                    label.getStyleClass().add(estado.equals("1") ? "badge" : "badge-red");
+                    setGraphic(label);
+                }
+            }
+        });
+
         table.getColumns().addAll(indexColumn,firstNameColumn,
-                lastNameColumn, phoneColumn, emailColumn, rolColumn);
+                lastNameColumn, phoneColumn, emailColumn, rolColumn, stateColumn);
     }
 
     private void configurePagination() {
@@ -213,9 +259,6 @@ public class WaiterView {
     //-----------------------------------------------------------------------------------------------------------------------//
 
     private void refreshTable() {
-        //waiterController.getWaitersList();
-        //pagination.setPageCount(calculatePageCount());
-        //updateTableForPage(pagination.getCurrentPageIndex());
         masterWaiterList.setAll(waiterController.getWaitersList());
         searchField.clear();
         filterAndPaginateTable();
@@ -331,6 +374,10 @@ public class WaiterView {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void addWaiterForm(){
+        System.out.println("addWaiterForm");
     }
 
     public BorderPane getView() {

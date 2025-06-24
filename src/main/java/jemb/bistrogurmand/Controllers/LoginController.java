@@ -27,8 +27,9 @@ public class LoginController {
                 String email = response.getString("EMAIL");
                 String rolUser = response.getString("ROL");
                 String userImage = response.getString("IMAGE_URL");
+                String state = response.getString("STATE");
 
-                return new User(userID,firstName,lastName,phone,email,rolUser,userImage);
+                return new User(userID,firstName,lastName,phone,email,rolUser, userImage, state);
             }
 
         } catch (SQLException e) {

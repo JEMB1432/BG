@@ -18,7 +18,7 @@ public class WaiterController {
 
         try{
             conn = DatabaseConnection.getConnection();
-            String sql = "SELECT ID_Employee, Name, LastName, CelPhone, Email, Rol, Image_URL FROM EMPLOYEE";
+            String sql = "SELECT ID_Employee, Name, LastName, CelPhone, Email, Rol, Image_URL, STATE FROM EMPLOYEE ORDER BY LastName ASC";
             response = conn.createStatement().executeQuery(sql);
 
             while (response.next()) {
@@ -29,8 +29,9 @@ public class WaiterController {
                 String email = response.getString("EMAIL");
                 String rolUser = response.getString("ROL");
                 String userImage = response.getString("IMAGE_URL");
+                String state = response.getString("STATE");
 
-                currentWaiters.add(new User(userID, firstName, lastName, phone, email, rolUser, userImage));
+                currentWaiters.add(new User(userID, firstName, lastName, phone, email, rolUser, userImage, state));
             }
 
         } catch (SQLException e) {

@@ -8,9 +8,10 @@ public class User {
     private String email;
     private String rolUser;
     private String userImage;
+    private String stateUser;
 
     public User(String userID, String firstName, String lastName, String phone,
-                String email, String rolUser, String userImage) {
+                String email, String rolUser, String userImage, String stateUser) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -18,6 +19,7 @@ public class User {
         this.email = email;
         this.rolUser = rolUser;
         this.userImage = userImage;
+        this.stateUser = stateUser;
     }
 
     // Getters deben seguir exactamente el patrón "get" + nombre de propiedad (case sensitive)
@@ -31,12 +33,14 @@ public class User {
 
     public String getEmail() { return email; }
 
-    // Para "rolUser" el getter debe ser getRolUser()
     public String getRolUser() { return rolUser; }
 
     public String getUserImage() { return userImage; }
 
-    // Setters (opcionales para TableView a menos que necesites edición)
+    public String getStateUser() { return stateUser; }
+
+
+
     public void setUserID(String userID) { this.userID = userID; }
 
     public void setFirstName(String firstName) { this.firstName = firstName; }
@@ -50,4 +54,6 @@ public class User {
     public void setRolUser(String rolUser) { this.rolUser = rolUser; }
 
     public void setUserImage(String userImage) { this.userImage = userImage; }
+
+    public void setStateUser(String stateUser) { this.stateUser = stateUser; }
 }
