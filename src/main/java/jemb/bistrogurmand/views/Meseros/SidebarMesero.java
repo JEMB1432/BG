@@ -18,14 +18,14 @@ public class SidebarMesero {
         sidebar.setPrefWidth(220);
         sidebar.setStyle("-fx-background-color: white;");
 
-        //sidebar.getChildren().addAll(
-               // crearHeader(),
-                //crearUserInfo(),
-               // crearMenuItem("Jornada", true, "≡"),
-                //crearMenuItem("Mesas asignadas", false, "🪑"),
-                //crearMenuItem("Tomar pedido", false, "👥"),
-                //crearMenuItem("Modificación de pedido", false, "✏️")
-       // );
+        sidebar.getChildren().addAll(
+               crearHeader(),
+                crearUserInfo(),
+               crearMenuItem("Jornada", true, "≡"),
+                crearMenuItem("Mesas asignadas", false, "🪑"),
+                crearMenuItem("Tomar pedido", false, "👥"),
+                crearMenuItem("Modificación de pedido", false, "✏️")
+        );
     }
 
     private VBox crearHeader() {
