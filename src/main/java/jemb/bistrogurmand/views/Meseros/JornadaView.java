@@ -45,8 +45,8 @@ public class JornadaView {
                 crearMiniCard("Mesas Asignadas:", "4", "🍽")
         );
 
-       // mainContent.getChildren().addAll(infoCard, statsCards);
-        //root.setCenter(mainContent);
+       mainContent.getChildren().addAll(infoCard, statsCards);
+        root.setCenter(mainContent);
     }
 
     private VBox crearMiniCard(String titulo, String valor, String icono) {
