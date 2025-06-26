@@ -67,7 +67,7 @@ public class App extends Application {
                 case "menu":
                     root = new MenuView().getView();
                     break;
-                case "test":
+                case "summary":
                     root = new SummaryView().getView();
                     break;
                 default:

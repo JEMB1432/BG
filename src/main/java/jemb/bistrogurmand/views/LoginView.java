@@ -128,7 +128,15 @@ public class LoginView {
             User userLoged = loginController.tryLogin(usernameField.getText(), passwordField.getText());
             if (userLoged != null) {
                 UserSession.setCurrentUser(userLoged);
-                App.loadView("test");
+                switch(userLoged.getRolUser().toLowerCase()
+                ){
+                    case "admin":
+                        App.loadView("dashboard");
+                        break;
+                    case "lider":
+                        App.loadView("summary");
+                        break;
+                }
             }else {
                 errorLogin.setText("Usuario y/o contraseña incorrectos");
 
