@@ -1,4 +1,4 @@
-package jemb.bistrogurmand.views.Admin;
+package jemb.bistrogurmand.views.Leader;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -6,15 +6,14 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import jemb.bistrogurmand.Controllers.WaiterController;
+import jemb.bistrogurmand.views.Admin.User;
 
 import java.util.Optional;
 
-public class WaiterView {
+public class SumTable {
     private BorderPane view;
     private TableView<User> table;
     private WaiterController waiterController;
@@ -25,7 +24,7 @@ public class WaiterView {
     private ObservableList<User> masterWaiterList; // Esta contendrá a todos los meseros
     private ObservableList<User> currentDisplayedList;
 
-    public WaiterView() {
+    public SumTable() {
         masterWaiterList = FXCollections.observableArrayList();
         currentDisplayedList = FXCollections.observableArrayList();
 
@@ -58,32 +57,20 @@ public class WaiterView {
         topBox.setAlignment(Pos.CENTER_LEFT);
         topBox.setPadding(new Insets(0, 0, 20, 0));
 
-        Label title = new Label("Gestión de Meseros");
+        Label title = new Label("Resumen de turnos");
         title.getStyleClass().add("title");
         title.setFont(new Font(20));
 
-        searchField.setPromptText("Buscar meseros...");
+        searchField.setPromptText("Buscar...");
         searchField.getStyleClass().add("search-field");
         searchField.setPrefWidth(Double.MAX_VALUE);
         searchField.textProperty().addListener((obs, oldVal, newVal) -> filterTable());
 
-        ImageView imageViewAdd = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/add.png").toString()));
-        imageViewAdd.setFitHeight(16);
-        imageViewAdd.setFitWidth(16);
-        Button addbutton = new Button("Agregar Mesero");
-        addbutton.setGraphic(imageViewAdd);
-        addbutton.getStyleClass().add("primary-button");
-        addbutton.setOnAction(event -> addWaiterForm());
-
-        ImageView imageViewUpdate = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/update.png").toString()));
-        imageViewUpdate.setFitHeight(16);
-        imageViewUpdate.setFitWidth(16);
         Button refreshButton = new Button("Actualizar");
-        refreshButton.setGraphic(imageViewUpdate);
         refreshButton.getStyleClass().add("secondary-button");
         refreshButton.setOnAction(e -> refreshTable());
 
-        topBox.getChildren().addAll(title, searchField, addbutton, refreshButton);
+        topBox.getChildren().addAll(title, searchField, refreshButton);
         view.setTop(topBox);
     }
 
@@ -91,9 +78,8 @@ public class WaiterView {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.getStyleClass().add("table-view");
 
-        // Columna de número (contador)
-        TableColumn<User, Void> indexColumn = new TableColumn<>("#");
-        indexColumn.setStyle("-fx-alignment: center-right;");
+        // Columna de turno
+        TableColumn<User, Void> indexColumn = new TableColumn<>("Turno");
         indexColumn.getStyleClass().add("index-column");
         indexColumn.setCellFactory(col -> new TableCell<>() {
             @Override
@@ -138,89 +124,36 @@ public class WaiterView {
             }
         });*/
 
-        TableColumn<User, String> firstNameColumn = new TableColumn<>("Nombre");
-        firstNameColumn.setPrefWidth(50);
-        firstNameColumn.setStyle("-fx-alignment: center-left");
-        firstNameColumn.getStyleClass().add("text-column");
-        firstNameColumn.setCellValueFactory(cellData -> {
+        TableColumn<User, String> activeWaitersColumn= new TableColumn<>("Meseros activos");
+        activeWaitersColumn.setStyle("-fx-alignment: center-left");
+        activeWaitersColumn.getStyleClass().add("text-column");
+        activeWaitersColumn.setCellValueFactory(cellData -> {
             User user = cellData.getValue();
-            return new SimpleStringProperty(user.getFirstName());
+            //return new SimpleStringProperty(user.getFirstName());
+            return new SimpleStringProperty("4");
         });
 
-        TableColumn<User, String> lastNameColumn = new TableColumn<>("Apellido");
-        lastNameColumn.setPrefWidth(50);
-        lastNameColumn.setStyle("-fx-alignment: center-left");
-        lastNameColumn.getStyleClass().add("text-column");
-        lastNameColumn.setCellValueFactory(cellData -> {
+        TableColumn<User, String> serviceWaiters = new TableColumn<>("Meseros en servicio");
+        serviceWaiters.setStyle("-fx-alignment: center-left");
+        serviceWaiters.getStyleClass().add("text-column");
+        serviceWaiters.setCellValueFactory(cellData -> {
             User user = cellData.getValue();
-            return new SimpleStringProperty(user.getLastName());
+            //return new SimpleStringProperty(user.getLastName());
+            return new SimpleStringProperty("4");
         });
 
-        TableColumn<User, String> phoneColumn = new TableColumn<>("Teléfono");
-        phoneColumn.setStyle("-fx-alignment: center-right");
-        phoneColumn.getStyleClass().add("text-column");
-        phoneColumn.setCellValueFactory(cellData -> {
+        TableColumn<User, String> pendingOrders = new TableColumn<>("Ordenes Pendientes");
+        pendingOrders.setStyle("-fx-alignment: center-left");
+        pendingOrders.getStyleClass().add("text-column");
+        pendingOrders.setCellValueFactory(cellData -> {
             User user = cellData.getValue();
-            return new SimpleStringProperty(user.getPhone());
+            //return new SimpleStringProperty(user.getPhone());
+            return new SimpleStringProperty("4");
         });
 
-        TableColumn<User, String> emailColumn = new TableColumn<>("Email");
-        emailColumn.setStyle("-fx-alignment: center-left");
-        emailColumn.getStyleClass().add("text-column-email");
-        emailColumn.setCellValueFactory(cellData -> {
-            User user = cellData.getValue();
-            return new SimpleStringProperty(user.getEmail());
-        });
 
-        TableColumn<User, String> rolColumn = new TableColumn<>("Rol");
-        rolColumn.setPrefWidth(50);
-        rolColumn.setStyle("-fx-alignment: center");
-        rolColumn.getStyleClass().add("text-column");
-        rolColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRolUser()));
-        rolColumn.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(String rol, boolean empty) {
-                super.updateItem(rol, empty);
-                if (empty || rol == null) {
-                    setGraphic(null);
-                } else {
-                    Label label = new Label(rol);
-                    switch (rol.toLowerCase()) {
-                        case "admin" -> label.getStyleClass().add("role-admin");
-                        case "mesero" -> label.getStyleClass().add("role-waiter");
-                        case "lider" -> label.getStyleClass().add("role-leader");
-                    }
-                    setGraphic(label);
-                }
-            }
-        });
 
-        TableColumn<User, String> stateColumn = new TableColumn<>("Estado");
-        stateColumn.setPrefWidth(50);
-        stateColumn.setStyle("-fx-alignment: center");
-        stateColumn.getStyleClass().add("text-column");
-
-        stateColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getStateUser())
-        );
-
-        stateColumn.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(String estado, boolean empty) {
-                super.updateItem(estado, empty);
-                if (empty || estado == null) {
-                    setGraphic(null);
-                } else {
-                    String status = estado.equals("1") ? "Activo" : "Inactivo";
-                    Label label = new Label(status);
-                    label.getStyleClass().add(estado.equals("1") ? "badge" : "badge-red");
-                    setGraphic(label);
-                }
-            }
-        });
-
-        table.getColumns().addAll(indexColumn,firstNameColumn,
-                lastNameColumn, phoneColumn, emailColumn, rolColumn, stateColumn);
+        table.getColumns().addAll(indexColumn,activeWaitersColumn,serviceWaiters,pendingOrders);
     }
 
     private void configurePagination() {
@@ -241,22 +174,25 @@ public class WaiterView {
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
         buttonBox.setPadding(new Insets(20, 0, 0, 0));
 
-        Button editButton = new Button("Editar");
-        editButton.getStyleClass().add("primary-button");
-        editButton.setOnAction(e -> editSelectedWaiter());
+        //Button editButton = new Button("Editar");
+        //editButton.getStyleClass().add("primary-button");
+        //editButton.setOnAction(e -> editSelectedWaiter());
 
-        Button deleteButton = new Button("Eliminar");
+        //Button deleteButton = new Button("Eliminar");
         //deleteButton.setStyle("-fx-background-color: #ff4444; -fx-text-fill: white;");
-        deleteButton.getStyleClass().add("danger-button");
-        deleteButton.setOnAction(e -> deleteSelectedWaiter());
+        //deleteButton.getStyleClass().add("danger-button");
+        //deleteButton.setOnAction(e -> deleteSelectedWaiter());
 
-        buttonBox.getChildren().addAll(editButton, deleteButton);
+        //buttonBox.getChildren().addAll(editButton, deleteButton);
         view.setBottom(buttonBox);
     }
 
     //-----------------------------------------------------------------------------------------------------------------------//
 
     private void refreshTable() {
+        //waiterController.getWaitersList();
+        //pagination.setPageCount(calculatePageCount());
+        //updateTableForPage(pagination.getCurrentPageIndex());
         masterWaiterList.setAll(waiterController.getWaitersList());
         searchField.clear();
         filterAndPaginateTable();
@@ -337,34 +273,34 @@ public class WaiterView {
         }
     }
 
-    private void editSelectedWaiter() {
-        User selected = table.getSelectionModel().getSelectedItem();
-        if (selected != null) {
+    //private void editSelectedWaiter() {
+        //User selected = table.getSelectionModel().getSelectedItem();
+        //if (selected != null) {
             // Implementar lógica de edición
-            System.out.println("Editar mesero: " + selected.getFirstName());
-        } else {
-            showAlert("Selección requerida", "Por favor seleccione un mesero para editar.");
-        }
-    }
+            //System.out.println("Editar mesero: " + selected.getFirstName());
+        //} else {
+            //showAlert("Selección requerida", "Por favor seleccione un mesero para editar.");
+        //}
+    //}
 
-    private void deleteSelectedWaiter() {
-        User selected = table.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirmar eliminación");
-            alert.setHeaderText("¿Eliminar mesero?");
-            alert.setContentText("Está a punto de eliminar a " + selected.getFirstName() +
-                    " " + selected.getLastName() + ". ¿Continuar?");
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                // Implementar lógica de eliminación
-                refreshTable();
-            }
-        } else {
-            showAlert("Selección requerida", "Por favor seleccione un mesero para eliminar.");
-        }
-    }
+    //private void deleteSelectedWaiter() {
+      //  User selected = table.getSelectionModel().getSelectedItem();
+    //    if (selected != null) {
+      //      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        //    alert.setTitle("Confirmar eliminación");
+          //  alert.setHeaderText("¿Eliminar mesero?");
+            //alert.setContentText("Está a punto de eliminar a " + selected.getFirstName() +
+              //      " " + selected.getLastName() + ". ¿Continuar?");
+//
+   //          Optional<ButtonType> result = alert.showAndWait();
+     //       if (result.isPresent() && result.get() == ButtonType.OK) {
+       //         // Implementar lógica de eliminación
+         //       refreshTable();
+           // }
+        //} else {
+          //  showAlert("Selección requerida", "Por favor seleccione un mesero para eliminar.");
+        //}
+    //}
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -372,10 +308,6 @@ public class WaiterView {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    private void addWaiterForm(){
-        System.out.println("addWaiterForm");
     }
 
     public BorderPane getView() {

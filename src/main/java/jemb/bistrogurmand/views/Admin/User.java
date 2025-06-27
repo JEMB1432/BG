@@ -39,8 +39,6 @@ public class User {
 
     public String getStateUser() { return stateUser; }
 
-
-
     public void setUserID(String userID) { this.userID = userID; }
 
     public void setFirstName(String firstName) { this.firstName = firstName; }
@@ -56,4 +54,5 @@ public class User {
     public void setUserImage(String userImage) { this.userImage = userImage; }
 
     public void setStateUser(String stateUser) { this.stateUser = stateUser; }
+
 }
