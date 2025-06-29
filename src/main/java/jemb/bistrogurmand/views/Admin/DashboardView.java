@@ -42,8 +42,8 @@ public class DashboardView {
             case "productos":
                 newContent = new MenuView().getView();
                 break;
-            case "reportes":
-                newContent = new Label("Vista de Reportes");
+            case "mesas":
+                newContent = new Label("Vista de Mesas");
                 break;
             default:
                 newContent = new Label("Vista no encontrada");

@@ -24,7 +24,5 @@ public class DatabaseConnection {
         }
     }
 
-    public static void closeStatement(Statement stmt) {
-
-    }
+    public static void closeStatement(Statement stmt) { }
 }

@@ -7,6 +7,16 @@
     -fx-background-color: #f5f5f5;
 }
 
+.top-content{
+    -fx-padding: 30 20;
+}
+
+.title{
+    -fx-padding: 20px;
+    -fx-font-weight: bold;
+    -fx-font-size: 32px;
+    -fx-text-fill: -fx-dark;
+}
 .title-card, .total-card{
     -fx-font-weight: bold;
     -fx-font-size: 24px;
@@ -26,4 +36,8 @@
     -fx-pref-height: 110px;
     -fx-background-radius: 8;
     -fx-padding: 20;
+}
+
+.title-card-view{
+    -fx-padding: 20px;
 }

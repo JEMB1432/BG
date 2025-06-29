@@ -1,9 +1,7 @@
 package jemb.bistrogurmand.views;
 
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import jemb.bistrogurmand.Controllers.LoginController;
-import jemb.bistrogurmand.Controllers.UserSession;
+import jemb.bistrogurmand.utils.UserSession;
 import jemb.bistrogurmand.application.App;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;

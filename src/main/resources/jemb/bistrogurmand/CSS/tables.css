@@ -29,7 +29,7 @@
 .top-section {
     -fx-spacing: 20;
     -fx-alignment: center-left;
-    -fx-padding: 0 0 20 0;
+    -fx-padding: 30 0 20 0;
 }
 
 .search-field {
@@ -219,33 +219,30 @@
 
 /* Roles (etiquetas) */
 .role-waiter {
-    -fx-background-color: rgba(28, 124, 84, 0.1);
-    -fx-text-fill: -fx-secondary-color; /* Usar la variable con -fx- */
+    -fx-background-color: rgba(253, 126, 20, 0.20);
+    -fx-text-fill: #e36700;
     -fx-padding: 3 8;
     -fx-border-radius: 4;
     -fx-background-radius: 4;
     -fx-font-size: 12;
-    -fx-font-weight: bold;
 }
 
 .role-leader {
-    -fx-background-color: rgba(255, 112, 67, 0.1);
-    -fx-text-fill: -fx-accent-color; /* Usar la variable con -fx- */
+    -fx-background-color: rgba(227, 68, 174, 0.25);
+    -fx-text-fill: #E344AE;
     -fx-padding: 3 8;
     -fx-border-radius: 4;
     -fx-background-radius: 4;
     -fx-font-size: 12;
-    -fx-font-weight: bold;
 }
 
 .role-admin {
-    -fx-background-color: rgba(153, 13, 53, 0.1);
-    -fx-text-fill: -fx-primary-color; /* Usar la variable con -fx- */
+    -fx-background-color: rgba(239, 23, 27, 0.25);
+    -fx-text-fill: #EF171B;
     -fx-padding: 3 8;
     -fx-border-radius: 4;
     -fx-background-radius: 4;
     -fx-font-size: 12;
-    -fx-font-weight: bold;
 }
 
 /* Barra de desplazamiento */

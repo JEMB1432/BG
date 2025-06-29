@@ -2,6 +2,8 @@ package jemb.bistrogurmand.views.Admin;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -13,7 +15,6 @@ public class GenerateDashboardInfo {
     public GenerateDashboardInfo() {
         view = new BorderPane();
         view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/styles.css").toExternalForm());
-        view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/sidebar.css").toExternalForm());
 
 
         Region principalContent = new Region();
@@ -28,11 +29,15 @@ public class GenerateDashboardInfo {
 
         HBox titleCardView = new HBox();
         titleCardView.getStyleClass().add("title-card-view");
+
+        ImageView iconTitle = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/stat.png").toString()));
+        iconTitle.setFitHeight(57);
+        iconTitle.setFitWidth(57);
         Label titleView = new Label("Dashboard");
-        titleView.getStyleClass().add("title-card");
+        titleView.getStyleClass().add("title");
 
         HBox cards = new HBox(50);
-        cards.getStyleClass().add("top-content");
+        topContent.getStyleClass().add("top-content");
 
         float saleInfo = 1850.00F;
         VBox cardSale = new VBox(20);
@@ -52,6 +57,7 @@ public class GenerateDashboardInfo {
         totalOrder.getStyleClass().add("total-card");
         cardOrder.getChildren().addAll(titleOrder, totalOrder);
 
+        titleCardView.getChildren().addAll(iconTitle, titleView);
         cards.getChildren().addAll(cardSale,cardOrder);
         topContent.getChildren().addAll(titleCardView,cards);
         view.setTop(topContent);

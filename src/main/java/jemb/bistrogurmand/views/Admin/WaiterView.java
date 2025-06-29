@@ -1,5 +1,6 @@
 package jemb.bistrogurmand.views.Admin;
 
+import javafx.animation.PauseTransition;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,9 +11,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.WaiterController;
+import jemb.bistrogurmand.utils.UserTableColumnFactory;
 
 import java.util.Optional;
+
+import static jemb.bistrogurmand.utils.UserTableColumnFactory.*;
 
 public class WaiterView {
     private BorderPane view;
@@ -20,6 +25,7 @@ public class WaiterView {
     private WaiterController waiterController;
     private TextField searchField;
     private Pagination pagination;
+    private Label paginationInfo;
     private final int rowsPerPage = 10;
 
     private ObservableList<User> masterWaiterList; // Esta contendrá a todos los meseros
@@ -41,14 +47,19 @@ public class WaiterView {
         table.getStyleClass().add("table-view");
         pagination = new Pagination();
 
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            // Agregar un pequeño retardo para evitar procesamiento excesivo
+            PauseTransition pause = new PauseTransition(Duration.millis(100));
+            pause.setOnFinished(e -> filterAndPaginateTable());
+            pause.playFromStart();
+        });
+
         // Configurar la interfaz
         createTopSection();
         configureTable();
         configurePagination();
         createBottomSection();
 
-        // Cargar datos después de que todo está configurado
-        searchField.textProperty().addListener((obs, oldVal, newVal) -> filterAndPaginateTable());
         loadInitialData();
     }
 
@@ -58,6 +69,9 @@ public class WaiterView {
         topBox.setAlignment(Pos.CENTER_LEFT);
         topBox.setPadding(new Insets(0, 0, 20, 0));
 
+        ImageView iconTitle = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/users.png").toString()));
+        iconTitle.setFitHeight(57);
+        iconTitle.setFitWidth(57);
         Label title = new Label("Gestión de Meseros");
         title.getStyleClass().add("title");
         title.setFont(new Font(20));
@@ -65,7 +79,7 @@ public class WaiterView {
         searchField.setPromptText("Buscar meseros...");
         searchField.getStyleClass().add("search-field");
         searchField.setPrefWidth(Double.MAX_VALUE);
-        searchField.textProperty().addListener((obs, oldVal, newVal) -> filterTable());
+        //searchField.textProperty().addListener((obs, oldVal, newVal) -> filterAndPaginateTable());
 
         ImageView imageViewAdd = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/add.png").toString()));
         imageViewAdd.setFitHeight(16);
@@ -83,7 +97,7 @@ public class WaiterView {
         refreshButton.getStyleClass().add("secondary-button");
         refreshButton.setOnAction(e -> refreshTable());
 
-        topBox.getChildren().addAll(title, searchField, addbutton, refreshButton);
+        topBox.getChildren().addAll(iconTitle, title, searchField, addbutton, refreshButton);
         view.setTop(topBox);
     }
 
@@ -91,144 +105,39 @@ public class WaiterView {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.getStyleClass().add("table-view");
 
-        // Columna de número (contador)
-        TableColumn<User, Void> indexColumn = new TableColumn<>("#");
-        indexColumn.setStyle("-fx-alignment: center-right;");
-        indexColumn.getStyleClass().add("index-column");
-        indexColumn.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setText(String.valueOf(getIndex() + 1 + (pagination.getCurrentPageIndex() * rowsPerPage)));
-                }
-            }
-        });
-        indexColumn.setPrefWidth(25);
-
-// Columna de imagen
-        /*
-        TableColumn<User, String> imageColumn = new TableColumn<>("Foto");
-        imageColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUserImage()));
-        imageColumn.setCellFactory(col -> new TableCell<>() {
-            private final ImageView imageView = new ImageView();
-            {
-                imageView.setFitHeight(40);
-                imageView.setFitWidth(40);
-                imageView.setPreserveRatio(true);
-            }
-
-            @Override
-            protected void updateItem(String imageUrl, boolean empty) {
-                super.updateItem(imageUrl, empty);
-                if (empty || imageUrl == null || imageUrl.isEmpty()) {
-                    setGraphic(null);
-                } else {
-                    try {
-                        Image image = new Image(imageUrl, true); // true permite carga asíncrona
-                        imageView.setImage(image);
-                        setGraphic(imageView);
-                    } catch (Exception e) {
-                        setGraphic(null);
-                    }
-                }
-            }
-        });*/
-
-        TableColumn<User, String> firstNameColumn = new TableColumn<>("Nombre");
-        firstNameColumn.setPrefWidth(50);
-        firstNameColumn.setStyle("-fx-alignment: center-left");
-        firstNameColumn.getStyleClass().add("text-column");
-        firstNameColumn.setCellValueFactory(cellData -> {
-            User user = cellData.getValue();
-            return new SimpleStringProperty(user.getFirstName());
-        });
-
-        TableColumn<User, String> lastNameColumn = new TableColumn<>("Apellido");
-        lastNameColumn.setPrefWidth(50);
-        lastNameColumn.setStyle("-fx-alignment: center-left");
-        lastNameColumn.getStyleClass().add("text-column");
-        lastNameColumn.setCellValueFactory(cellData -> {
-            User user = cellData.getValue();
-            return new SimpleStringProperty(user.getLastName());
-        });
-
-        TableColumn<User, String> phoneColumn = new TableColumn<>("Teléfono");
-        phoneColumn.setStyle("-fx-alignment: center-right");
-        phoneColumn.getStyleClass().add("text-column");
-        phoneColumn.setCellValueFactory(cellData -> {
-            User user = cellData.getValue();
-            return new SimpleStringProperty(user.getPhone());
-        });
-
-        TableColumn<User, String> emailColumn = new TableColumn<>("Email");
-        emailColumn.setStyle("-fx-alignment: center-left");
-        emailColumn.getStyleClass().add("text-column-email");
-        emailColumn.setCellValueFactory(cellData -> {
-            User user = cellData.getValue();
-            return new SimpleStringProperty(user.getEmail());
-        });
-
-        TableColumn<User, String> rolColumn = new TableColumn<>("Rol");
-        rolColumn.setPrefWidth(50);
-        rolColumn.setStyle("-fx-alignment: center");
-        rolColumn.getStyleClass().add("text-column");
-        rolColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRolUser()));
-        rolColumn.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(String rol, boolean empty) {
-                super.updateItem(rol, empty);
-                if (empty || rol == null) {
-                    setGraphic(null);
-                } else {
-                    Label label = new Label(rol);
-                    switch (rol.toLowerCase()) {
-                        case "admin" -> label.getStyleClass().add("role-admin");
-                        case "mesero" -> label.getStyleClass().add("role-waiter");
-                        case "lider" -> label.getStyleClass().add("role-leader");
-                    }
-                    setGraphic(label);
-                }
-            }
-        });
-
-        TableColumn<User, String> stateColumn = new TableColumn<>("Estado");
-        stateColumn.setPrefWidth(50);
-        stateColumn.setStyle("-fx-alignment: center");
-        stateColumn.getStyleClass().add("text-column");
-
-        stateColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getStateUser())
+        table.getColumns().addAll(
+                UserTableColumnFactory.createIndexColumn(pagination, rowsPerPage),
+                createFirstNameColumn(),
+                createLastNameColumn(),
+                createPhoneColumn(),
+                createEmailColumn(),
+                createRolColumn(),
+                createStateColumn()
         );
 
-        stateColumn.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(String estado, boolean empty) {
-                super.updateItem(estado, empty);
-                if (empty || estado == null) {
-                    setGraphic(null);
-                } else {
-                    String status = estado.equals("1") ? "Activo" : "Inactivo";
-                    Label label = new Label(status);
-                    label.getStyleClass().add(estado.equals("1") ? "badge" : "badge-red");
-                    setGraphic(label);
-                }
-            }
-        });
-
-        table.getColumns().addAll(indexColumn,firstNameColumn,
-                lastNameColumn, phoneColumn, emailColumn, rolColumn, stateColumn);
     }
 
     private void configurePagination() {
+        // Crear la etiqueta de información
+        paginationInfo = new Label();
+
+        // Configurar el cambio de página
         pagination.currentPageIndexProperty().addListener((obs, oldVal, newVal) -> {
             updateTableForPage(newVal.intValue());
-            table.refresh();
+            updatePaginationInfo(newVal.intValue());
         });
-        view.setCenter(new VBox(10, table, pagination));
+
+        // Configurar el diseño
+        VBox paginationBox = new VBox(10);
+        paginationBox.getChildren().addAll(table, paginationInfo, pagination);
+        view.setCenter(paginationBox);
+    }
+
+    private void updatePaginationInfo(int pageIndex) {
+        int from = pageIndex * rowsPerPage + 1;
+        int to = Math.min((pageIndex + 1) * rowsPerPage, currentDisplayedList.size());
+        int total = currentDisplayedList.size();
+        paginationInfo.setText(String.format("Mostrando %d-%d de %d resultados", from, to, total));
     }
 
     private void loadInitialData() {
@@ -254,8 +163,6 @@ public class WaiterView {
         view.setBottom(buttonBox);
     }
 
-    //-----------------------------------------------------------------------------------------------------------------------//
-
     private void refreshTable() {
         masterWaiterList.setAll(waiterController.getWaitersList());
         searchField.clear();
@@ -266,62 +173,40 @@ public class WaiterView {
         String filter = searchField.getText().toLowerCase();
         ObservableList<User> filteredList = FXCollections.observableArrayList();
 
-        // Filtrar desde la lista maestra
         if (filter.isEmpty()) {
-            filteredList.addAll(masterWaiterList);
+            filteredList.setAll(masterWaiterList);
         } else {
             for (User waiter : masterWaiterList) {
-                if (waiter.getFirstName().toLowerCase().contains(filter) ||
-                        waiter.getLastName().toLowerCase().contains(filter) ||
-                        waiter.getEmail().toLowerCase().contains(filter) ||
-                        waiter.getPhone().toLowerCase().contains(filter)) {
+                if (matchesFilter(waiter, filter)) {
                     filteredList.add(waiter);
                 }
             }
         }
 
         currentDisplayedList.setAll(filteredList);
+        updatePagination();
+    }
 
-        pagination.setPageCount(calculatePageCount(currentDisplayedList.size()));
+    private boolean matchesFilter(User waiter, String filter) {
+        return waiter.getFirstName().toLowerCase().contains(filter) ||
+                waiter.getLastName().toLowerCase().contains(filter) ||
+                waiter.getEmail().toLowerCase().contains(filter) ||
+                waiter.getPhone().toLowerCase().contains(filter);
+    }
 
-        if (pagination.getCurrentPageIndex() >= pagination.getPageCount()) {
+    private void updatePagination() {
+        int itemCount = currentDisplayedList.size();
+        int pageCount = (int) Math.ceil((double) itemCount / rowsPerPage);
+
+        // Asegurar que pageCount sea al menos 1
+        pagination.setPageCount(pageCount > 0 ? pageCount : 1);
+
+        // Si estamos en una página que ya no existe, volver a la página 0
+        if (pagination.getCurrentPageIndex() >= pageCount && pageCount > 0) {
             pagination.setCurrentPageIndex(0);
         }
 
         updateTableForPage(pagination.getCurrentPageIndex());
-    }
-
-    // Ajustar calculatePageCount para que tome el tamaño de la lista
-    private int calculatePageCount(int itemCount) {
-        return Math.max(1, (int) Math.ceil((double) itemCount / rowsPerPage));
-    }
-
-    //------------------------------------------------------------------------------------------------------------//
-
-    private void filterTable() {
-        String filter = searchField.getText().toLowerCase();
-        if (filter.isEmpty()) {
-            refreshTable();
-            return;
-        }
-
-        ObservableList<User> filteredList = FXCollections.observableArrayList();
-        for (User waiter : waiterController.getWaitersList()) {
-            if (waiter.getFirstName().toLowerCase().contains(filter) ||
-                    waiter.getLastName().toLowerCase().contains(filter) ||
-                    waiter.getEmail().toLowerCase().contains(filter) ||
-                    waiter.getPhone().toLowerCase().contains(filter)) {
-                filteredList.add(waiter);
-            }
-        }
-
-        table.setItems(filteredList);
-        pagination.setPageCount((int) Math.ceil((double) filteredList.size() / rowsPerPage));
-    }
-
-    private int calculatePageCount() {
-        int itemCount = waiterController.getWaitersList().size();
-        return Math.max(1, (int) Math.ceil((double) itemCount / rowsPerPage));
     }
 
     private void updateTableForPage(int pageIndex) {
@@ -335,6 +220,14 @@ public class WaiterView {
                     currentDisplayedList.subList(fromIndex, toIndex)
             ));
         }
+
+        updatePaginationInfo(pageIndex);
+        table.refresh();
+    }
+
+    // Ajustar calculatePageCount para que tome el tamaño de la lista
+    private int calculatePageCount(int itemCount) {
+        return Math.max(1, (int) Math.ceil((double) itemCount / rowsPerPage));
     }
 
     private void editSelectedWaiter() {
@@ -358,8 +251,18 @@ public class WaiterView {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                // Implementar lógica de eliminación
-                refreshTable();
+                // Eliminar de todas las listas
+                masterWaiterList.remove(selected);
+                currentDisplayedList.remove(selected);
+
+                // Actualizar la paginación y la tabla
+                updatePagination();
+
+                // Si la lista está vacía, forzar actualización
+                if (currentDisplayedList.isEmpty()) {
+                    table.getItems().clear();
+                    updatePaginationInfo(0);
+                }
             }
         } else {
             showAlert("Selección requerida", "Por favor seleccione un mesero para eliminar.");

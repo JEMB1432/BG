@@ -11,8 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
-import jemb.bistrogurmand.Controllers.UserSession;
-import jemb.bistrogurmand.application.App;
+import jemb.bistrogurmand.utils.UserSession;
 import jemb.bistrogurmand.views.Admin.User;
 
 import java.util.Arrays;

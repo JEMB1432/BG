@@ -10,11 +10,12 @@
 .sidebar {
     -fx-background-color: white;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 2, 0);
-    -fx-padding: 20 0 20 0;
+    -fx-padding: 20 0 0 0;
     -fx-pref-width: 250px;
     -fx-min-width: 250px;
     -fx-max-width: 250px;
     -z-index: 10;
+    -fx-alignment: top-center;
 }
 
 .logo {
@@ -61,7 +62,7 @@
 .sidebar-menu {
     -fx-spacing: 5px;
     -fx-padding: 10px 0;
-    -fx-alignment: center-left;
+    -fx-alignment: top-center;
 }
 
 .menu-label {
@@ -107,15 +108,13 @@
     -fx-fill: -fx-primary;
 }
 
-.title-card, .total-card{
-    -fx-font-weight: bold;
-    -fx-font-size: 24px;
+.primary-button {
+    -fx-background-color: -fx-primary;
+    -fx-padding: 10;
+    -fx-text-fill: white;
+    -fx-pref-width: 230px;
 }
 
-.title-card {
-    -fx-text-fill: -fx-dark;
-}
-
-.total-card {
-    -fx-text-fill: -fx-primary;
+.logoutContainer{
+    -fx-padding: 10 10 10 10;
 }
