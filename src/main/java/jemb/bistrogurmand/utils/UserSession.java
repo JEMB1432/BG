@@ -1,7 +1,6 @@
 package jemb.bistrogurmand.utils;
 
 import jemb.bistrogurmand.application.App;
-import jemb.bistrogurmand.views.Admin.User;
 
 public class UserSession {
         private static User currentUser;

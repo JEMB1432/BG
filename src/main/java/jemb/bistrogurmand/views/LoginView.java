@@ -9,7 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import jemb.bistrogurmand.views.Admin.User;
+import jemb.bistrogurmand.utils.User;
 
 public class LoginView {
     private VBox view;

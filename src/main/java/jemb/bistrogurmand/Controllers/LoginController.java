@@ -1,7 +1,7 @@
 package jemb.bistrogurmand.Controllers;
 
 import jemb.bistrogurmand.DbConection.DatabaseConnection;
-import jemb.bistrogurmand.views.Admin.User;
+import jemb.bistrogurmand.utils.User;
 
 import java.sql.*;
 

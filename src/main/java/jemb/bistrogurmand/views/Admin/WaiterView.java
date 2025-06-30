@@ -1,7 +1,6 @@
 package jemb.bistrogurmand.views.Admin;
 
 import javafx.animation.PauseTransition;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -13,6 +12,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.WaiterController;
+import jemb.bistrogurmand.utils.User;
 import jemb.bistrogurmand.utils.UserTableColumnFactory;
 
 import java.util.Optional;
@@ -28,7 +28,7 @@ public class WaiterView {
     private Label paginationInfo;
     private final int rowsPerPage = 10;
 
-    private ObservableList<User> masterWaiterList; // Esta contendrá a todos los meseros
+    private ObservableList<User> masterWaiterList;
     private ObservableList<User> currentDisplayedList;
 
     public WaiterView() {

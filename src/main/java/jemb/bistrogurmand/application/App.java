@@ -10,7 +10,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import jemb.bistrogurmand.views.Admin.DashboardView;
 import jemb.bistrogurmand.views.Admin.MenuView;
-import jemb.bistrogurmand.views.Admin.User;
+import jemb.bistrogurmand.utils.User;
 import jemb.bistrogurmand.views.Leader.SummaryView;
 import jemb.bistrogurmand.views.LoginView;
 

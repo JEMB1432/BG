@@ -9,9 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import jemb.bistrogurmand.Controllers.WaiterController;
-import jemb.bistrogurmand.views.Admin.User;
-
-import java.util.Optional;
+import jemb.bistrogurmand.utils.User;
 
 public class SumTable {
     private BorderPane view;

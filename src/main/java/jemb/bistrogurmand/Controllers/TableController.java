@@ -1,7 +1,7 @@
 package jemb.bistrogurmand.Controllers;
 
 import jemb.bistrogurmand.DbConection.DatabaseConnection;
-import jemb.bistrogurmand.utils.User;
+import jemb.bistrogurmand.utils.TableRestaurant;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,31 +9,26 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WaiterController {
-
-    public List<User> getWaitersList() {
+public class TableController {
+    public List<TableRestaurant> getTablesRestaurants() {
         Connection conn = null;
         ResultSet response = null;
-        List<User> currentWaiters = new ArrayList<>();
+        List<TableRestaurant> tables = new ArrayList<>();
 
         try{
             conn = DatabaseConnection.getConnection();
-            String sql = "SELECT ID_Employee, Name, LastName, CelPhone, Email, Rol, Image_URL, STATE FROM EMPLOYEE ORDER BY LastName ASC";
+            String sql = "SELECT * FROM TableRestaurant ORDER BY ID_Table";
             response = conn.createStatement().executeQuery(sql);
 
             while (response.next()) {
-                String userID = response.getString("ID_EMPLOYEE");
-                String firstName = response.getString("NAME");
-                String lastName = response.getString("LASTNAME");
-                String phone = response.getString("CELPHONE");
-                String email = response.getString("EMAIL");
-                String rolUser = response.getString("ROL");
-                String userImage = response.getString("IMAGE_URL");
-                String state = response.getString("STATE");
+                String ID_Table = response.getString("ID_Table");
+                Integer NumberTable = response.getInt("NumberTable");
+                Integer NumberSeats = response.getInt("NumberSeats");
+                String State = response.getString("State");
+                String Location  = response.getString("Location");
 
-                currentWaiters.add(new User(userID, firstName, lastName, phone, email, rolUser, userImage, state));
+                tables.add(new TableRestaurant(ID_Table, NumberTable, NumberSeats, State, Location));
             }
-
         } catch (SQLException e) {
             System.err.println("Error al obtener la lista de meseros: " + e.getMessage());
             e.printStackTrace();
@@ -46,6 +41,6 @@ public class WaiterController {
             }
             DatabaseConnection.closeConnection(conn);
         }
-        return currentWaiters;
+        return tables;
     }
 }

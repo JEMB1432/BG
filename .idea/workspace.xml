@@ -5,25 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f8dec4d-4ac8-4fea-8cf2-12c6327726d2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/UserTableColumnFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/TableController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/TableRestaurant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/TableRestaurantColumnFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/TablesView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/UserSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/UserSession.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/Waiters.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/DbConection/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/DbConection/DatabaseConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utilities/Paths.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/WaiterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/WaiterController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/application/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/application/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/UserSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/UserSession.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/UserTableColumnFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/UserTableColumnFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/DashboardView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/DashboardView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/GenerateDashboardInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/GenerateDashboardInfo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/Sidebar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/Sidebar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/WaiterView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/WaiterView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/SidebarLeader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/SidebarLeader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/SumTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/SumTable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/LoginView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/LoginView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/login.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/login.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/sidebar.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/tables.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/tables.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/jemb/bistrogurmand/CSS/sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/jemb/bistrogurmand/CSS/sidebar.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/jemb/bistrogurmand/CSS/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/jemb/bistrogurmand/CSS/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,7 +162,7 @@
       <workItem from="1751081461526" duration="1669000" />
       <workItem from="1751083147949" duration="5166000" />
       <workItem from="1751137501896" duration="13156000" />
-      <workItem from="1751210289861" duration="10892000" />
+      <workItem from="1751210289861" duration="22034000" />
     </task>
     <servers />
   </component>

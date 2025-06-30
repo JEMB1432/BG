@@ -3,6 +3,7 @@ package jemb.bistrogurmand.views.Admin;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -43,7 +44,7 @@ public class DashboardView {
                 newContent = new MenuView().getView();
                 break;
             case "mesas":
-                newContent = new Label("Vista de Mesas");
+                newContent = new TablesView().getView();
                 break;
             default:
                 newContent = new Label("Vista no encontrada");

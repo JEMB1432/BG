@@ -1,19 +1,10 @@
 package jemb.bistrogurmand.utils;
 
-import javafx.collections.ObservableList;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.text.TextAlignment;
 import javafx.scene.control.Label;
-import jemb.bistrogurmand.views.Admin.User;
 
 public class UserTableColumnFactory {
 

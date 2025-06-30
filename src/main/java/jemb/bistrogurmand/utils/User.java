@@ -1,4 +1,4 @@
-package jemb.bistrogurmand.views.Admin;
+package jemb.bistrogurmand.utils;
 
 public class User {
     private String userID;
