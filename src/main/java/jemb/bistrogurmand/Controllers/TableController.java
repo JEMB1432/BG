@@ -30,7 +30,7 @@ public class TableController {
                 tables.add(new TableRestaurant(ID_Table, NumberTable, NumberSeats, State, Location));
             }
         } catch (SQLException e) {
-            System.err.println("Error al obtener la lista de meseros: " + e.getMessage());
+            System.err.println("Error al obtener la lista de Tablas: " + e.getMessage());
             e.printStackTrace();
         } finally {
             try {

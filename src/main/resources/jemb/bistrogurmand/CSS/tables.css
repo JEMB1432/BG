@@ -20,25 +20,33 @@
 
 /* Título principal */
 .title {
-    -fx-font-size: 24px;
+    -fx-font-size: 32px;
     -fx-font-weight: bold;
     -fx-text-fill: -fx-dark-color;
 }
 
 /* Barra superior */
 .top-section {
-    -fx-spacing: 20;
-    -fx-alignment: center-left;
+    -fx-spacing: 30;
+    -fx-alignment: center-right;
     -fx-padding: 30 0 20 0;
+}
+
+.top-section-dash{
+    -fx-alignment: center-right;
+    -fx-background-color: rgba(255, 255, 255, 0);
+    -fx-padding: 20px 20px 0px 20px;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0.5, 4, 4);
 }
 
 .search-field {
     -fx-pref-width: 500;
-    -fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);
+    -fx-prompt-text-fill: derive(-fx-control-inner-background, -20%);
     -fx-background-color: #fff;
     -fx-background-radius: 4;
     -fx-border-radius: 4;
-    -fx-border-color: #ddd;
+    -fx-border-color: #d3d3d3;
     -fx-border-width: 1;
     -fx-padding: 5;
 }
@@ -67,6 +75,8 @@
     -fx-background-insets: 0 0 0 0;
     -fx-padding: 5 0 5 0;
     -fx-alignment: center-left;
+    -fx-border-color: rgba(35, 35, 35, 0.5);
+    -fx-border-width: 0 0 1 0;
 }
 
 .table-view .column-header {
@@ -239,6 +249,33 @@
 .role-admin {
     -fx-background-color: rgba(239, 23, 27, 0.25);
     -fx-text-fill: #EF171B;
+    -fx-padding: 3 8;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-font-size: 12;
+}
+
+.shift-morning{
+    -fx-background-color: rgba(253, 126, 20, 0.20);
+    -fx-text-fill: #e36700;
+    -fx-padding: 3 8;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-font-size: 12;
+}
+
+.shift-evening{
+    -fx-background-color: rgba(0, 73, 210, 0.2);
+    -fx-text-fill: #0051a2;
+    -fx-padding: 3 8;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-font-size: 12;
+}
+
+.shift-night{
+    -fx-background-color: rgba(125, 0, 227, 0.2);
+    -fx-text-fill: #7d00e3;
     -fx-padding: 3 8;
     -fx-border-radius: 4;
     -fx-background-radius: 4;

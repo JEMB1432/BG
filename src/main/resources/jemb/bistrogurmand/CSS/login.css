@@ -15,8 +15,8 @@
 /* Contenedor principal del login */
 .login-container {
     -fx-background-color: white;
-    -fx-background-radius: 3px;
-    -fx-border-radius: 3px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0.5, 4, 4);
     -fx-padding: 40px;
     -fx-min-width: 400px;
@@ -60,7 +60,7 @@
 .input-container {
     -fx-background-color: #fafafa;
     -fx-border-color: #ddd;
-    -fx-border-radius: 2px;
+    -fx-border-radius: 5px;
     -fx-border-width: 1px;
     -fx-padding: 0px 10px;
     -fx-alignment: center-left;

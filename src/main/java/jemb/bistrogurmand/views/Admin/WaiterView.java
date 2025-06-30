@@ -64,10 +64,16 @@ public class WaiterView {
     }
 
     private void createTopSection() {
+        VBox globalSection = new VBox();
+
         HBox topBox = new HBox(20);
         topBox.getStyleClass().add("top-section");
         topBox.setAlignment(Pos.CENTER_LEFT);
         topBox.setPadding(new Insets(0, 0, 20, 0));
+
+        HBox titleContent = new HBox();
+        titleContent.setAlignment(Pos.BOTTOM_LEFT);
+        titleContent.setSpacing(10);
 
         ImageView iconTitle = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/users.png").toString()));
         iconTitle.setFitHeight(57);
@@ -75,6 +81,8 @@ public class WaiterView {
         Label title = new Label("Gestión de Meseros");
         title.getStyleClass().add("title");
         title.setFont(new Font(20));
+
+        titleContent.getChildren().addAll(iconTitle, title);
 
         searchField.setPromptText("Buscar meseros...");
         searchField.getStyleClass().add("search-field");
@@ -97,8 +105,9 @@ public class WaiterView {
         refreshButton.getStyleClass().add("secondary-button");
         refreshButton.setOnAction(e -> refreshTable());
 
-        topBox.getChildren().addAll(iconTitle, title, searchField, addbutton, refreshButton);
-        view.setTop(topBox);
+        topBox.getChildren().addAll(searchField, addbutton, refreshButton);
+        globalSection.getChildren().addAll(titleContent, topBox);
+        view.setTop(globalSection);
     }
 
     private void configureTable() {

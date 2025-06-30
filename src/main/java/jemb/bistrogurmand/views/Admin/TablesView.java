@@ -16,7 +16,6 @@ import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.TableController;
 import jemb.bistrogurmand.utils.TableRestaurant;
 import jemb.bistrogurmand.utils.TableRestaurantColumnFactory;
-import jemb.bistrogurmand.utils.User;
 
 import static jemb.bistrogurmand.utils.TableRestaurantColumnFactory.*;
 
@@ -62,10 +61,16 @@ public class TablesView {
     }
 
     private void createTopSection() {
+        VBox globalSection = new VBox();
+
         HBox topBox = new HBox(20);
         topBox.getStyleClass().add("top-section");
         topBox.setAlignment(Pos.CENTER_LEFT);
         topBox.setPadding(new Insets(0, 0, 20, 0));
+
+        HBox titleContent = new HBox();
+        titleContent.setAlignment(Pos.BOTTOM_LEFT);
+        titleContent.setSpacing(10);
 
         ImageView iconTitle = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/table.png").toString()));
         iconTitle.setFitWidth(57);
@@ -73,6 +78,8 @@ public class TablesView {
         Label title = new Label("Gestión de Mesas");
         title.getStyleClass().add("title");
         title.setFont(new Font(20));
+
+        titleContent.getChildren().addAll(iconTitle, title);
 
         searchField.setPromptText("Buscar Mesa...");
         searchField.getStyleClass().add("search-field");
@@ -94,8 +101,9 @@ public class TablesView {
         refreshButton.getStyleClass().add("secondary-button");
         refreshButton.setOnAction(e -> refreshTable());
 
-        topBox.getChildren().addAll(iconTitle, title, searchField, addbutton, refreshButton);
-        view.setTop(topBox);
+        topBox.getChildren().addAll(searchField, addbutton, refreshButton);
+        globalSection.getChildren().addAll(titleContent, topBox);
+        view.setTop(globalSection);
     }
 
     private void configureTable() {
