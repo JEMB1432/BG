@@ -18,7 +18,7 @@ public class LoginController {
             pstmt.setString(1, username);
             pstmt.setString(2,password);
             response = pstmt.executeQuery();
-            
+
             if (response.next()) {
                 String userID = response.getString("ID_EMPLOYEE");
                 String firstName = response.getString("NAME");

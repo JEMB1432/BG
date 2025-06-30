@@ -53,4 +53,3 @@ public class SummaryView {
         return view;
     }
 }
-

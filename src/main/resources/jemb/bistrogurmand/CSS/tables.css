@@ -118,7 +118,7 @@
 
 /* Columnas específicas*/
 .index-column {
-   -fx-text-fill: #b7b7b7;
+    -fx-text-fill: #b7b7b7;
 }
 
 .text-column, .text-column-email {
