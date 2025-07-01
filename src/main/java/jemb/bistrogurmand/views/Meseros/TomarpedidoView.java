@@ -129,6 +129,10 @@ public class TomarpedidoView {
             modal.setScene(scene);
             modal.showAndWait();
         }
+        public static class Producto{
+            
+        }
+
 
 
 
