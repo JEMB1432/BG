@@ -28,7 +28,7 @@ public class AssignmentController {
                     "WHERE DateAssig = ? ORDER BY a.StartTime";
 
             psmt = conn.prepareStatement(sql);
-            psmt.setDate(1, sqlDate);
+            psmt.setDate(1,  java.sql.Date.valueOf("2025-06-29"));
             response = psmt.executeQuery();
 
             while (response.next()) {

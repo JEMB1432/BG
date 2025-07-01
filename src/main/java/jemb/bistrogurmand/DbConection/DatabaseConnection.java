@@ -1,17 +1,24 @@
 package jemb.bistrogurmand.DbConection;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:oracle:thin:@localhost:1521:XE";
-    private static final String USERNAME = "SYSTEM";
-    private static final String PASSWORD = "root";
+    private static final Dotenv dotenv = Dotenv.load();
+
+    private static final String URL      = dotenv.get("DB_URL");
+    private static final String USER     = dotenv.get("DB_USER");
+    private static final String PASSWORD = dotenv.get("DB_PASSWORD");
+    private static final String WALLET_PATH = dotenv.get("DB_WALLET_PATH");
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        System.setProperty("oracle.net.tns_admin", WALLET_PATH);
+        System.setProperty("oracle.net.ssl_server_dn_match", "true");
+        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
     public static void closeConnection(Connection conn) {
@@ -24,5 +31,13 @@ public class DatabaseConnection {
         }
     }
 
-    public static void closeStatement(Statement stmt) { }
+    public static void closeStatement(Statement stmt) {
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
