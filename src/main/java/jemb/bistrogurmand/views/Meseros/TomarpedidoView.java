@@ -2,12 +2,17 @@ package jemb.bistrogurmand.views.Meseros;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TomarpedidoView {
     private VBox content;
@@ -46,6 +51,24 @@ public class TomarpedidoView {
             btn.setOnAction(e -> mostrarModalCategoria(cat)); // Muestra productos al dar clic
             categoriasBox.getChildren().add(btn);
         }
+        // Área del resumen del pedido
+        Label resumenLabel = new Label("Resumen de pedido:");
+        resumenLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
+
+        resumenPedido = new ListView<>();
+        resumenPedido.setPrefHeight(200);
+
+        // Botones de acción debajo del resumen
+        HBox botonesBox = new HBox(10);
+        botonesBox.setAlignment(Pos.CENTER_RIGHT);
+
+        Button btnEnviar = new Button("Enviar pedido");
+        btnEnviar.getStyleClass().add("btn-success");
+
+        Button btnQuitar = new Button("Quitar producto");
+        btnQuitar.getStyleClass().add("btn-danger");
+
+        botonesBox.getChildren().addAll(btnEnviar, btnQuitar);
 
 
 
