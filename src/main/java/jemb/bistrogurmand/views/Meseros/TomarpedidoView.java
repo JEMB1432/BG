@@ -100,6 +100,11 @@ public class TomarpedidoView {
 
             tabla.getColumns().addAll(colNombre, colPrecio, colCantidad, colObs, colAgregar);
 
+            // Filtrar productos por categoría seleccionada
+            List<Producto> filtrados = productos.stream()
+                    .filter(p -> p.getCategoria().equalsIgnoreCase(categoria))
+                    .collect(Collectors.toList());
+
 
 
 
