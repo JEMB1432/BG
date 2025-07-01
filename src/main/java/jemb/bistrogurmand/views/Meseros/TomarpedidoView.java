@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -82,6 +83,24 @@ public class TomarpedidoView {
             layout.setPadding(new Insets(15));
 
             TableView<ProductoRow> tabla = new TableView<>();
+
+
+            // Columnas de la tabla
+            TableColumn<ProductoRow, String> colNombre = new TableColumn<>("Producto");
+            colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+
+            TableColumn<ProductoRow, String> colPrecio = new TableColumn<>("Precio");
+            colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
+
+            TableColumn<ProductoRow, TextField> colObs = new TableColumn<>("Observaciones");
+            colObs.setCellValueFactory(new PropertyValueFactory<>("observaciones"));
+
+            TableColumn<ProductoRow, Button> colAgregar = new TableColumn<>("Acciones");
+            colAgregar.setCellValueFactory(new PropertyValueFactory<>("botonAgregar"));
+
+            tabla.getColumns().addAll(colNombre, colPrecio, colCantidad, colObs, colAgregar);
+
+
 
 
 
