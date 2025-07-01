@@ -1,11 +1,10 @@
 package jemb.bistrogurmand.views.Meseros;
 
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableView;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -104,6 +103,32 @@ public class TomarpedidoView {
             List<Producto> filtrados = productos.stream()
                     .filter(p -> p.getCategoria().equalsIgnoreCase(categoria))
                     .collect(Collectors.toList());
+
+            // Convertir productos a filas con control de cantidad/observaciones
+            ObservableList<ProductoRow> rows = FXCollections.observableArrayList();
+            for (Producto p : filtrados) {
+                ProductoRow row = new ProductoRow(p);
+                row.getBotonAgregar().setOnAction(e -> {
+                    int cantidad = row.getCantidad().getValue();
+                    String obs = row.getObservaciones().getText();
+                    if (cantidad > 0) {
+                        resumenPedido.getItems().add(cantidad + "x " + p.getNombre() + (obs.isEmpty() ? "" : " (" + obs + ")"));
+                    }
+                });
+                rows.add(row);
+            }
+
+            tabla.setItems(rows);
+
+            // Botón para cerrar el modal
+            Button cerrarBtn = new Button("Cerrar");
+            cerrarBtn.setOnAction(e -> modal.close());
+
+            layout.getChildren().addAll(tabla, cerrarBtn);
+            Scene scene = new Scene(layout, 600, 400);
+            modal.setScene(scene);
+            modal.showAndWait();
+        }
 
 
 
