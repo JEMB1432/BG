@@ -36,6 +36,18 @@ public class TomarpedidoView {
         FlowPane categoriasBox = new FlowPane(10, 10); // Botones de categoría estilo píldora
         categoriasBox.setPrefWrapLength(500);
 
+        //obtener categorias unicas desde los productos
+        Set<String> categorias = productos.stream().map(Producto::getCategoria).collect(Collectors.toSet());
+
+        // Crear un botón para cada categoría
+        for (String cat : categorias) {
+            Button btn = new Button(cat);
+            btn.getStyleClass().add("pill-button");
+            btn.setOnAction(e -> mostrarModalCategoria(cat)); // Muestra productos al dar clic
+            categoriasBox.getChildren().add(btn);
+        }
+
+
 
     }
 
