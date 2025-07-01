@@ -5,11 +5,14 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -69,6 +72,16 @@ public class TomarpedidoView {
         btnQuitar.getStyleClass().add("btn-danger");
 
         botonesBox.getChildren().addAll(btnEnviar, btnQuitar);
+
+        private void mostrarModalCategoria(String categoria) {
+            Stage modal = new Stage();
+            modal.initModality(Modality.APPLICATION_MODAL);
+            modal.setTitle("Categoría: " + categoria);
+
+            VBox layout = new VBox(10);
+            layout.setPadding(new Insets(15));
+
+            TableView<ProductoRow> tabla = new TableView<>();
 
 
 
