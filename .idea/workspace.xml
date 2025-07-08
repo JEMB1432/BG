@@ -5,12 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f8dec4d-4ac8-4fea-8cf2-12c6327726d2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/ProductController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/Product.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/ProductColumnFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/ProductView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/AssignmentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/AssignmentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/DbConection/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/DbConection/DatabaseConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/DashboardView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/DashboardView.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +65,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Sala de Internet/Desktop/BG&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/PC-Escritorio/Music/BG&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -83,6 +83,9 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\PC-Escritorio\Documents\BistroGurmand\src\main\resources\jemb\bistrogurmand" />
       <recent name="C:\Users\PC-Escritorio\Documents\BistroGurmand\src\main\java\jemb\bistrogurmand" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\PC-Escritorio\Music\BG\src\main\java\jemb\bistrogurmand\utils" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -153,7 +156,11 @@
       <workItem from="1751137501896" duration="13156000" />
       <workItem from="1751210289861" duration="34587000" />
       <workItem from="1751332871985" duration="3876000" />
-      <workItem from="1751344127800" duration="1357000" />
+      <workItem from="1751344127800" duration="2734000" />
+      <workItem from="1751514751023" duration="185000" />
+      <workItem from="1751748849719" duration="9453000" />
+      <workItem from="1751833836218" duration="6089000" />
+      <workItem from="1751946510861" duration="3774000" />
     </task>
     <servers />
   </component>

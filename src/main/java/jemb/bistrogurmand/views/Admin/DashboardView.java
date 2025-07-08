@@ -41,7 +41,7 @@ public class DashboardView {
                 newContent = new WaiterView().getView();
                 break;
             case "productos":
-                newContent = new MenuView().getView();
+                newContent = new ProductView().getView();
                 break;
             case "mesas":
                 newContent = new TablesView().getView();
