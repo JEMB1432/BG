@@ -10,8 +10,8 @@ public class ProductColumnFactory {
 
     public static TableColumn<Product, Void> createIndexColumn(Pagination pagination, int rowsPerPage) {
         TableColumn<Product, Void> indexColumn = new TableColumn<>("#");
-        indexColumn.setPrefWidth(20);
-        indexColumn.setStyle("-fx-alignment: center-right;");
+        indexColumn.setPrefWidth(30);
+        indexColumn.setStyle("-fx-alignment: center-left;");
         indexColumn.getStyleClass().add("index-column");
 
         indexColumn.setCellFactory(col -> new TableCell<>() {
@@ -22,12 +22,13 @@ public class ProductColumnFactory {
                     setText(null);
                 } else {
                     int pageIndex = pagination.getCurrentPageIndex();
-                    int rowIndex = getIndex();
+                    int rowIndex = getIndex(); // Índice dentro de la página
                     int globalIndex = (pageIndex * rowsPerPage) + rowIndex + 1;
                     setText(String.valueOf(globalIndex));
                 }
             }
         });
+
         return indexColumn;
     }
 
@@ -52,7 +53,7 @@ public class ProductColumnFactory {
     public static TableColumn<Product, String> createPriceColumn() {
         TableColumn<Product, String> column = new TableColumn<>("Precio");
         //column.setPrefWidth(100);
-        column.setStyle("-fx-alignment: center-left");
+        column.setStyle("-fx-alignment: center");
         column.getStyleClass().add("text-column");
         column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPrice() + ""));
         return column;

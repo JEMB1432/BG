@@ -10,8 +10,8 @@ public class TableRestaurantColumnFactory {
 
     public static TableColumn<TableRestaurant, Void> createIndexColumn( Pagination pagination, int rowsPerPage) {
         TableColumn<TableRestaurant, Void> indexColumn = new TableColumn<>("#");
-        indexColumn.setPrefWidth(20);
-        indexColumn.setStyle("-fx-alignment: center-right;");
+        indexColumn.setPrefWidth(30);
+        indexColumn.setStyle("-fx-alignment: center-left;");
         indexColumn.getStyleClass().add("index-column");
 
         indexColumn.setCellFactory(col -> new TableCell<>() {

@@ -253,9 +253,10 @@ public class WaiterView {
         User selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirmar eliminación");
-            alert.setHeaderText("¿Eliminar mesero?");
-            alert.setContentText("Está a punto de eliminar a " + selected.getFirstName() +
+            alert.getGraphic();
+            alert.setTitle("Confirmar desactivación");
+            alert.setHeaderText("¿Desactivar mesero?");
+            alert.setContentText("Está a punto de desactivar a " + selected.getFirstName() +
                     " " + selected.getLastName() + ". ¿Continuar?");
 
             Optional<ButtonType> result = alert.showAndWait();

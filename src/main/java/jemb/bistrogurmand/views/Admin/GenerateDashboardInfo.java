@@ -16,6 +16,9 @@ import jemb.bistrogurmand.Controllers.AssignmentController;
 import jemb.bistrogurmand.utils.Assignment;
 import jemb.bistrogurmand.utils.AssignmentColumnFactory;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 import static jemb.bistrogurmand.utils.AssignmentColumnFactory.*;
 
 public class GenerateDashboardInfo {
@@ -26,6 +29,8 @@ public class GenerateDashboardInfo {
     private Pagination pagination;
     private Label paginationInfo;
     private final int rowsPerPage = 10;
+
+    private LocalDate dateSelected = LocalDate.now();
 
     private ObservableList<Assignment> masterAssignmentList;
     private ObservableList<Assignment> currentDisplayedList;
@@ -82,7 +87,7 @@ public class GenerateDashboardInfo {
         float saleInfo = 1850.00F;
         VBox cardSale = new VBox(20);
         cardSale.getStyleClass().add("card-sale");
-        Label titleSale = new Label("Ventas hoy");
+        Label titleSale = new Label("Ventas");
         titleSale.getStyleClass().add("title-card");
         Label totalSale = new Label("$" + saleInfo);
         totalSale.getStyleClass().add("total-card");
@@ -91,7 +96,7 @@ public class GenerateDashboardInfo {
         int orderInfo = 10;
         VBox cardOrder = new VBox(20);
         cardOrder.getStyleClass().add("card-sale");
-        Label titleOrder = new Label("Órdenes hoy");
+        Label titleOrder = new Label("Órdenes");
         titleOrder.getStyleClass().add("title-card");
         Label totalOrder = new Label(""+ orderInfo);
         totalOrder.getStyleClass().add("total-card");
@@ -102,6 +107,17 @@ public class GenerateDashboardInfo {
         topBox.setAlignment(Pos.CENTER_RIGHT);
         topBox.setPrefWidth(Double.MAX_VALUE);
         topBox.setPadding(new Insets(0, 0, 0, 0));
+
+        DatePicker datePicker = new DatePicker();
+        datePicker.setEditable(false);
+        datePicker.setPrefWidth(350);
+        datePicker.setValue(LocalDate.now());
+        datePicker.getStyleClass().add("date-picker");
+        datePicker.setOnAction(e -> {
+            dateSelected = datePicker.getValue();
+            refreshTable();
+            //System.out.println(newDate);
+        });
 
         searchField.setPromptText("Buscar asignaciones...");
         searchField.getStyleClass().add("search-field");
@@ -114,7 +130,7 @@ public class GenerateDashboardInfo {
         refreshButton.getStyleClass().add("secondary-button");
         refreshButton.setOnAction(e -> refreshTable());
 
-        topBox.getChildren().addAll(searchField, refreshButton);
+        topBox.getChildren().addAll(datePicker, searchField, refreshButton);
         titleCardView.getChildren().addAll(iconTitle, titleView);
         cards.getChildren().addAll(cardSale,cardOrder);
         topContent.getChildren().addAll(titleCardView, cards, topBox);
@@ -159,7 +175,7 @@ public class GenerateDashboardInfo {
     }
 
     private void refreshTable() {
-        masterAssignmentList.setAll(assignmentController.getAssignments());
+        masterAssignmentList.setAll(assignmentController.getAssignments(dateSelected));
         searchField.clear();
         filterAndPaginateTable();
     }

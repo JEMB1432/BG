@@ -9,14 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AssignmentController {
-    public List<Assignment> getAssignments() {
+    public List<Assignment> getAssignments(LocalDate dateSelected) {
         Connection conn = null;
         PreparedStatement psmt = null;
         ResultSet response = null;
         List<Assignment> assignments = new ArrayList<>();
-
-        LocalDate today = LocalDate.now();
-        Date sqlDate = Date.valueOf(today);
 
         try{
             conn = DatabaseConnection.getConnection();
@@ -27,8 +24,9 @@ public class AssignmentController {
                     "JOIN TableRestaurant t ON a.ID_Table = t.ID_Table " +
                     "WHERE DateAssig = ? ORDER BY a.StartTime";
 
+            // 2025-06-29
             psmt = conn.prepareStatement(sql);
-            psmt.setDate(1,  java.sql.Date.valueOf("2025-06-29"));
+            psmt.setDate(1, Date.valueOf(dateSelected));
             response = psmt.executeQuery();
 
             while (response.next()) {
