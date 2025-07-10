@@ -31,16 +31,16 @@ public class SummaryView {
 
 
     private void changeCentralContent(String views) {
-        Region newContent;
+        Region newContent=null;
         switch (views.toLowerCase()) {
-            case "summary":
+            case "summary": case "resumen de turno":
                 newContent = new SumTable().getView();
                 break;
-            case "orderchange":
-                newContent = new Label("Vista de Cambio de pedido");
+            case "cambio de pedido":
+                newContent = new OrderChangeView().getView();
                 break;
-            case "planification":
-                newContent = new Label("Vista de Planificacion");
+            case "planificacion":
+                newContent = new PlanificationView().getView();
                 break;
             default:
                 newContent = new Label("Vista no encontrada");
