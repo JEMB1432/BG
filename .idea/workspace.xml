@@ -6,9 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="9f8dec4d-4ac8-4fea-8cf2-12c6327726d2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/OrderChangeView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/OrderChangeView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/SidebarLeader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/SidebarLeader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/SummaryView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/SummaryView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/PlanificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/PlanificationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/PlanificationColumnFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/PlanificationColumnFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/PlanificationRestaurant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/PlanificationRestaurant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/PlanificationView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/PlanificationView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/sidebar.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/jemb/bistrogurmand/CSS/sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/jemb/bistrogurmand/CSS/sidebar.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -150,7 +153,7 @@
       <workItem from="1751083147949" duration="5166000" />
       <workItem from="1751137501896" duration="13156000" />
       <workItem from="1751210289861" duration="34027000" />
-      <workItem from="1752102175610" duration="4347000" />
+      <workItem from="1752102175610" duration="15160000" />
     </task>
     <servers />
   </component>

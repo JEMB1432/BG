@@ -1,16 +1,33 @@
 package jemb.bistrogurmand.utils;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public class PlanificationRestaurant {
+
     private Integer ID_Assignment;
     private Integer ID_Employee;
     private Integer ID_Table;
-    private String StartTime;
 
-    public PlanificationRestaurant(Integer ID_Assignment, Integer ID_Employee,Integer ID_Table, String startTime) {
+    private LocalTime startTime;      // Hora de inicio
+    private LocalTime endTime;        // Hora de fin
+    private LocalDate dateAssig;      // Fecha de asignación
+
+    private boolean favorite;         // 0 ó 1 en DB → boolean en Java
+    private String shift;             // Turno
+
+    // Constructor
+    public PlanificationRestaurant(Integer ID_Assignment, Integer ID_Employee, Integer ID_Table,
+                                   LocalTime startTime, LocalTime endTime, LocalDate dateAssig,
+                                   boolean favorite, String shift) {
         this.ID_Assignment = ID_Assignment;
         this.ID_Employee = ID_Employee;
-        ID_Table = ID_Table;
-        StartTime = startTime;
+        this.ID_Table = ID_Table;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.dateAssig = dateAssig;
+        this.favorite = favorite;
+        this.shift = shift;
     }
 
     public Integer getID_Assignment() {
@@ -37,11 +54,43 @@ public class PlanificationRestaurant {
         this.ID_Table = ID_Table;
     }
 
-    public String getStartTime() {
-        return StartTime;
+    public LocalTime getStartTime() {
+        return startTime;
     }
 
-    public void setStartTime(String startTime) {
-        StartTime = startTime;
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public LocalDate getDateAssig() {
+        return dateAssig;
+    }
+
+    public void setDateAssig(LocalDate dateAssig) {
+        this.dateAssig = dateAssig;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public String getShift() {
+        return shift;
+    }
+
+    public void setShift(String shift) {
+        this.shift = shift;
     }
 }

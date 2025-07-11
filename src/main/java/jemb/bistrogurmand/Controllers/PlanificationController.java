@@ -7,6 +7,8 @@ import jemb.bistrogurmand.utils.TableRestaurant;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,16 +20,22 @@ public class PlanificationController {
 
         try{
             conn = DatabaseConnection.getConnection();
-            String sql = "SELECT * FROM PlanificationRestaurant ORDER BY ID_Assignment";
+            String sql = "SELECT * FROM Assignment ORDER BY ID_Assignment";
             response = conn.createStatement().executeQuery(sql);
 
             while (response.next()) {
                 Integer ID_Assignment = response.getInt("ID_Assignment");
                 Integer ID_Employee = response.getInt("ID_Employee");
                 Integer ID_Table = response.getInt("ID_Table");
-                String StartTime = response.getString("StartTime");
+                //String StartTime = response.getString("StartTime");
+                LocalTime startTime = response.getTime("StartTime").toLocalTime();
+                LocalTime endTime = response.getTime("EndTime").toLocalTime();
+                LocalDate dateAssig = response.getDate("dateassig").toLocalDate();
+                boolean favorite = response.getInt("Favorite") == 1;
+                String shift = response.getString("Shift");
 
-                tables.add(new PlanificationRestaurant(ID_Assignment,ID_Employee,ID_Table,StartTime));
+
+                tables.add(new PlanificationRestaurant(ID_Assignment,ID_Employee,ID_Table,startTime,endTime,dateAssig,favorite,shift));
             }
         } catch (SQLException e) {
             System.err.println("Error al obtener la lista de Tablas: " + e.getMessage());

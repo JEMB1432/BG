@@ -62,8 +62,8 @@ public class PlanificationColumnFactory {
         TableColumn<PlanificationRestaurant, String> column = new TableColumn<>("Turno");
         column.setStyle("-fx-alignment: center");
         column.getStyleClass().add("text-column");
-        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStartTime()));
-
+        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getShift()));
+/*
         column.setCellFactory(col -> new TableCell<>() {
             private void updateItem(String hora) {
                 if (hora.startsWith("08") || hora.startsWith("09")) {
@@ -74,7 +74,7 @@ public class PlanificationColumnFactory {
                 }
             }
         })
-        ;return column;
+        ;*/return column;
     }
 
 

@@ -12,6 +12,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.PlanificationController;
 import jemb.bistrogurmand.Controllers.TableController;
@@ -89,13 +91,13 @@ public class PlanificationView {
         searchField.getStyleClass().add("search-field");
         searchField.setPrefWidth(Double.MAX_VALUE);
 
-       /* ImageView imageViewAdd = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/add.png").toString()));
+        ImageView imageViewAdd = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/add.png").toString()));
         imageViewAdd.setFitHeight(16);
         imageViewAdd.setFitWidth(16);
-        Button addbutton = new Button("Agregar Mesa");
+        Button addbutton = new Button("Asignar mesa");
         addbutton.setGraphic(imageViewAdd);
         addbutton.getStyleClass().add("primary-button");
-        addbutton.setOnAction(event -> addTableForm());*/
+        addbutton.setOnAction(event -> addTableForm());
 
         ImageView imageViewUpdate = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/update.png").toString()));
         imageViewUpdate.setFitHeight(16);
@@ -105,7 +107,7 @@ public class PlanificationView {
         refreshButton.getStyleClass().add("secondary-button");
         refreshButton.setOnAction(e -> refreshTable());
 
-        topBox.getChildren().addAll(searchField, refreshButton);
+        topBox.getChildren().addAll(searchField, addbutton, refreshButton);
         globalSection.getChildren().addAll(titleContent, topBox);
         view.setTop(globalSection);
     }
@@ -243,10 +245,16 @@ public class PlanificationView {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
+*/
     private void addTableForm() {
-        System.out.println("Adding table");
-    }*/
+            AssignmentDialog dialog = new AssignmentDialog();
+            dialog.showAndWait(); // Modal
+        updateTableForPage(1);
+    }
+
+   /* Stage modal = new Stage();
+    modal.initModality(Modality.APPLICATION_MODAL); // Bloquea la ventana principal
+*/
 
     public BorderPane getView() {
         return view;
