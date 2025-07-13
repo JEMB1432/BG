@@ -12,6 +12,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TableDAO {
+    // Dentro de jemb.bistrogurmand.Controllers.TableDAO
+
+    public static List<TableRestaurant> getAllTables() {
+        List<TableRestaurant> tables = new ArrayList<>();
+        String sql = "SELECT tr.ID_Table, tr.NumberTable, tr.NumberSeats, tr.State, tr.Location" +
+                "            FROM TableRestaurant tr" +
+                "            ORDER BY ID_Table"; // Asegúrate de que esta es tu tabla de mesas
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                TableRestaurant table;
+                String ID_Table=(rs.getString("ID_Table"));
+                Integer NumberTable=(rs.getInt("NumberTable"));
+                Integer NumberSeats=(rs.getInt("NumberSeats"));
+                String State=(rs.getString("State"));
+                String Location=(rs.getString("Location"));
+                tables.add(new TableRestaurant(ID_Table,NumberTable,NumberSeats,State,Location));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener todas las mesas: " + e.getMessage());
+            // Manejo de errores más robusto aquí
+        }
+        return tables;
+    }
+
     public static List<TableRestaurant> getUnassignedTablesForToday() {
         List<TableRestaurant> tables = new ArrayList<>();
         String sql = """
@@ -19,7 +46,7 @@ public class TableDAO {
             FROM TableRestaurant tr
             WHERE tr.ID_Table NOT IN (
               SELECT a.ID_Table FROM Assignment a
-              WHERE TRUNC(a.dateassig) = TRUNC(SYSDATE)
+              --WHERE TRUNC(a.dateassig) = TRUNC(SYSDATE)
             ) ORDER BY ID_Table
         """;
 
@@ -68,7 +95,7 @@ public class TableDAO {
           AND e.ID_Employee NOT IN (
               SELECT a.ID_Employee
               FROM Assignment a
-              WHERE TRUNC(a.dateassig) = TRUNC(SYSDATE)
+              --WHERE TRUNC(a.dateassig) = TRUNC(SYSDATE)
           ) ORDER BY ID_Employee
     """;
 
@@ -114,6 +141,39 @@ public class TableDAO {
                 e.printStackTrace();
             }
             return "Desconocido";
+        }
+
+        // Dentro de jemb.bistrogurmand.Controllers.TableDAO.EmployeeDAO
+
+        public static List<User> getAllWaiters() {
+            List<User> waiters = new ArrayList<>();
+            String sql = """
+        SELECT * FROM Employee e
+        WHERE e.Rol = 'Mesero'
+          AND e.State = 1 ORDER BY ID_Employee
+    """;
+            try (Connection conn = DatabaseConnection.getConnection(); // Asume que tienes una clase DBConnection para manejar la conexión
+                 PreparedStatement pstmt = conn.prepareStatement(sql);
+                 ResultSet rs = pstmt.executeQuery()) {
+
+                while (rs.next()) {
+                    User waiter;
+                    String UserID=(rs.getString("ID_Employee"));
+                    String FirstName=(rs.getString("Name")); // Asumiendo que Name es el campo
+                    String LastName=(rs.getString("LastName"));
+                    String CelPhone=(rs.getString("CelPhone"));
+                    String Email=(rs.getString("Email"));
+                    String Rol=(rs.getString("Rol"));
+                    String Image=(rs.getString("Image_URL"));
+
+                    String State=(rs.getString("State"));
+                    waiters.add(new User(UserID,FirstName,LastName,CelPhone,Email,Rol,Image,State));
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al obtener todos los meseros: " + e.getMessage());
+                // Manejo de errores más robusto aquí
+            }
+            return waiters;
         }
 
     }

@@ -44,3 +44,16 @@
     -fx-pref-height: 40;
     -fx-background-radius: 10 10 0 0;
 }
+
+/* Estilo para ListCell deshabilitado en ComboBox */
+.combo-box .list-cell:disabled {
+    -fx-opacity: 0.7; /* Opcional: reducir la opacidad */
+    -fx-background-color: #e0e0e0; /* Un gris más claro */
+    -fx-text-fill: #666666; /* Un gris más oscuro para el texto */
+    -fx-font-style: italic; /* Opcional: cursiva */
+}
+
+/* Puedes agregar también para el botón del ComboBox si un elemento deshabilitado es el seleccionado */
+.combo-box .combo-box-base:disabled {
+    -fx-opacity: 0.8;
+}
