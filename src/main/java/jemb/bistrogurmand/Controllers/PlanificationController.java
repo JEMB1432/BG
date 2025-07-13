@@ -35,6 +35,8 @@ public class PlanificationController {
                 String shift = response.getString("Shift");
 
 
+
+
                 tables.add(new PlanificationRestaurant(ID_Assignment,ID_Employee,ID_Table,startTime,endTime,dateAssig,favorite,shift));
             }
         } catch (SQLException e) {

@@ -1,0 +1,46 @@
+/* Fondo principal */
+.root {
+    -fx-background-color: #f5f5f5;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+/* Estilo para cajas con label + ComboBox */
+.vbox > Label {
+    -fx-text-fill: #222;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+/* ComboBoxes */
+.combo-box {
+    -fx-background-color: #dddddd;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-pref-height: 30;
+}
+
+/* Botón de Confirmar */
+.button-confirmar {
+    -fx-background-color: #3db98b;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16 8 16;
+}
+
+/* Botón de Cancelar */
+.button-cancelar {
+    -fx-background-color: #941537;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16 8 16;
+}
+
+/* Header (simulado como una barra) */
+.header-bar {
+    -fx-background-color: #941537;
+    -fx-pref-height: 40;
+    -fx-background-radius: 10 10 0 0;
+}

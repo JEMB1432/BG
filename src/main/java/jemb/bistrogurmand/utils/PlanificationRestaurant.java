@@ -1,5 +1,7 @@
 package jemb.bistrogurmand.utils;
 
+import jemb.bistrogurmand.Controllers.TableDAO;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -15,6 +17,8 @@ public class PlanificationRestaurant {
 
     private boolean favorite;         // 0 ó 1 en DB → boolean en Java
     private String shift;             // Turno
+    private TableDAO.EmployeeDAO employee;
+    private TableDAO table;
 
     // Constructor
     public PlanificationRestaurant(Integer ID_Assignment, Integer ID_Employee, Integer ID_Table,
@@ -29,6 +33,7 @@ public class PlanificationRestaurant {
         this.favorite = favorite;
         this.shift = shift;
     }
+
 
     public Integer getID_Assignment() {
         return ID_Assignment;
@@ -92,5 +97,21 @@ public class PlanificationRestaurant {
 
     public void setShift(String shift) {
         this.shift = shift;
+    }
+
+    public TableDAO.EmployeeDAO getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(TableDAO.EmployeeDAO employee) {
+        this.employee = employee;
+    }
+
+    public TableDAO getTable() {
+        return table;
+    }
+
+    public void setTable(TableDAO table) {
+        this.table = table;
     }
 }

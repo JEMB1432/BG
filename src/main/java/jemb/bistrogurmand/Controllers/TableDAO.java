@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TableDAO {
-
     public static List<TableRestaurant> getUnassignedTablesForToday() {
         List<TableRestaurant> tables = new ArrayList<>();
         String sql = """
@@ -21,7 +20,7 @@ public class TableDAO {
             WHERE tr.ID_Table NOT IN (
               SELECT a.ID_Table FROM Assignment a
               WHERE TRUNC(a.dateassig) = TRUNC(SYSDATE)
-            )
+            ) ORDER BY ID_Table
         """;
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -29,13 +28,13 @@ public class TableDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                String ID_Table = rs.getString("ID_Table");
-                Integer NumberTable = rs.getInt("NumberTable");
-                Integer NumberSeats = rs.getInt("NumberSeats");
-                String State = rs.getString("State");
-                String Location  = rs.getString("Location");
-
-                tables.add(new TableRestaurant(ID_Table, NumberTable, NumberSeats, State, Location));
+                TableRestaurant table;
+                String ID_Table=(rs.getString("ID_Table"));
+                Integer NumberTable=(rs.getInt("NumberTable"));
+                Integer NumberSeats=(rs.getInt("NumberSeats"));
+                String State=(rs.getString("State"));
+                String Location=(rs.getString("Location"));
+                tables.add(new TableRestaurant(ID_Table,NumberTable,NumberSeats,State,Location));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -44,34 +43,81 @@ public class TableDAO {
         return tables;
     }
 
-    public class EmployeeDAO {
+    public static String getTableNumberById(int tableId) {
+        String query = "SELECT NumberTable FROM TableRestaurant WHERE ID_Table = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, tableId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return String.valueOf(rs.getInt("NumberTable"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "?";
+    }
 
-        public static List<User> getActiveWaiters() {
-            List<User> list = new ArrayList<>();
-            String sql = "SELECT * FROM Employee WHERE Rol = 'Mesero' AND State = 1";
+    public class EmployeeDAO {
+        public static List<User> getUnassignedWaitersForToday() {
+            List<User> waiters = new ArrayList<>();
+            String sql = """
+        SELECT * FROM Employee e
+        WHERE e.Rol = 'Mesero'
+          AND e.State = 1
+          AND e.ID_Employee NOT IN (
+              SELECT a.ID_Employee
+              FROM Assignment a
+              WHERE TRUNC(a.dateassig) = TRUNC(SYSDATE)
+          ) ORDER BY ID_Employee
+    """;
 
             try (Connection conn = DatabaseConnection.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    String userID = rs.getString("ID_EMPLOYEE");
-                    String firstName = rs.getString("NAME");
-                    String lastName = rs.getString("LASTNAME");
-                    String phone = rs.getString("CELPHONE");
-                    String email = rs.getString("EMAIL");
-                    String rolUser = rs.getString("ROL");
-                    String userImage = rs.getString("IMAGE_URL");
-                    String state = rs.getString("STATE");
+                    User waiter;
+                    String UserID=(rs.getString("ID_Employee"));
+                    String FirstName=(rs.getString("Name")); // Asumiendo que Name es el campo
+                    String LastName=(rs.getString("LastName"));
+                    String CelPhone=(rs.getString("CelPhone"));
+                    String Email=(rs.getString("Email"));
+                    String Rol=(rs.getString("Rol"));
+                    String Image=(rs.getString("Image_URL"));
 
-                    list.add(new User(userID, firstName, lastName, phone, email, rolUser, userImage, state));
+                    String State=(rs.getString("State"));
+                    waiters.add(new User(UserID,FirstName,LastName,CelPhone,Email,Rol,Image,State));
                 }
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
-            return list;
+            return waiters;
         }
+
+
+
+
+        public static String getEmployeeNameById(int employeeId) {
+            // Implementación de ejemplo:
+            String query = "SELECT Name, LastName FROM Employee WHERE ID_Employee = ?";
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setInt(1, employeeId);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    return rs.getString("Name") + " " + rs.getString("LastName");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return "Desconocido";
+        }
+
     }
 
 }
+
+

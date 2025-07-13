@@ -6,12 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="9f8dec4d-4ac8-4fea-8cf2-12c6327726d2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/LeaderAssigController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/LeaderAssigController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/PlanificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/PlanificationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/TableDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/TableDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/PlanificationColumnFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/PlanificationColumnFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/PlanificationRestaurant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/PlanificationRestaurant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/AssignmentDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/AssignmentDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/PlanificationView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/PlanificationView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/sidebar.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/jemb/bistrogurmand/CSS/sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/jemb/bistrogurmand/CSS/sidebar.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,8 +23,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
-        <option value="CSS File" />
         <option value="Class" />
+        <option value="CSS File" />
       </list>
     </option>
   </component>
@@ -57,29 +58,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.App.executor": "Run",
-    "Maven.BistroGurmand [clean,install].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "devJohn",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/Admin/Documents/John/BG",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.App.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.BistroGurmand [clean,install].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;devJohn&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Admin/Documents/John/BG&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\PC-Escritorio\Documents\BistroGurmand\src\main\resources\jemb\bistrogurmand" />
@@ -154,6 +155,7 @@
       <workItem from="1751137501896" duration="13156000" />
       <workItem from="1751210289861" duration="34027000" />
       <workItem from="1752102175610" duration="15160000" />
+      <workItem from="1752203230159" duration="20751000" />
     </task>
     <servers />
   </component>

@@ -1,12 +1,21 @@
 package jemb.bistrogurmand.Controllers;
 
 import jemb.bistrogurmand.DbConection.DatabaseConnection;
+import jemb.bistrogurmand.utils.PlanificationRestaurant;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LeaderAssigController {
+    public static List<PlanificationRestaurant> getCurrentAssignments() {
+        List<PlanificationRestaurant> assignments = new ArrayList<>();
+        String query = "SELECT * FROM Assignment WHERE dateassig = ?";
+        // Implementación para obtener asignaciones del día actual
+        return assignments;
+    }
 
     public static void insertAssignment(String ID_Employee, int ID_Table, String shift) {
         String sql = "INSERT INTO Assignment (ID_Assignment, ID_Employee, ID_Table, StartTime, EndTime, Favorite, dateassig, Shift) " +

@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.PlanificationController;
 import jemb.bistrogurmand.Controllers.TableController;
+import jemb.bistrogurmand.Controllers.TableDAO;
 import jemb.bistrogurmand.utils.PlanificationColumnFactory;
 import jemb.bistrogurmand.utils.PlanificationRestaurant;
 import jemb.bistrogurmand.utils.TableRestaurant;
@@ -78,7 +79,7 @@ public class PlanificationView {
         titleContent.setAlignment(Pos.BOTTOM_LEFT);
         titleContent.setSpacing(10);
 
-        ImageView iconTitle = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/table.png").toString()));
+        ImageView iconTitle = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/plan-ico.png").toString()));
         iconTitle.setFitWidth(57);
         iconTitle.setFitHeight(57);
         Label title = new Label("Planificación");
@@ -118,7 +119,7 @@ public class PlanificationView {
 
         table.getColumns().addAll(
                 PlanificationColumnFactory.createIndexColumn(pagination,rowsPerPage),
-                createNumberPColumn(),
+                //createNumberPColumn(),
                 createEmployeeColumn(),
                 createTableColumn(),
                 createShiftColumn()
@@ -192,9 +193,11 @@ public class PlanificationView {
     }
 
     private boolean matchesFilter(PlanificationRestaurant planificationRestaurant, String filter) {
-        return planificationRestaurant.getID_Assignment().toString().contains(filter) ||
-                planificationRestaurant.getID_Employee().toString().contains(filter) ||
-                planificationRestaurant.getID_Table().toString().contains(filter);
+        String name=TableDAO.EmployeeDAO.getEmployeeNameById(planificationRestaurant.getID_Employee());
+        String table=TableDAO.getTableNumberById(planificationRestaurant.getID_Table());
+        return name.contains(filter) ||
+                table.contains(filter) ||
+                planificationRestaurant.getShift().contains(filter);
     }
 
     private void updatePagination() {
@@ -249,7 +252,7 @@ public class PlanificationView {
     private void addTableForm() {
             AssignmentDialog dialog = new AssignmentDialog();
             dialog.showAndWait(); // Modal
-        updateTableForPage(1);
+        refreshTable();
     }
 
    /* Stage modal = new Stage();

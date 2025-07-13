@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.Label;
+import jemb.bistrogurmand.Controllers.TableDAO;
 
 public class PlanificationColumnFactory {
 
@@ -32,21 +33,18 @@ public class PlanificationColumnFactory {
         return indexColumn;
     }
 
-    public static TableColumn<PlanificationRestaurant, String> createNumberPColumn() {
-        TableColumn<PlanificationRestaurant, String> column = new TableColumn<>("Numero");
-        //column.setPrefWidth(100);
-        column.setStyle("-fx-alignment: center-left");
-        column.getStyleClass().add("text-column");
-        column.setCellValueFactory(cellData -> new SimpleStringProperty(""+cellData.getValue().getID_Assignment()));
-        return column;
-    }
-
     public static TableColumn<PlanificationRestaurant, String> createEmployeeColumn() {
         TableColumn<PlanificationRestaurant, String> column = new TableColumn<>("Mesero");
-        //column.setPrefWidth(100);
         column.setStyle("-fx-alignment: center-left");
         column.getStyleClass().add("text-column");
-        column.setCellValueFactory(cellData -> new SimpleStringProperty("Mesero "+cellData.getValue().getID_Employee()));
+
+        column.setCellValueFactory(cellData -> {
+            // Obtener el empleado completo desde la base de datos usando el ID
+            int employeeId = cellData.getValue().getID_Employee();
+            String employeeName = TableDAO.EmployeeDAO.getEmployeeNameById(employeeId); // Método que debes implementar
+            return new SimpleStringProperty(employeeName);
+        });
+
         return column;
     }
 
@@ -54,55 +52,28 @@ public class PlanificationColumnFactory {
         TableColumn<PlanificationRestaurant, String> column = new TableColumn<>("Mesas");
         column.setStyle("-fx-alignment: center");
         column.getStyleClass().add("text-column");
-        column.setCellValueFactory(cellData -> new SimpleStringProperty("Mesa "+cellData.getValue().getID_Table()));
+
+        column.setCellValueFactory(cellData -> {
+            // Obtener la mesa completa desde la base de datos usando el ID
+            int tableId = cellData.getValue().getID_Table();
+            String tableNumber = TableDAO.getTableNumberById(tableId); // Método que debes implementar
+            return new SimpleStringProperty("Mesa " + tableNumber);
+        });
+
         return column;
     }
+
+
+
 
     public static TableColumn<PlanificationRestaurant, String> createShiftColumn() {
         TableColumn<PlanificationRestaurant, String> column = new TableColumn<>("Turno");
         column.setStyle("-fx-alignment: center");
         column.getStyleClass().add("text-column");
         column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getShift()));
-/*
-        column.setCellFactory(col -> new TableCell<>() {
-            private void updateItem(String hora) {
-                if (hora.startsWith("08") || hora.startsWith("09")) {
-                    String shift = "Mañana";
-                    Label label = new Label(shift);
-                    //label.getStyleClass().add(estado.equals("1") ? "badge" : "badge-red");
-                    setGraphic(null);
-                }
-            }
-        })
-        ;*/return column;
+return column;
     }
 
-
-    /*public static TableColumn<PlanificationRestaurant, String> createShiftColumn() {
-        TableColumn<PlanificationRestaurant, String> column = new TableColumn<>("Turno");
-        //column.setPrefWidth(80);
-        column.setStyle("-fx-alignment: center");
-        column.getStyleClass().add("text-column");
-
-        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getState()));
-
-        column.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(String estado, boolean empty) {
-                super.updateItem(estado, empty);
-                if (empty || estado == null) {
-                    setGraphic(null);
-                } else {
-                    String status = estado.equals("1") ? "Activo" : "Inactivo";
-                    Label label = new Label(status);
-                    label.getStyleClass().add(estado.equals("1") ? "badge" : "badge-red");
-                    setGraphic(label);
-                }
-            }
-        });
-
-        return column;
-    }*/
 
 }
 
