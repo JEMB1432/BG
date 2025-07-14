@@ -1,7 +1,7 @@
 package jemb.bistrogurmand.views;
 
 import jemb.bistrogurmand.Controllers.LoginController;
-import jemb.bistrogurmand.Controllers.UserSession;
+import jemb.bistrogurmand.utils.UserSession;
 import jemb.bistrogurmand.application.App;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -9,7 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import jemb.bistrogurmand.views.Admin.User;
+import jemb.bistrogurmand.utils.User;
 
 public class LoginView {
     private VBox view;
@@ -61,7 +61,7 @@ public class LoginView {
         userIcon.setFitHeight(20);
 
         TextField usernameField = new TextField();
-        usernameField.setPromptText("Ingrese su nombre de usuario");
+        usernameField.setPromptText("Ingrese su email");
         usernameField.getStyleClass().add("text-field");
 
         usernameFieldContainer.getChildren().addAll(userIcon, usernameField);
@@ -97,6 +97,12 @@ public class LoginView {
         Button loginButton = new Button("INICIAR SESIÓN");
         loginButton.getStyleClass().add("login-button");
 
+        //Lbl Resultado
+        Label errorLogin = new Label("");
+        errorLogin.setAlignment(Pos.CENTER);
+        errorLogin.setMaxWidth(Double.MAX_VALUE);
+        errorLogin.getStyleClass().add("error-login");
+
         // Enlaces del footer
         HBox footerLinks = new HBox(15);
         footerLinks.getStyleClass().add("footer-links");
@@ -110,7 +116,7 @@ public class LoginView {
         version.getStyleClass().add("version");
 
         // Construcción de la interfaz
-        form.getChildren().addAll(usernameGroup, passwordGroup, loginButton, footerLinks);
+        form.getChildren().addAll(usernameGroup, passwordGroup, loginButton, errorLogin, footerLinks);
         loginContainer.getChildren().addAll(logoSection, form, version);
         view.getChildren().add(loginContainer);
 
@@ -120,9 +126,27 @@ public class LoginView {
             User userLoged = loginController.tryLogin(usernameField.getText(), passwordField.getText());
             if (userLoged != null) {
                 UserSession.setCurrentUser(userLoged);
-                App.loadView("dashboard");
+                switch(userLoged.getRolUser().toLowerCase()
+                ){
+                    case "admin":
+                        App.loadView("dashboard");
+                        break;
+                    case "lider":
+                        App.loadView("summary");
+                        break;
+                }
             }else {
-                App.loadView("login");
+                errorLogin.setText("Usuario y/o contraseña incorrectos");
+
+                usernameFieldContainer.getStyleClass().add("input-container-error");
+                passwordFieldContainer.getStyleClass().add("input-container-error");
+
+                usernameLabel.getStyleClass().add("input-label-error");
+                usernameField.getStyleClass().add("text-field-error");
+
+                passwordLabel.getStyleClass().add("input-label-error");
+                passwordField.getStyleClass().add("password-field-error");
+
                 System.out.println("Datos invalidos");
             }
 

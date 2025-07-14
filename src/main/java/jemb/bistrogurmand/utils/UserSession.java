@@ -1,6 +1,6 @@
-package jemb.bistrogurmand.Controllers;
+package jemb.bistrogurmand.utils;
 
-import jemb.bistrogurmand.views.Admin.User;
+import jemb.bistrogurmand.application.App;
 
 public class UserSession {
         private static User currentUser;
@@ -16,5 +16,6 @@ public class UserSession {
         // Opcional: Limpiar sesión al hacer logout
         public static void clearCurrentUser() {
             currentUser = null;
+            App.loadView("login");
         }
 }

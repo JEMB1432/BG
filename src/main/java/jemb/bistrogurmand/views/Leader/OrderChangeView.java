@@ -1,13 +1,13 @@
-package jemb.bistrogurmand.views.Lider;
+package jemb.bistrogurmand.views.Leader;
 
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 
-public class CambioView {
+public class OrderChangeView {
     private BorderPane view;
 
-    public CambioView() {
+    public OrderChangeView() {
         view = new BorderPane();
 
         Region principalContent = new Region();

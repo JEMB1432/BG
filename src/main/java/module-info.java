@@ -10,6 +10,7 @@ module jemb.bistrogurmand {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
+    requires io.github.cdimascio.dotenv.java;
 
     exports jemb.bistrogurmand.application;
 }

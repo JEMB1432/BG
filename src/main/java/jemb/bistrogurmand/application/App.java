@@ -5,11 +5,13 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import jemb.bistrogurmand.views.Admin.DashboardView;
 import jemb.bistrogurmand.views.Admin.MenuView;
-import jemb.bistrogurmand.views.Admin.User;
+import jemb.bistrogurmand.utils.User;
+import jemb.bistrogurmand.views.Leader.SummaryView;
 import jemb.bistrogurmand.views.LoginView;
 
 public class App extends Application {
@@ -30,12 +32,13 @@ public class App extends Application {
     public void start(Stage stage) {
         primaryStage = stage;
 
-        Image image = new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/logo.png"));
+        Image image = new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/ico.png"));
 
         primaryStage.setTitle("Bistro Gurmand");
         primaryStage.getIcons().add(image);
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
+        //primaryStage.setStyle
         primaryStage.setResizable(true);
 
         Screen screen = Screen.getPrimary();
@@ -64,14 +67,19 @@ public class App extends Application {
                     break;
                 case "menu":
                     root = new MenuView().getView();
+                    break;
+                case "summary":
+                    root = new SummaryView().getView();
+                    break;
                 default:
                     throw new IllegalArgumentException("Vista no encontrada: " + nombreVista);
             }
 
             if (mainScene == null) {
                 mainScene = new Scene(root);
+                mainScene.setFill(Color.web("#232323"));
                 mainScene.getStylesheets().add(
-                        App.class.getResource("/jemb/bistrogurmand/CSS/styles.css").toExternalForm()
+                        App.class.getResource("/jemb/bistrogurmand/CSS/login.css").toExternalForm()
                 );
                 primaryStage.setScene(mainScene);
             } else {

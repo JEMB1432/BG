@@ -1,0 +1,117 @@
+.root {
+    -fx-primary-color: #990D35;
+    -fx-secondary-color: #1C7C54;
+    -fx-accent-color: #FF7043;
+    -fx-dark-color: #000501;
+    -fx-light-color: #EFF2F1;
+    -fx-danger-color: #d32f2f;
+    -fx-warning-color: #ff9800;
+    -fx-success-color: #4caf50;
+    -fx-secondary: #ffa9a9;
+}
+
+.dialog-pane {
+    -fx-background-color: #fff;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: white;
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-color: -fx-primary-color;
+}
+
+.dialog-pane .header-panel .label {
+    -fx-text-fill: -fx-primary-color;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.dialog-pane .content {
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+}
+
+.grid-pane {
+    -fx-background-color: #ffffff;
+    -fx-padding: 20px;
+    -fx-border-color: #dddddd;
+    -fx-border-width: 0;
+    -fx-border-radius: 0 0 3px 3px;
+}
+
+.text-field {
+    -fx-pref-width: 200px;
+    -fx-background-color: #f5f5f5;
+    -fx-padding: 5px;
+    -fx-border-width: 1px;
+    -fx-border-color: #e5e5e5;
+}
+
+/* Botones del diálogo */
+.dialog-pane .button-bar .button {
+    -fx-background-radius: 5px;
+    -fx-padding: 8px 16px;
+    -fx-font-weight: 500;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+    -fx-min-width: 80px;
+}
+
+.dialog-pane .button-bar .button:default {
+    -fx-background-color: -fx-secondary-color;
+    -fx-text-fill: white;
+}
+
+.dialog-pane .button-bar .button:default:hover {
+    -fx-background-color: derive(-fx-secondary-color, -10%);
+}
+
+.dialog-pane .button-bar .button:cancel {
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: white;
+}
+
+.dialog-pane .button-bar .button:cancel:hover {
+    -fx-background-color: derive(-fx-primary-color, -10%);
+}
+
+.dialog-pane .button-bar .button:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1);
+}
+
+/* Estilo base para todos los RadioButtons */
+.radio-button {
+    -fx-text-fill: -fx-dark-color;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+/* Estilo del círculo no seleccionado */
+.radio-button .radio {
+    -fx-background-color: white;
+    -fx-border-color: #bbbbbb;
+    -fx-border-radius: 50%;
+    -fx-border-width: 2px;
+    -fx-background-radius: 50%;
+}
+
+/* Estilo del círculo seleccionado */
+.radio-button:selected .radio {
+    -fx-background-color: white;
+    -fx-border-color: -fx-primary-color;
+}
+
+/* Punto interior cuando está seleccionado */
+.radio-button:selected .dot {
+    -fx-background-color: -fx-primary-color;
+    -fx-background-radius: 50%;
+}
+
+.radio-button .text {
+    -fx-fill: -fx-dark-color;
+    -fx-font-weight: normal;
+}

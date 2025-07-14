@@ -1,0 +1,237 @@
+package jemb.bistrogurmand.views.Admin;
+
+import javafx.animation.PauseTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.util.Duration;
+import jemb.bistrogurmand.Controllers.AssignmentController;
+import jemb.bistrogurmand.utils.Assignment;
+import jemb.bistrogurmand.utils.AssignmentColumnFactory;
+
+import java.time.LocalDate;
+import java.util.Date;
+
+import static jemb.bistrogurmand.utils.AssignmentColumnFactory.*;
+
+public class GenerateDashboardInfo {
+    private BorderPane view;
+    private TableView<Assignment> table;
+    private AssignmentController assignmentController;
+    private TextField searchField;
+    private Pagination pagination;
+    private Label paginationInfo;
+    private final int rowsPerPage = 10;
+
+    private LocalDate dateSelected = LocalDate.now();
+
+    private ObservableList<Assignment> masterAssignmentList;
+    private ObservableList<Assignment> currentDisplayedList;
+
+    public GenerateDashboardInfo() {
+        masterAssignmentList = FXCollections.observableArrayList();
+        currentDisplayedList = FXCollections.observableArrayList();
+
+        view = new BorderPane();
+        view.getStyleClass().add("root");
+        view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/styles.css").toExternalForm());
+        view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/tables.css").toExternalForm());
+        view.setPadding(new Insets(20));
+        assignmentController = new AssignmentController();
+
+        searchField = new TextField();
+        table = new TableView<>();
+        table.getStyleClass().add("table-view");
+        pagination = new Pagination();
+
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            // Agregar un pequeño retardo para evitar procesamiento excesivo
+            PauseTransition pause = new PauseTransition(Duration.millis(100));
+            pause.setOnFinished(e -> filterAndPaginateTable());
+            pause.playFromStart();
+        });
+
+        createTopSection();
+        configureTable();
+        configurePagination();
+
+        loadInitialData();
+    }
+
+    private void createTopSection() {
+        VBox topContent = new VBox();
+        topContent.setSpacing(20);
+
+        HBox titleCardView = new HBox();
+        titleCardView.getStyleClass().add("title-card-view");
+        titleCardView.setSpacing(15);
+        titleCardView.setAlignment(Pos.BOTTOM_LEFT);
+
+        ImageView iconTitle = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/stat.png").toString()));
+        iconTitle.setFitHeight(48);
+        iconTitle.setFitWidth(48);
+        Label titleView = new Label("Dashboard");
+        titleView.getStyleClass().add("title");
+        titleView.setAlignment(Pos.BOTTOM_LEFT);
+
+        HBox cards = new HBox(50);
+        topContent.getStyleClass().add("top-content");
+
+        float saleInfo = 1850.00F;
+        VBox cardSale = new VBox(20);
+        cardSale.getStyleClass().add("card-sale");
+        Label titleSale = new Label("Ventas");
+        titleSale.getStyleClass().add("title-card");
+        Label totalSale = new Label("$" + saleInfo);
+        totalSale.getStyleClass().add("total-card");
+        cardSale.getChildren().addAll(titleSale, totalSale);
+
+        int orderInfo = 10;
+        VBox cardOrder = new VBox(20);
+        cardOrder.getStyleClass().add("card-sale");
+        Label titleOrder = new Label("Órdenes");
+        titleOrder.getStyleClass().add("title-card");
+        Label totalOrder = new Label(""+ orderInfo);
+        totalOrder.getStyleClass().add("total-card");
+        cardOrder.getChildren().addAll(titleOrder, totalOrder);
+
+        HBox topBox = new HBox(20);
+        topBox.getStyleClass().add("top-section-dash");
+        topBox.setAlignment(Pos.CENTER_RIGHT);
+        topBox.setPrefWidth(Double.MAX_VALUE);
+        topBox.setPadding(new Insets(0, 0, 0, 0));
+
+        DatePicker datePicker = new DatePicker();
+        datePicker.setEditable(false);
+        datePicker.setPrefWidth(350);
+        datePicker.setValue(LocalDate.now());
+        datePicker.getStyleClass().add("date-picker");
+        datePicker.setOnAction(e -> {
+            dateSelected = datePicker.getValue();
+            refreshTable();
+            //System.out.println(newDate);
+        });
+
+        searchField.setPromptText("Buscar asignaciones...");
+        searchField.getStyleClass().add("search-field");
+
+        ImageView imageViewUpdate = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/update.png").toString()));
+        imageViewUpdate.setFitHeight(16);
+        imageViewUpdate.setFitWidth(16);
+        Button refreshButton = new Button("Actualizar");
+        refreshButton.setGraphic(imageViewUpdate);
+        refreshButton.getStyleClass().add("secondary-button");
+        refreshButton.setOnAction(e -> refreshTable());
+
+        topBox.getChildren().addAll(datePicker, searchField, refreshButton);
+        titleCardView.getChildren().addAll(iconTitle, titleView);
+        cards.getChildren().addAll(cardSale,cardOrder);
+        topContent.getChildren().addAll(titleCardView, cards, topBox);
+        view.setTop(topContent);
+    }
+
+    private void configureTable() {
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.getStyleClass().add("table-view");
+
+        table.getColumns().addAll(
+                AssignmentColumnFactory.createIndexColumn(pagination,rowsPerPage),
+                createTableColumn(),
+                createEmployeeColumn(),
+                createShiftColumn(),
+                createTimeColumn()
+        );
+    }
+
+    private void configurePagination() {
+        paginationInfo = new Label();
+
+        pagination.currentPageIndexProperty().addListener((observable, oldValue, newValue) -> {
+            updateTableForPage(newValue.intValue());
+            updatePaginationInfo(newValue.intValue());
+        });
+
+        VBox paginationBox = new VBox(10);
+        paginationBox.getChildren().addAll(table, paginationInfo, pagination);
+        view.setCenter(paginationBox);
+    }
+
+    private void updatePaginationInfo(int pageIndex) {
+        int from  = pageIndex * rowsPerPage +1;
+        int to = Math.min((pageIndex + 1) * rowsPerPage, currentDisplayedList.size());
+        int total = currentDisplayedList.size();
+        paginationInfo.setText(String.format("Mostrando %d-%d de %d resultados", from, to, total));
+    }
+
+    private void loadInitialData(){
+        refreshTable();
+    }
+
+    private void refreshTable() {
+        masterAssignmentList.setAll(assignmentController.getAssignments(dateSelected));
+        searchField.clear();
+        filterAndPaginateTable();
+    }
+
+    private void filterAndPaginateTable() {
+        String filter = searchField.getText().toLowerCase();
+        ObservableList<Assignment> filteredList = FXCollections.observableArrayList();
+
+        if(filter.isEmpty()) {
+            filteredList.addAll(masterAssignmentList);
+        }else {
+            for (Assignment assignment : masterAssignmentList) {
+                if (matchesFilter(assignment, filter)){
+                    filteredList.add(assignment);
+                }
+            }
+        }
+
+        currentDisplayedList.setAll(filteredList);
+        updatePagination();
+    }
+
+    private boolean matchesFilter(Assignment assignment, String filter) {
+        return assignment.getEmployeeAssign().toLowerCase().contains(filter) ||
+                assignment.getTableAssign().toLowerCase().contains(filter) ||
+                assignment.getShiftAssign().toLowerCase().contains(filter);
+    }
+
+    private void updatePagination() {
+        int itemCount = currentDisplayedList.size();
+        int pageCount = (int) Math.ceil((double) itemCount / rowsPerPage);
+
+        pagination.setPageCount(pageCount > 0 ? pageCount : 1);
+
+        if(pagination.getCurrentPageIndex() >= pageCount && pageCount > 0) {
+            pagination.setCurrentPageIndex(0);
+        }
+
+        updateTableForPage(pagination.getCurrentPageIndex());
+    }
+
+    private void updateTableForPage(int pageIndex) {
+        int fromIndex = pageIndex * rowsPerPage;
+        int toIndex = Math.min(fromIndex + rowsPerPage, currentDisplayedList.size());
+
+        if(currentDisplayedList.isEmpty()){
+            table.setItems(FXCollections.observableArrayList());
+        }else {
+            table.setItems(FXCollections.observableArrayList(currentDisplayedList.subList(fromIndex, toIndex)));
+        }
+
+        updatePaginationInfo(pageIndex);
+        table.refresh();
+    }
+    
+    public BorderPane getView() {
+        return view;
+    }
+}
