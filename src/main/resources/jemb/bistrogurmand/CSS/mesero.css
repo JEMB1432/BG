@@ -1,0 +1,51 @@
+
+/* Root de la vista “Tomar Pedido” */
+#tomar-pedido-root {
+    -fx-background-color: #f5f5f5;
+}
+
+/* Botones de categoría */
+.category-button {
+    -fx-background-color: white;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 8 12;
+    -fx-font-size: 14;
+    -fx-cursor: hand;
+}
+#category-pane {
+    -fx-padding: 10 0 20 0;
+}
+
+/* Modal de productos */
+.modal-content {
+    -fx-background-color: white;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+.modal-item-row {
+    -fx-padding: 10 0;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Botón “+ Agregar” */
+.btn-add {
+    -fx-background-color: #4caf50;  /* verde */
+    -fx-text-fill: white;
+}
+
+/* Scroll del modal */
+.modal-scroll {
+    -fx-background-color: transparent;
+}
+
+/* Botones de acción */
+.btn-remove {
+    -fx-background-color: #e53935;  /* rojo */
+    -fx-text-fill: white;
+}
+.btn-send {
+    -fx-background-color: #4caf50;  /* verde */
+    -fx-text-fill: white;
+}
