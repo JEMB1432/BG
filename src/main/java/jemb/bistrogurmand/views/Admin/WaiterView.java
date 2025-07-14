@@ -10,8 +10,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.WaiterController;
+import jemb.bistrogurmand.utils.Modals.AddWaiterDialog;
+import jemb.bistrogurmand.utils.Modals.EditWaiterDialog;
 import jemb.bistrogurmand.utils.User;
 import jemb.bistrogurmand.utils.UserTableColumnFactory;
 
@@ -234,18 +237,24 @@ public class WaiterView {
         table.refresh();
     }
 
-    // Ajustar calculatePageCount para que tome el tamaño de la lista
-    private int calculatePageCount(int itemCount) {
-        return Math.max(1, (int) Math.ceil((double) itemCount / rowsPerPage));
-    }
-
     private void editSelectedWaiter() {
         User selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            // Implementar lógica de edición
-            System.out.println("Editar mesero: " + selected.getFirstName());
+
+            EditWaiterDialog dialog = new EditWaiterDialog(selected);
+
+            Optional<User> result = dialog.showAndWait();
+            result.ifPresent(updatedUser -> {
+                System.out.println("Mesero actualizado: " + updatedUser.getFirstName());
+                if (waiterController.updateWaiter(updatedUser)){
+                    showAlert("Empleado Actualizado","El empleado se ha actualizado correctamente",1);
+                }else {
+                    showAlert("Eror","Ocurrio un error al actualizar el empleado",3);
+                }
+                refreshTable();
+            });
         } else {
-            showAlert("Selección requerida", "Por favor seleccione un mesero para editar.");
+            showAlert("Selección requerida", "Por favor seleccione un mesero para editar.", 2);
         }
     }
 
@@ -275,20 +284,49 @@ public class WaiterView {
                 }
             }
         } else {
-            showAlert("Selección requerida", "Por favor seleccione un mesero para eliminar.");
+            showAlert("Selección requerida", "Por favor seleccione un mesero para eliminar.", 2);
         }
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+    private void showAlert(String title, String message, int type) {
+        /*
+        1 -ALERTA DE INFORMACION
+        2 -ALERTA DE WARNING
+        3 -ALERTA DE ERROR
+         */
+        Alert alert;
+        switch (type){
+            case 1:
+                 alert = new Alert(Alert.AlertType.INFORMATION);
+                break;
+            case 2:
+                alert = new Alert(Alert.AlertType.WARNING);
+                break;
+            case 3:
+                alert = new Alert(Alert.AlertType.ERROR);
+                break;
+            default:
+                alert = new Alert(Alert.AlertType.NONE);
+        }
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
 
-    private void addWaiterForm(){
-        System.out.println("addWaiterForm");
+    private void addWaiterForm() {
+        AddWaiterDialog dialog = new AddWaiterDialog();
+
+        Optional<User> result = dialog.showAndWait();
+        result.ifPresent(newUser -> {
+            String password = dialog.getPassword();
+            if (waiterController.insertWaiter(newUser, password)) {
+                showAlert("Mesero Agregado", "El mesero se ha agregado correctamente", 1);
+                refreshTable();
+            } else {
+                showAlert("Error", "Ocurrió un error al agregar el mesero", 3);
+            }
+        });
     }
 
     public BorderPane getView() {

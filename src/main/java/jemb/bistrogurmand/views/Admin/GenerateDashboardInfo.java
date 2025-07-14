@@ -230,8 +230,7 @@ public class GenerateDashboardInfo {
         updatePaginationInfo(pageIndex);
         table.refresh();
     }
-
-
+    
     public BorderPane getView() {
         return view;
     }
