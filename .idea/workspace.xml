@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9f8dec4d-4ac8-4fea-8cf2-12c6327726d2" name="Changes" comment="" />
+    <list default="true" id="9f8dec4d-4ac8-4fea-8cf2-12c6327726d2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/ModifyOrderView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/ModifyOrderView.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -170,7 +172,7 @@
       <workItem from="1751137501896" duration="13156000" />
       <workItem from="1751210289861" duration="34027000" />
       <workItem from="1752473724233" duration="154000" />
-      <workItem from="1752538896352" duration="11226000" />
+      <workItem from="1752538896352" duration="11539000" />
     </task>
     <servers />
   </component>
