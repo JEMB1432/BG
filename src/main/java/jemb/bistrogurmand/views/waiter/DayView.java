@@ -1,4 +1,4 @@
-package jemb.bistrogurmand.views.Meseros;
+package jemb.bistrogurmand.views.waiter;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -8,10 +8,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-public class JornadaView {
+public class DayView {
     private BorderPane root;
 
-    public JornadaView() {
+    public DayView() {
         root = new BorderPane();
 
         // Estilo del fondo general

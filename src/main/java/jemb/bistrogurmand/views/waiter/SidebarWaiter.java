@@ -1,19 +1,18 @@
-package jemb.bistrogurmand.views.Meseros;
+package jemb.bistrogurmand.views.waiter;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-public class SidebarMesero {
+public class SidebarWaiter {
 
     private VBox sidebar;
 
-    public SidebarMesero() {
+    public SidebarWaiter() {
         sidebar = new VBox();
         sidebar.setPrefWidth(220);
         sidebar.setStyle("-fx-background-color: white;");

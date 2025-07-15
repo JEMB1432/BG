@@ -13,6 +13,7 @@ import jemb.bistrogurmand.views.Admin.MenuView;
 import jemb.bistrogurmand.utils.User;
 import jemb.bistrogurmand.views.Leader.SummaryView;
 import jemb.bistrogurmand.views.LoginView;
+import jemb.bistrogurmand.views.waiter.DayView;
 
 public class App extends Application {
     private static User currentUser;
@@ -71,6 +72,8 @@ public class App extends Application {
                 case "summary":
                     root = new SummaryView().getView();
                     break;
+                case "day":
+                    root = new DayView().getView();
                 default:
                     throw new IllegalArgumentException("Vista no encontrada: " + nombreVista);
             }
