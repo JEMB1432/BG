@@ -71,6 +71,8 @@ public class App extends Application {
                 case "summary":
                     root = new SummaryView().getView();
                     break;
+
+
                 default:
                     throw new IllegalArgumentException("Vista no encontrada: " + nombreVista);
             }

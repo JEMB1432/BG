@@ -1,4 +1,4 @@
-package jemb.bistrogurmand.views.Meseros;
+package jemb.bistrogurmand.views.waiter;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -66,6 +66,7 @@ public class JornadaView {
         card.getChildren().addAll(title, data);
         return card;
     }
+
 
     public BorderPane getView() {
         return root;

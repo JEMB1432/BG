@@ -1,5 +1,4 @@
-// src/jemb/bistrogurmand/views/Meseros/TomarPedidoView.java
-package jemb.bistrogurmand.views.Meseros;
+package jemb.bistrogurmand.views.waiter;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,16 +12,15 @@ import jemb.bistrogurmand.utils.modals.Category;
 import jemb.bistrogurmand.utils.modals.OrderItem;
 import jemb.bistrogurmand.utils.modals.Product;
 import jemb.bistrogurmand.utils.UserSession;
-
 import java.util.List;
 
-public class TomarPedidoView {
+public class TakeorderView {
     private final BorderPane root;
     private final OrderController orderController;
     private TableView<OrderItem> orderTable;
 
     // Ahora REQUIERE el ID de la mesa
-    public TomarPedidoView(String tableId) {
+    public TakeorderView(String tableId) {
         this.orderController = new OrderController(tableId);
         this.root            = new BorderPane();
         buildUI();
