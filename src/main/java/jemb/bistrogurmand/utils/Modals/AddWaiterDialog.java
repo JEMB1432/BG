@@ -76,7 +76,7 @@ public class AddWaiterDialog extends Dialog<User> {
         HBox stateHBox = createStateRadioButtons(stateToggleGroup, "1"); // Por defecto activo
 
         // ComboBox para rol
-        rolComboBox = createRolComboBox("Mesero"); // Valor por defecto
+        rolComboBox = createRolComboBox("Mesero");
 
         // Añadir controles al grid
         grid.add(new Label("Nombre:"), 1, 0);
@@ -143,7 +143,7 @@ public class AddWaiterDialog extends Dialog<User> {
 
     private void validateFields() {
         // Deshabilitar el botón Guardar inicialmente
-        Button saveButton = (Button) getDialogPane().lookupButton(getDialogPane().getButtonTypes().get(0));
+        Button saveButton = (Button) getDialogPane().lookupButton(getDialogPane().getButtonTypes().get(1));
         saveButton.setDisable(true);
 
         // Listener para validar campos en tiempo real

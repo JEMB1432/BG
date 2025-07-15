@@ -7,6 +7,8 @@ public class TableRestaurant {
     private String State;
     private String Location;
 
+    public TableRestaurant() {}
+
     public TableRestaurant(String ID_Table, Integer NumberTable, Integer NumberSeats, String State, String Location) {
         this.ID_Table = ID_Table;
         this.NumberTable = NumberTable;

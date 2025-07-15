@@ -61,7 +61,7 @@
 
 /* Tabla de meseros */
 .table-view {
-    -fx-pref-height: 750px !important;
+    -fx-pref-height: 800px !important;
     -fx-background-color: white;
     -fx-background-radius: 8;
     -fx-border-radius: 8;

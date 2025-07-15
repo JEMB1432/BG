@@ -171,7 +171,7 @@ public class WaiterView {
         deleteButton.getStyleClass().add("danger-button");
         deleteButton.setOnAction(e -> deleteSelectedWaiter());
 
-        buttonBox.getChildren().addAll(editButton, deleteButton);
+        buttonBox.getChildren().addAll(editButton);
         view.setBottom(buttonBox);
     }
 

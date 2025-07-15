@@ -13,7 +13,7 @@ public class LoginController {
 
         try{
             conn = DatabaseConnection.getConnection();
-            String sql = "SELECT * FROM EMPLOYEE WHERE EMAIL = ? AND PASSWORD = ?";
+            String sql = "SELECT * FROM EMPLOYEE WHERE EMAIL = ? AND PASSWORD = ? AND STATE = '1'";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, username);
             pstmt.setString(2,password);

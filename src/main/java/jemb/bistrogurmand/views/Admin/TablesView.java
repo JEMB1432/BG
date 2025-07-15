@@ -14,8 +14,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.TableController;
+import jemb.bistrogurmand.utils.Modals.AddTableDialog;
+import jemb.bistrogurmand.utils.Modals.EditTableDialog;
 import jemb.bistrogurmand.utils.TableRestaurant;
 import jemb.bistrogurmand.utils.TableRestaurantColumnFactory;
+
+import java.util.Optional;
 
 import static jemb.bistrogurmand.utils.TableRestaurantColumnFactory.*;
 
@@ -221,10 +225,23 @@ public class TablesView {
     private void editSelectedTable() {
         TableRestaurant selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            // Implementar lógica de edición
-            System.out.println("Editar mesa: " + selected.getNumberTable().toString());
+            EditTableDialog dialog = new EditTableDialog(selected);
+
+            Optional<TableRestaurant> result = dialog.showAndWait();
+            result.ifPresent(updatedTable -> {
+                if (updatedTable != null) {  // Verificar que no hubo error de conversión
+                    if (tableController.updateTableRestaurant(updatedTable)) {
+                        showAlert("Mesa Actualizada", "La mesa se ha actualizado correctamente", 1);
+                        refreshTable(); // Actualizar la vista de la tabla
+                    } else {
+                        showAlert("Error", "Ocurrió un error al actualizar la mesa", 3);
+                    }
+                } else {
+                    showAlert("Error", "Por favor ingrese valores numéricos válidos", 3);
+                }
+            });
         } else {
-            showAlert("Selección requerida", "Por favor seleccione una mesa para editar.");
+            showAlert("Selección requerida", "Por favor seleccione una mesa para editar.", 2);
         }
     }
 
@@ -232,8 +249,26 @@ public class TablesView {
 
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+    private void showAlert(String title, String message, int type) {
+        /*
+        1 -ALERTA DE INFORMACION
+        2 -ALERTA DE WARNING
+        3 -ALERTA DE ERROR
+         */
+        Alert alert;
+        switch (type){
+            case 1:
+                alert = new Alert(Alert.AlertType.INFORMATION);
+                break;
+            case 2:
+                alert = new Alert(Alert.AlertType.WARNING);
+                break;
+            case 3:
+                alert = new Alert(Alert.AlertType.ERROR);
+                break;
+            default:
+                alert = new Alert(Alert.AlertType.NONE);
+        }
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
@@ -241,7 +276,21 @@ public class TablesView {
     }
 
     private void addTableForm() {
-        System.out.println("Adding table");
+        AddTableDialog dialog = new AddTableDialog();
+
+        Optional<TableRestaurant> result = dialog.showAndWait();
+        result.ifPresent(newTable -> {
+            if (newTable != null) {  // Verificar que no hubo error de conversión
+                if (tableController.insertTableRestaurant(newTable)) {
+                    showAlert("Mesa Agregada", "La mesa se ha agregado correctamente", 1);
+                    refreshTable(); // Actualizar la vista de la tabla
+                } else {
+                    showAlert("Error", "Ocurrió un error al agregar la mesa", 3);
+                }
+            } else {
+                showAlert("Error", "Por favor ingrese valores numéricos válidos", 3);
+            }
+        });
     }
 
     public BorderPane getView() {

@@ -4,6 +4,7 @@ import jemb.bistrogurmand.DbConection.DatabaseConnection;
 import jemb.bistrogurmand.utils.TableRestaurant;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -42,5 +43,44 @@ public class TableController {
             DatabaseConnection.closeConnection(conn);
         }
         return tables;
+    }
+
+    public boolean updateTableRestaurant(TableRestaurant table) {
+        String sql = "UPDATE TABLERESTAURANT SET NUMBERTABLE = ?, " +
+                "NUMBERSEATS = ?, STATE = ?, LOCATION = ? WHERE ID_Table = ?";
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, table.getNumberTable());
+            ps.setInt(2, table.getNumberSeats());
+            ps.setString(3, table.getState());
+            ps.setString(4, table.getLocation());
+            ps.setString(5, table.getID_Table());
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean insertTableRestaurant(TableRestaurant table) {
+        String sql = "INSERT INTO TABLERESTAURANT (NUMBERTABLE, NUMBERSEATS, STATE, LOCATION)" +
+                "VALUES (?, ?, ?, ?)";
+        try{
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, table.getNumberTable());
+            ps.setInt(2, table.getNumberSeats());
+            ps.setString(3, table.getState());
+            ps.setString(4, table.getLocation());
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
