@@ -23,6 +23,7 @@ import jemb.bistrogurmand.utils.PlanificationRestaurant;
 import jemb.bistrogurmand.utils.TableRestaurant;
 import jemb.bistrogurmand.utils.TableRestaurantColumnFactory;
 
+import static jemb.bistrogurmand.utils.PlanificationColumnFactory.createShiftColumn;
 import static jemb.bistrogurmand.utils.PlanificationColumnFactory.*;
 import static jemb.bistrogurmand.utils.TableRestaurantColumnFactory.*;
 
@@ -62,7 +63,7 @@ public class PlanificationView {
         createTopSection();
         configureTable();
         configurePagination();
-        //createBottomSection();
+        createBottomSection();
 
         loadInitialData();
     }
@@ -126,6 +127,7 @@ public class PlanificationView {
         );
     }
 
+
     private void configurePagination() {
         paginationInfo = new Label();
 
@@ -150,23 +152,26 @@ public class PlanificationView {
         refreshTable();
     }
 
-    /*private void createBottomSection() {
+    private void createBottomSection() {
         HBox buttomBox = new HBox(20);
         buttomBox.getStyleClass().add("bottom-section");
         buttomBox.setAlignment(Pos.CENTER_RIGHT);
         buttomBox.setPadding(new Insets(20, 0, 0, 0));
 
-        Button editButton = new Button("Editar");
+        /*Button editButton = new Button("Editar");
         editButton.getStyleClass().add("primary-button");
         editButton.setOnAction(event -> editSelectedTable());
 
         Button deleteButton = new Button("Eliminar");
         deleteButton.getStyleClass().add("danger-button");
-        deleteButton.setOnAction(event -> deleteSelectedTable());
+        deleteButton.setOnAction(event -> deleteSelectedTable());*/
+        Label lblInfoDiaria= new Label("La tabla muestra las asignaciones por día");
+        lblInfoDiaria.setStyle("-fx-alignment: center");
+        lblInfoDiaria.getStyleClass().add("text-column");
 
-        buttomBox.getChildren().addAll(editButton, deleteButton);
+        buttomBox.getChildren().addAll(/*editButton, deleteButton*/lblInfoDiaria);
         view.setBottom(buttomBox);
-    }*/
+    }
 
     private void refreshTable() {
         masterTableRestaurantList.setAll(planificationController.getPlanificationRestaurants());

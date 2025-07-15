@@ -1,0 +1,70 @@
+
+.dialog-pane {
+    -fx-background-color: #f8f8f8; /* Fondo más claro */
+    -fx-border-color: #941537;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-padding: 15px;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #941537; /* Fondo del encabezado con el color principal */
+    -fx-padding: 10px;
+    -fx-border-radius: 5px 5px 0 0; /* Bordes redondeados solo arriba */
+}
+
+.dialog-pane .header-panel .label {
+    -fx-text-fill: white; /* Texto del encabezado en blanco */
+    -fx-font-size: 1.2em; /* Tamaño de fuente más grande */
+    -fx-font-weight: bold;
+}
+
+.dialog-pane .content.label {
+    -fx-font-size: 1.0em;
+    -fx-text-fill: #333333; /* Color de texto oscuro para el contenido */
+    -fx-padding: 15px 0 15px 0;
+}
+
+.dialog-pane .button-bar {
+    -fx-background-color: transparent; /* Fondo transparente para la barra de botones */
+    -fx-padding: 10px 0 0 0;
+}
+
+.dialog-pane .button {
+    -fx-background-color: #3db98b;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.dialog-pane .button:hover {
+    -fx-background-color: #45a049; /* Oscurecer al pasar el mouse */
+}
+
+/* Estilos específicos para los botones de error o cancelar si usas múltiples tipos */
+.dialog-pane .button-cancelar,
+.dialog-pane .button-error { /* Asumiendo que puedes darles una clase en tu código o un tipo específico de Alert */
+    -fx-background-color: #f44336; /* Rojo para cancelar/error */
+}
+
+.dialog-pane .button-cancelar:hover,
+.dialog-pane .button-error:hover {
+    -fx-background-color: #d32f2f;
+}
+
+/* Estilo para los diferentes tipos de Alert (Info, Warning, Error) */
+/* El icono se puede estilizar con -fx-graphic-fill si es una forma o con una imagen */
+.dialog-pane .graphic-container {
+    /* Puedes estilizar el área donde aparece el icono si lo hay */
+}
+.dialog-pane .graphic-container > StackPane > Region { /* Para cambiar el color del icono por defecto */
+    -fx-background-color: #941537;
+}
+
+/* Puedes especificar colores para los íconos de cada tipo de alerta */
+.alert.information .graphic-container > StackPane > Region { -fx-background-color: #941537; } /* Azul para información */
+.alert.warning .graphic-container > StackPane > Region { -fx-background-color: #FFC107; } /* Amarillo para advertencia */
+.alert.error .graphic-container > StackPane > Region { -fx-background-color: #F44336; } /* Rojo para error */
+.alert.confirm .graphic-container > StackPane > Region { -fx-background-color: #4CAF50; } /* Verde para confirmación */

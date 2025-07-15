@@ -48,18 +48,19 @@ public class LeaderAssigController {
         }
     }
 
-    public static List<PlanificationRestaurant> getAssignmentsForShiftAndDate(String shift/*, LocalDate date*/) {
+    public static List<PlanificationRestaurant> getAssignmentsForShiftAndDate(String shift, LocalDate date) {
         List<PlanificationRestaurant> assignments = new ArrayList<>();
         // Asume que tu columna de fecha es DATE o TIMESTAMP y que `TRUNC(ASSIGNMENT_DATE)` funcionará
         // para comparar solo la parte de la fecha.
-        String sql = "SELECT * FROM Assignment WHERE SHIFT = ? ORDER BY ID_Assignment" +
-                "--AND TRUNC(ASSIGNMENT_DATE) = TRUNC(TO_DATE(?, 'YYYY-MM-DD'))";
+        String sql = "SELECT * FROM Assignment WHERE SHIFT = ? " +
+                "AND TRUNC(dateassig) = TRUNC(TO_DATE(?, 'YYYY-MM-DD'))" +
+                "ORDER BY ID_Assignment";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, shift);
-           // pstmt.setString(2, date.toString()); // Convertir LocalDate a String en formato YYYY-MM-DD
+           pstmt.setString(2, date.toString()); // Convertir LocalDate a String en formato YYYY-MM-DD
 
             try (ResultSet response = pstmt.executeQuery()) {
                 while (response.next()) {

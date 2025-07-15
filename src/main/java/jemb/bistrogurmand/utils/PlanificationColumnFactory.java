@@ -32,7 +32,24 @@ public class PlanificationColumnFactory {
 
         return indexColumn;
     }
+    public static TableColumn<PlanificationRestaurant, String> createEmployeeColumn() {
+        TableColumn<PlanificationRestaurant, String> column = new TableColumn<>("Mesero");
+        column.setStyle("-fx-alignment: center-left");
+        column.getStyleClass().add("text-column");
+        column.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getEmployeeName()));
+        return column;
+    }
 
+    public static TableColumn<PlanificationRestaurant, String> createTableColumn() {
+        TableColumn<PlanificationRestaurant, String> column = new TableColumn<>("Mesas");
+        column.setStyle("-fx-alignment: center");
+        column.getStyleClass().add("text-column");
+        column.setCellValueFactory(cellData ->
+                new SimpleStringProperty("Mesa " + cellData.getValue().getTableNumber()));
+        return column;
+    }
+/*
     public static TableColumn<PlanificationRestaurant, String> createEmployeeColumn() {
         TableColumn<PlanificationRestaurant, String> column = new TableColumn<>("Mesero");
         column.setStyle("-fx-alignment: center-left");
@@ -56,13 +73,13 @@ public class PlanificationColumnFactory {
         column.setCellValueFactory(cellData -> {
             // Obtener la mesa completa desde la base de datos usando el ID
             int tableId = cellData.getValue().getID_Table();
-            String tableNumber = TableDAO.getTableNumberById(tableId); // Método que debes implementar
+            String tableNumber = TableDAO.getTableNumberById(tableId);// Método que debes implementar
             return new SimpleStringProperty("Mesa " + tableNumber);
         });
 
         return column;
     }
-
+*/
 
 
 

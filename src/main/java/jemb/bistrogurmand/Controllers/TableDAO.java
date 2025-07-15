@@ -1,6 +1,7 @@
 package jemb.bistrogurmand.Controllers;
 
 import jemb.bistrogurmand.DbConection.DatabaseConnection;
+import jemb.bistrogurmand.utils.PlanificationRestaurant;
 import jemb.bistrogurmand.utils.TableRestaurant;
 import jemb.bistrogurmand.utils.User;
 
@@ -71,7 +72,9 @@ public class TableDAO {
     }
 
     public static String getTableNumberById(int tableId) {
-        String query = "SELECT NumberTable FROM TableRestaurant WHERE ID_Table = ?";
+        String query = "SELECT tr.NumberTable FROM TableRestaurant tr WHERE tr.ID_Table = ? " +
+                "AND tr.ID_Table IN (SELECT a.ID_Table FROM Assignment a " +
+                "WHERE TRUNC(a.dateassig) = TRUNC(SYSDATE))";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, tableId);
@@ -83,7 +86,58 @@ public class TableDAO {
             e.printStackTrace();
         }
         return "?";
-    }
+    }/*
+
+    public static List<String> getTableNumberById(int tableId) {
+        List<String> tables = new ArrayList<>();
+        String query = "SELECT tr.NumberTable FROM TableRestaurant tr WHERE tr.ID_Table = ? " +
+                "AND tr.ID_Table IN (SELECT a.ID_Table FROM Assignment a " +
+                "WHERE TRUNC(a.dateassig) = TRUNC(SYSDATE))";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, tableId);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                tables.add(String.valueOf(rs.getInt("NumberTable")));
+            }
+            /*
+            if (rs.next()) {
+                return String.valueOf(rs.getInt("NumberTable"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tables;
+    }*/
+/*
+    public static List<PlanificationRestaurant> getAllAssignmentsForToday() {
+        List<PlanificationRestaurant> assignmentsForToday = new ArrayList<>();
+        // Consulta SQL para obtener asignaciones donde la fecha de asignación (dateassig) es HOY.
+        // TRUNC(dateassig) y TRUNC(SYSDATE) comparan solo la parte de la fecha, ignorando la hora.
+        String sql = "SELECT ID_Assignment, ID_Employee, ID_Table, Shift FROM Assignment WHERE TRUNC(dateassig) = TRUNC(SYSDATE)";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                int idAssignment = rs.getInt("ID_Assignment");
+                int idEmployee = rs.getInt("ID_Employee");
+                int idTable = rs.getInt("ID_Table");
+                String shift = rs.getString("Shift");
+
+                // Asume que tu clase PlanificationRestaurant tiene un constructor adecuado
+                // Si PlanificationRestaurant necesita más campos o el constructor es diferente, ajústalo aquí.
+                PlanificationRestaurant plan = new PlanificationRestaurant(idAssignment, idEmployee, idTable, shift);
+                assignmentsForToday.add(plan);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener asignaciones para hoy desde TableDAO: " + e.getMessage());
+            // Considera lanzar una excepción personalizada o un manejo más robusto.
+        }
+        return assignmentsForToday;
+    }*/
+
 
     public class EmployeeDAO {
         public static List<User> getUnassignedWaitersForToday() {
@@ -126,10 +180,12 @@ public class TableDAO {
 
 
 
-
+//
         public static String getEmployeeNameById(int employeeId) {
             // Implementación de ejemplo:
-            String query = "SELECT Name, LastName FROM Employee WHERE ID_Employee = ?";
+            String query= "SELECT e.Name, e.LastName FROM Employee e WHERE e.ID_Employee = ? " +
+                    "AND e.ID_Employee IN (SELECT a.ID_Employee FROM Assignment a " +
+                    "WHERE TRUNC(a.dateassig) = TRUNC(SYSDATE))";
             try (Connection conn = DatabaseConnection.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(query)) {
                 stmt.setInt(1, employeeId);
@@ -141,7 +197,28 @@ public class TableDAO {
                 e.printStackTrace();
             }
             return "Desconocido";
+        }/*
+public static List<String> getEmployeeNameById(int employeeId) {
+    List <String> waiters= new ArrayList<>();
+    // Implementación de ejemplo:
+    String query= "SELECT e.Name, e.LastName FROM Employee e WHERE e.ID_Employee = ? " +
+            "AND e.ID_Employee IN (SELECT a.ID_Employee FROM Assignment a " +
+            "WHERE TRUNC(a.dateassig) = TRUNC(SYSDATE))";
+    try (Connection conn = DatabaseConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setInt(1, employeeId);
+        ResultSet rs = stmt.executeQuery();
+        while(rs.next()){
+            waiters.add((rs.getString("Name") + " " + rs.getString("LastName")));
         }
+        /*if (rs.next()) {
+            return rs.getString("Name") + " " + rs.getString("LastName");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return waiters;
+}*/
 
         // Dentro de jemb.bistrogurmand.Controllers.TableDAO.EmployeeDAO
 

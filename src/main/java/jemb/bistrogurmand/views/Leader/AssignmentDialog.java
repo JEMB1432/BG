@@ -16,6 +16,8 @@ import jemb.bistrogurmand.utils.TableRestaurant;
 import jemb.bistrogurmand.utils.User;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -179,7 +181,7 @@ public class AssignmentDialog extends Stage {
         private void updateAvailableResources(String selectedShift) {
             // Obtener las asignaciones para el turno y la fecha actual
             List<PlanificationRestaurant> currentAssignments =
-                    LeaderAssigController.getAssignmentsForShiftAndDate(selectedShift);
+                    LeaderAssigController.getAssignmentsForShiftAndDate(selectedShift, LocalDate.now());
 
             // Extraer los IDs de meseros y números de mesa de las asignaciones
             assignedWaiterIds = currentAssignments.stream()
@@ -190,8 +192,21 @@ public class AssignmentDialog extends Stage {
                     .map(PlanificationRestaurant::getID_Table)
                     .collect(Collectors.toSet());
 
-            cbEmployees.setItems(FXCollections.observableArrayList(allUsers)); // Esto fuerza la actualización
-            cbTables.setItems(FXCollections.observableArrayList(allTables));
+
+            // --- LÓGICA DE ORDENACIÓN PARA MESEROS ---
+            List<User> sortedUsers = new ArrayList<>(allUsers);
+            sortedUsers.sort(Comparator.comparing((User user) -> assignedWaiterIds.contains(Integer.parseInt(user.getUserID())) ? 1 : 0)
+                    .thenComparing(User::getFirstName));
+
+            cbEmployees.setItems(FXCollections.observableArrayList(sortedUsers));
+
+
+            // --- LÓGICA DE ORDENACIÓN PARA MESAS (CAMBIO AQUÍ) ---
+            List<TableRestaurant> sortedTables = new ArrayList<>(allTables);
+            sortedTables.sort(Comparator.comparing((TableRestaurant table) -> assignedTableNumbers.contains(table.getNumberTable()) ? 1 : 0)
+                    .thenComparing(TableRestaurant::getNumberTable));
+
+            cbTables.setItems(FXCollections.observableArrayList(sortedTables));
         }
 
 
@@ -218,6 +233,11 @@ public class AssignmentDialog extends Stage {
                     alert.setTitle("Asignación Exitosa");
                     alert.setHeaderText(null);
                     alert.setContentText("Asignación guardada correctamente.");
+                    // --- APLICAR ESTILO AL ALERT DE ÉXITO ---
+                    alert.getDialogPane().getStylesheets().add(
+                            getClass().getResource("/jemb/bistrogurmand/CSS/alerts.css").toExternalForm()
+                    );
+
                     alert.showAndWait();
                     // Al cerrar el modal, asegúrate de que la vista principal se actualice si es necesario
                     this.close();
@@ -226,6 +246,10 @@ public class AssignmentDialog extends Stage {
                     alert.setTitle("Error de Asignación");
                     alert.setHeaderText("No se pudo guardar la asignación");
                     alert.setContentText("Puede que ya exista una asignación idéntica o ha ocurrido un error en la base de datos.");
+                    // --- APLICAR ESTILO AL ALERT DE ERROR ---
+                    alert.getDialogPane().getStylesheets().add(
+                            getClass().getResource("/jemb/bistrogurmand/CSS/alerts.css").toExternalForm()
+                    );
                     alert.showAndWait();
                 }
             } else {
@@ -233,6 +257,10 @@ public class AssignmentDialog extends Stage {
                 alert.setTitle("Error");
                 alert.setHeaderText("Datos incompletos");
                 alert.setContentText("Por favor seleccione mesero, turno y mesa");
+                // --- APLICAR ESTILO AL ALERT DE ERROR (Datos incompletos) ---
+                alert.getDialogPane().getStylesheets().add(
+                        getClass().getResource("/jemb/bistrogurmand/CSS/alerts.css").toExternalForm()
+                );
                 alert.showAndWait();
             }
         }

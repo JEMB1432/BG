@@ -9,8 +9,9 @@ public class PlanificationRestaurant {
 
     private Integer ID_Assignment;
     private Integer ID_Employee;
+    private String employeeName; // Nuevo campo
     private Integer ID_Table;
-
+    private int tableNumber;
     private LocalTime startTime;      // Hora de inicio
     private LocalTime endTime;        // Hora de fin
     private LocalDate dateAssig;      // Fecha de asignación
@@ -20,6 +21,25 @@ public class PlanificationRestaurant {
     private TableDAO.EmployeeDAO employee;
     private TableDAO table;
 
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
+
+    public int getTableNumber() {
+        return tableNumber;
+    }
+
+    public void setTableNumber(int tableNumber) {
+        this.tableNumber = tableNumber;
+    }
+
+    public PlanificationRestaurant(){
+
+    }
     // Constructor
     public PlanificationRestaurant(Integer ID_Assignment, Integer ID_Employee, Integer ID_Table,
                                    LocalTime startTime, LocalTime endTime, LocalDate dateAssig,
