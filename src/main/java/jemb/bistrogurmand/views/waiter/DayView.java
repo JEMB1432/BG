@@ -72,8 +72,8 @@ public class DayView {
     }
 
     public BorderPane getView() {
-
         return root;
     }
 }
+
 
