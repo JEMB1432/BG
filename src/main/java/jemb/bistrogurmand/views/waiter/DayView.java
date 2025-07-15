@@ -14,6 +14,8 @@ public class DayView {
     public DayView() {
         root = new BorderPane();
 
+        SidebarWaiter sm = new SidebarWaiter();
+
         // Estilo del fondo general
         root.setStyle("-fx-background-color: #f5f5f5;");
 
@@ -45,9 +47,11 @@ public class DayView {
                 crearMiniCard("Mesas Asignadas:", "4", "🍽")
         );
 
-       mainContent.getChildren().addAll(infoCard, statsCards);
+        mainContent.getChildren().addAll(infoCard, statsCards);
         root.setCenter(mainContent);
+        root.setLeft(sm.getView());
     }
+
 
     private VBox crearMiniCard(String titulo, String valor, String icono) {
         VBox card = new VBox(5);
@@ -68,6 +72,7 @@ public class DayView {
     }
 
     public BorderPane getView() {
+
         return root;
     }
 }
