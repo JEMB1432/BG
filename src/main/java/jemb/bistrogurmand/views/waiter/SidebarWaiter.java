@@ -142,6 +142,35 @@ public class SidebarWaiter extends VBox {
 
         this.getChildren().add(menu);
     }
+    private Button crearMenuButton(String text, String svgPath) {
+        SVGPath icon = createScaledSvgIcon(svgPath, 24);
+
+        StackPane iconContainer = new StackPane(icon);
+        iconContainer.setPrefSize(24, 24);
+        iconContainer.setAlignment(Pos.CENTER);
+        iconContainer.getStyleClass().add("icon-container");
+
+        Label label = new Label(text);
+        label.getStyleClass().add("menu-label");
+
+        HBox content = new HBox(10, iconContainer, label);
+        content.setAlignment(Pos.CENTER_LEFT);
+        content.setPrefHeight(40); // altura uniforme
+        content.getStyleClass().add("button-content");
+
+        Button button = new Button();
+        button.setGraphic(content);
+        button.setMaxWidth(Double.MAX_VALUE);
+        button.getStyleClass().add("menu-button");
+        button.setOnAction(e -> {
+            setActiveButton(button);
+            if (viewChangeListener != null) {
+                viewChangeListener.accept(text);
+            }
+        });
+
+        return button;
+    }
 
 
 
