@@ -171,8 +171,33 @@ public class SidebarWaiter extends VBox {
 
         return button;
     }
+    private SVGPath createScaledSvgIcon(String path, double size) {
+        SVGPath icon = new SVGPath();
+        icon.setContent(path);
+        icon.getStyleClass().add("icon");
 
+        // Establecer tamaño fijo usando prefSize y mantener aspecto con escala
+        icon.setScaleX(1);
+        icon.setScaleY(1);
 
+        // Forzar tamaño de contenedor usando StackPane
+        StackPane wrapper = new StackPane(icon);
+        wrapper.setPrefSize(size, size);
+        wrapper.setMinSize(size, size);
+        wrapper.setMaxSize(size, size);
+        wrapper.setAlignment(Pos.CENTER);
+
+        icon.setScaleX(size / 24);
+        icon.setScaleY(size / 24);
+
+        return icon;
+    }
+
+    private void setActiveButton(Button activeButton) {
+        Arrays.asList(btnJornada, btnTomarPedido, btnModificarPedido, btnMesasAsignadas)
+                .forEach(btn -> btn.getStyleClass().remove("active"));
+        activeButton.getStyleClass().add("active");
+    }
 
 }
 
