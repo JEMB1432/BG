@@ -74,6 +74,7 @@ public class App extends Application {
                     break;
                 case "day":
                     root = new DayView().getView();
+                    break;
                 default:
                     throw new IllegalArgumentException("Vista no encontrada: " + nombreVista);
             }
