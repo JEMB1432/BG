@@ -7,6 +7,12 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import jemb.bistrogurmand.views.waiter.SidebarMesero;
+import jemb.bistrogurmand.views.waiter.TakeorderView;
+import jemb.bistrogurmand.views.waiter.ModifyOrderView;
 
 public class JornadaView {
     private BorderPane root;
@@ -16,6 +22,22 @@ public class JornadaView {
 
         // Estilo del fondo general
         root.setStyle("-fx-background-color: #f5f5f5;");
+
+        VBox sidebar = new SidebarMesero().getView();
+        root.setLeft(sidebar);
+
+        HBox itemTomar     = (HBox) sidebar.getChildren().get(4);
+        HBox itemModificar = (HBox) sidebar.getChildren().get(5);
+
+        itemTomar.setOnMouseClicked((MouseEvent e) -> {
+            // reemplaza solo el centro con TakeorderView
+            root.setCenter(new TakeorderView("TBL-01").getView());
+        });
+
+        itemModificar.setOnMouseClicked((MouseEvent e) -> {
+            // reemplaza solo el centro con ModifyOrderView
+            root.setCenter(new ModifyOrderView("TBL-01").getView());
+        });
 
         VBox mainContent = new VBox(20);
         mainContent.setPadding(new Insets(40, 40, 40, 40));

@@ -30,16 +30,16 @@ public class ModifyOrderView {
         // 1) Sidebar a la izquierda
         root.setLeft(new SidebarMesero().getView());
 
-        // 2) Contenido central
+        // Contenido central
         VBox main = new VBox(15);
         main.setPadding(new Insets(20));
         main.setAlignment(Pos.TOP_LEFT);
 
-        // — Mesa #
+        // Mesa #
         Label lblMesa = new Label("Mesa: # " + tableId);
         lblMesa.setFont(Font.font("System", FontWeight.BOLD, 24));
 
-        // — Pedidos existentes en esta mesa
+        // Pedidos existentes en esta mesa
         Label lblAffected = new Label("Pedido afectado:");
         cbOrders = new ComboBox<>(
                 FXCollections.observableArrayList(
@@ -52,14 +52,14 @@ public class ModifyOrderView {
         HBox boxAffected = new HBox(10, lblAffected, cbOrders);
         boxAffected.setAlignment(Pos.CENTER_LEFT);
 
-        // — Motivo de modificación
+        // Motivo de modificación
         Label lblReason = new Label("Motivo de modificación:");
         txtReason = new TextArea();
         txtReason.setPromptText("Describe el motivo...");
         txtReason.setPrefRowCount(3);
         txtReason.setWrapText(true);
 
-        // — Botón de envío
+        // Botón de envío
         Button btnSend = new Button("Enviar solicitud a líder de meseros");
         btnSend.getStyleClass().add("btn-send");
         btnSend.setOnAction(e -> {
