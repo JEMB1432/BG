@@ -36,15 +36,21 @@ public class DayView {
 
         infoCard.getChildren().addAll(nombre, turno);
 
+        // Controller para obtener datos de las tarjetas
+        jemb.bistrogurmand.controllers.DayController controller = new jemb.bistrogurmand.controllers.DayController();
+        double averageRating = controller.getAverageRating(waiterId);
+        int activeOrders = controller.getActiveOrdersCount(waiterId);
+        int assignedTables = controller.getAssignedTablesCount(waiterId);
+
         // Tarjetas inferiores
         HBox statsCards = new HBox(30);
         statsCards.setPadding(new Insets(20, 0, 0, 0));
         statsCards.setAlignment(Pos.CENTER_LEFT);
 
         statsCards.getChildren().addAll(
-                crearMiniCard("Calificación promedio:", "4.5", "★"),
-                crearMiniCard("Pedidos activos:", "2", "🔔"),
-                crearMiniCard("Mesas Asignadas:", "4", "🍽")
+                crearMiniCard("Calificación promedio:", String.valueOf(averageRating), "★"),
+                crearMiniCard("Pedidos activos:", String.valueOf(activeOrders), "🔔"),
+                crearMiniCard("Mesas asignadas:", String.valueOf(assignedTables), "🍽")
         );
 
         mainContent.getChildren().addAll(infoCard, statsCards);
