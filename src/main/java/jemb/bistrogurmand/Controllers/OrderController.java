@@ -11,6 +11,7 @@ import jemb.bistrogurmand.utils.UserSession;
 
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class OrderController {
     private final ObservableList<OrderItem> currentOrder = FXCollections.observableArrayList();
@@ -87,6 +88,13 @@ public class OrderController {
         lookup.remove(item.getProduct().getId());
         observations.remove(item.getProduct().getId());
         currentOrder.remove(item);
+    }
+    public List<String> getOrdersForTable() {
+        return Arrays.asList("PED-001", "PED-002", "PED-003");
+    }
+
+    public void requestModification(String orderId, String reason) {
+
     }
 
     public void sendOrder() {
