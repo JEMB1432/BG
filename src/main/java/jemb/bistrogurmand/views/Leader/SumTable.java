@@ -6,6 +6,8 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import jemb.bistrogurmand.Controllers.WaiterController;
@@ -50,14 +52,25 @@ public class SumTable {
     }
 
     private void createTopSection() {
+        VBox globalSection = new VBox();
+
         HBox topBox = new HBox(20);
         topBox.getStyleClass().add("top-section");
         topBox.setAlignment(Pos.CENTER_LEFT);
         topBox.setPadding(new Insets(0, 0, 20, 0));
 
+        HBox titleContent = new HBox();
+        titleContent.setAlignment(Pos.BOTTOM_LEFT);
+        titleContent.setSpacing(10);
+
+        ImageView iconTitle = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/clock-ico.png").toString()));
+        iconTitle.setFitHeight(57);
+        iconTitle.setFitWidth(57);
         Label title = new Label("Resumen de turnos");
         title.getStyleClass().add("title");
         title.setFont(new Font(20));
+
+        titleContent.getChildren().addAll(iconTitle, title);
 
         searchField.setPromptText("Buscar...");
         searchField.getStyleClass().add("search-field");
@@ -272,32 +285,32 @@ public class SumTable {
     }
 
     //private void editSelectedWaiter() {
-        //User selected = table.getSelectionModel().getSelectedItem();
-        //if (selected != null) {
-            // Implementar lógica de edición
-            //System.out.println("Editar mesero: " + selected.getFirstName());
-        //} else {
-            //showAlert("Selección requerida", "Por favor seleccione un mesero para editar.");
-        //}
+    //User selected = table.getSelectionModel().getSelectedItem();
+    //if (selected != null) {
+    // Implementar lógica de edición
+    //System.out.println("Editar mesero: " + selected.getFirstName());
+    //} else {
+    //showAlert("Selección requerida", "Por favor seleccione un mesero para editar.");
+    //}
     //}
 
     //private void deleteSelectedWaiter() {
-      //  User selected = table.getSelectionModel().getSelectedItem();
+    //  User selected = table.getSelectionModel().getSelectedItem();
     //    if (selected != null) {
-      //      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        //    alert.setTitle("Confirmar eliminación");
-          //  alert.setHeaderText("¿Eliminar mesero?");
-            //alert.setContentText("Está a punto de eliminar a " + selected.getFirstName() +
-              //      " " + selected.getLastName() + ". ¿Continuar?");
+    //      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    //    alert.setTitle("Confirmar eliminación");
+    //  alert.setHeaderText("¿Eliminar mesero?");
+    //alert.setContentText("Está a punto de eliminar a " + selected.getFirstName() +
+    //      " " + selected.getLastName() + ". ¿Continuar?");
 //
-   //          Optional<ButtonType> result = alert.showAndWait();
-     //       if (result.isPresent() && result.get() == ButtonType.OK) {
-       //         // Implementar lógica de eliminación
-         //       refreshTable();
-           // }
-        //} else {
-          //  showAlert("Selección requerida", "Por favor seleccione un mesero para eliminar.");
-        //}
+    //          Optional<ButtonType> result = alert.showAndWait();
+    //       if (result.isPresent() && result.get() == ButtonType.OK) {
+    //         // Implementar lógica de eliminación
+    //       refreshTable();
+    // }
+    //} else {
+    //  showAlert("Selección requerida", "Por favor seleccione un mesero para eliminar.");
+    //}
     //}
 
     private void showAlert(String title, String message) {

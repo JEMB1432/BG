@@ -12,30 +12,34 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
-import jemb.bistrogurmand.Controllers.OrderChangeController;
+import jemb.bistrogurmand.Controllers.PlanificationController;
 import jemb.bistrogurmand.Controllers.TableController;
-import jemb.bistrogurmand.utils.OrderColumnFactory;
-import jemb.bistrogurmand.utils.OrderRestaurant;
+import jemb.bistrogurmand.Controllers.TableDAO;
+import jemb.bistrogurmand.utils.PlanificationColumnFactory;
+import jemb.bistrogurmand.utils.PlanificationRestaurant;
 import jemb.bistrogurmand.utils.TableRestaurant;
 import jemb.bistrogurmand.utils.TableRestaurantColumnFactory;
 
-import static jemb.bistrogurmand.utils.OrderColumnFactory.*;
+import static jemb.bistrogurmand.utils.PlanificationColumnFactory.createShiftColumn;
+import static jemb.bistrogurmand.utils.PlanificationColumnFactory.*;
 import static jemb.bistrogurmand.utils.TableRestaurantColumnFactory.*;
 
-public class OrderChangeView {
+public class PlanificationView {
     private BorderPane view;
-    private TableView<OrderRestaurant> table;
-    private OrderChangeController tableController;
+    private TableView<PlanificationRestaurant> table;
+    private PlanificationController planificationController;
     private TextField searchField;
     private Pagination pagination;
     private Label paginationInfo;
     private final int rowsPerPage = 10;
 
-    private ObservableList<OrderRestaurant> masterTableRestaurantList;
-    private ObservableList<OrderRestaurant> currentDisplayedList;
+    private ObservableList<PlanificationRestaurant> masterTableRestaurantList;
+    private ObservableList<PlanificationRestaurant> currentDisplayedList;
 
-    public OrderChangeView() {
+    public PlanificationView() {
         masterTableRestaurantList = FXCollections.observableArrayList();
         currentDisplayedList = FXCollections.observableArrayList();
 
@@ -43,7 +47,7 @@ public class OrderChangeView {
         view.getStyleClass().add("root");
         view.setPadding(new Insets(20));
         view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/tables.css").toExternalForm());
-        tableController = new OrderChangeController();
+        planificationController = new PlanificationController();
 
         searchField = new TextField();
         table = new TableView<>();
@@ -76,26 +80,26 @@ public class OrderChangeView {
         titleContent.setAlignment(Pos.BOTTOM_LEFT);
         titleContent.setSpacing(10);
 
-        ImageView iconTitle = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/waiter.png").toString()));
+        ImageView iconTitle = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/plan-ico.png").toString()));
         iconTitle.setFitWidth(57);
         iconTitle.setFitHeight(57);
-        Label title = new Label("Cambio de pedido");
+        Label title = new Label("Planificación");
         title.getStyleClass().add("title");
         title.setFont(new Font(20));
 
         titleContent.getChildren().addAll(iconTitle, title);
 
-        searchField.setPromptText("Buscar pedido de cambio...");
+        searchField.setPromptText("Buscar Mesero...");
         searchField.getStyleClass().add("search-field");
         searchField.setPrefWidth(Double.MAX_VALUE);
 
-        //ImageView imageViewAdd = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/add.png").toString()));
-       // imageViewAdd.setFitHeight(16);
-     //   imageViewAdd.setFitWidth(16);
-       // Button addbutton = new Button("Agregar Mesa");
-     //   addbutton.setGraphic(imageViewAdd);
-       // addbutton.getStyleClass().add("primary-button");
-      //  addbutton.setOnAction(event -> addTableForm());
+        ImageView imageViewAdd = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/add.png").toString()));
+        imageViewAdd.setFitHeight(16);
+        imageViewAdd.setFitWidth(16);
+        Button addbutton = new Button("Asignar mesa");
+        addbutton.setGraphic(imageViewAdd);
+        addbutton.getStyleClass().add("primary-button");
+        addbutton.setOnAction(event -> addTableForm());
 
         ImageView imageViewUpdate = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/update.png").toString()));
         imageViewUpdate.setFitHeight(16);
@@ -105,7 +109,7 @@ public class OrderChangeView {
         refreshButton.getStyleClass().add("secondary-button");
         refreshButton.setOnAction(e -> refreshTable());
 
-        topBox.getChildren().addAll(searchField, refreshButton);
+        topBox.getChildren().addAll(searchField, addbutton, refreshButton);
         globalSection.getChildren().addAll(titleContent, topBox);
         view.setTop(globalSection);
     }
@@ -115,12 +119,14 @@ public class OrderChangeView {
         table.getStyleClass().add("table-view");
 
         table.getColumns().addAll(
-                OrderColumnFactory.createIndexColumn(pagination,rowsPerPage),
-                createID_EmployeeColumn(),
-                createID_SaleColumn(),
-                createID_ProductColumn()
+                PlanificationColumnFactory.createIndexColumn(pagination,rowsPerPage),
+                //createNumberPColumn(),
+                createEmployeeColumn(),
+                createTableColumn(),
+                createShiftColumn()
         );
     }
+
 
     private void configurePagination() {
         paginationInfo = new Label();
@@ -152,47 +158,52 @@ public class OrderChangeView {
         buttomBox.setAlignment(Pos.CENTER_RIGHT);
         buttomBox.setPadding(new Insets(20, 0, 0, 0));
 
-        Button editButton = new Button("Editar");
+        /*Button editButton = new Button("Editar");
         editButton.getStyleClass().add("primary-button");
         editButton.setOnAction(event -> editSelectedTable());
 
         Button deleteButton = new Button("Eliminar");
         deleteButton.getStyleClass().add("danger-button");
-        deleteButton.setOnAction(event -> deleteSelectedTable());
+        deleteButton.setOnAction(event -> deleteSelectedTable());*/
+        Label lblInfoDiaria= new Label("La tabla muestra las asignaciones por día");
+        lblInfoDiaria.setStyle("-fx-alignment: center");
+        lblInfoDiaria.getStyleClass().add("text-column");
 
-        buttomBox.getChildren().addAll(editButton, deleteButton);
+        buttomBox.getChildren().addAll(/*editButton, deleteButton*/lblInfoDiaria);
         view.setBottom(buttomBox);
     }
 
     private void refreshTable() {
-        masterTableRestaurantList.setAll(tableController.getOrderRestaurants());
+        masterTableRestaurantList.setAll(planificationController.getPlanificationRestaurants());
         searchField.clear();
         filterAndPaginateTable();
     }
 
     private void filterAndPaginateTable() {
         String filter = searchField.getText().toLowerCase();
-        ObservableList<OrderRestaurant> filteredList = FXCollections.observableArrayList();
+        ObservableList<PlanificationRestaurant> filteredList = FXCollections.observableArrayList();
 
-        /*if(filter.isEmpty()) {
+        if(filter.isEmpty()) {
             filteredList.addAll(masterTableRestaurantList);
         }else {
-            for (OrderRestaurant tableRestaurant : masterTableRestaurantList) {
-                if (matchesFilter(tableRestaurant, filter)){
-                    filteredList.add(tableRestaurant);
+            for (PlanificationRestaurant planificationRestaurant : masterTableRestaurantList) {
+                if (matchesFilter(planificationRestaurant, filter)){
+                    filteredList.add(planificationRestaurant);
                 }
             }
-        }*/
+        }
 
         currentDisplayedList.setAll(filteredList);
         updatePagination();
     }
 
-    /*private boolean matchesFilter(OrderRestaurant tableRestaurant, String filter) {
-        return tableRestaurant.getID_Employee().toString contains(filter) ||
-                tableRestaurant.getLocation().toLowerCase().contains(filter) ||
-                tableRestaurant.getNumberSeats().toString().contains(filter);
-    }*/
+    private boolean matchesFilter(PlanificationRestaurant planificationRestaurant, String filter) {
+        String name=TableDAO.EmployeeDAO.getEmployeeNameById(planificationRestaurant.getID_Employee());
+        String table=TableDAO.getTableNumberById(planificationRestaurant.getID_Table());
+        return name.contains(filter) ||
+                table.contains(filter) ||
+                planificationRestaurant.getShift().contains(filter);
+    }
 
     private void updatePagination() {
         int itemCount = currentDisplayedList.size();
@@ -221,11 +232,11 @@ public class OrderChangeView {
         table.refresh();
     }
 
-    private void editSelectedTable() {
-        OrderRestaurant selected = table.getSelectionModel().getSelectedItem();
+    /*private void editSelectedTable() {
+        TableRestaurant selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
             // Implementar lógica de edición
-            System.out.println("Editar pedido: ");
+            System.out.println("Editar mesa: " + selected.getNumberTable().toString());
         } else {
             showAlert("Selección requerida", "Por favor seleccione una mesa para editar.");
         }
@@ -242,10 +253,16 @@ public class OrderChangeView {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
+*/
     private void addTableForm() {
-        System.out.println("Adding table");
+            AssignmentDialog dialog = new AssignmentDialog();
+            dialog.showAndWait(); // Modal
+        refreshTable();
     }
+
+   /* Stage modal = new Stage();
+    modal.initModality(Modality.APPLICATION_MODAL); // Bloquea la ventana principal
+*/
 
     public BorderPane getView() {
         return view;

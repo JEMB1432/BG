@@ -31,7 +31,7 @@ target/
 
 # IntelliJ IDEA
 .idea/
-*.iml
+*.xml
 
 # Eclipse
 .apt_generated
