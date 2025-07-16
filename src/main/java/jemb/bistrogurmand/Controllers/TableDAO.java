@@ -86,7 +86,9 @@ public class TableDAO {
             e.printStackTrace();
         }
         return "?";
-    }/*
+    }
+
+    /*
 
     public static List<String> getTableNumberById(int tableId) {
         List<String> tables = new ArrayList<>();

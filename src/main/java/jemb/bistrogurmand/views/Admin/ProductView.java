@@ -14,6 +14,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.ProductController;
+import jemb.bistrogurmand.utils.Modals.AddProductDialog;
+import jemb.bistrogurmand.utils.Modals.EditProductDialog;
 import jemb.bistrogurmand.utils.Product;
 import jemb.bistrogurmand.utils.ProductColumnFactory;
 import jemb.bistrogurmand.utils.User;
@@ -91,7 +93,7 @@ public class ProductView {
         ImageView imageViewAdd = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/add.png").toString()));
         imageViewAdd.setFitHeight(16);
         imageViewAdd.setFitWidth(16);
-        Button addbutton = new Button("Agregar Mesero");
+        Button addbutton = new Button("Agregar producto");
         addbutton.setGraphic(imageViewAdd);
         addbutton.getStyleClass().add("primary-button");
         addbutton.setOnAction(event -> addProductForm());
@@ -161,7 +163,7 @@ public class ProductView {
         deleteButton.getStyleClass().add("danger-button");
         deleteButton.setOnAction(e -> deleteSelectedProduct());
 
-        buttonBox.getChildren().addAll(editButton, deleteButton);
+        buttonBox.getChildren().addAll(editButton);
         view.setBottom(buttonBox);
     }
 
@@ -228,10 +230,23 @@ public class ProductView {
     private void editSelectedProduct() {
         Product selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            // Implementar lógica de edición
-            System.out.println("Editar producto: " + selected.getName());
+            EditProductDialog dialog = new EditProductDialog(selected);
+
+            Optional<Product> result = dialog.showAndWait();
+            result.ifPresent(updatedProduct -> {
+                if (updatedProduct != null) {
+                    if (productController.updateProduct(updatedProduct)) {
+                        showAlert("Producto Actualizado", "El producto se ha actualizado correctamente", 1);
+                        refreshTable();
+                    } else {
+                        showAlert("Error", "Ocurrió un error al actualizar el producto", 3);
+                    }
+                } else {
+                    showAlert("Error", "Por favor ingrese valores válidos", 3);
+                }
+            });
         } else {
-            showAlert("Selección requerida", "Por favor seleccione un producto para editar.");
+            showAlert("Selección requerida", "Por favor seleccione un producto para editar", 2);
         }
     }
 
@@ -259,20 +274,52 @@ public class ProductView {
                 }
             }
         } else {
-            showAlert("Selección requerida", "Por favor seleccione un producto para eliminar.");
+            showAlert("Selección requerida", "Por favor seleccione un producto para eliminar.", 2);
         }
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+    private void showAlert(String title, String message, int type) {
+        /*
+        1 -ALERTA DE INFORMACION
+        2 -ALERTA DE WARNING
+        3 -ALERTA DE ERROR
+         */
+        Alert alert;
+        switch (type){
+            case 1:
+                alert = new Alert(Alert.AlertType.INFORMATION);
+                break;
+            case 2:
+                alert = new Alert(Alert.AlertType.WARNING);
+                break;
+            case 3:
+                alert = new Alert(Alert.AlertType.ERROR);
+                break;
+            default:
+                alert = new Alert(Alert.AlertType.NONE);
+        }
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
 
-    private void addProductForm(){
-        System.out.println("addProductForm");
+    private void addProductForm() {
+        AddProductDialog dialog = new AddProductDialog();
+
+        Optional<Product> result = dialog.showAndWait();
+        result.ifPresent(newProduct -> {
+            if (newProduct != null) {
+                if (productController.addProduct(newProduct)) {
+                    showAlert("Producto Agregado", "El producto se ha agregado correctamente", 1);
+                    refreshTable();
+                } else {
+                    showAlert("Error", "Ocurrió un error al agregar el producto", 3);
+                }
+            } else {
+                showAlert("Error", "Por favor complete todos los campos correctamente", 3);
+            }
+        });
     }
 
     public BorderPane getView() {

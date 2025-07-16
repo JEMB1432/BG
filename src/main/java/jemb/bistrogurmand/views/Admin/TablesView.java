@@ -161,7 +161,7 @@ public class TablesView {
         deleteButton.getStyleClass().add("danger-button");
         deleteButton.setOnAction(event -> deleteSelectedTable());
 
-        buttomBox.getChildren().addAll(editButton, deleteButton);
+        buttomBox.getChildren().addAll(editButton);
         view.setBottom(buttomBox);
     }
 

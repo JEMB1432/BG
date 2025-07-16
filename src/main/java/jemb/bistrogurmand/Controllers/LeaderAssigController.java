@@ -18,8 +18,8 @@ public class LeaderAssigController {
     }
 
     public static boolean insertAssignment(int ID_Employee, int ID_Table, String shift) {
-        String sql = "INSERT INTO Assignment (ID_Assignment, ID_Employee, ID_Table, StartTime, EndTime, Favorite, dateassig, Shift) " +
-                "VALUES (ASSIGNMENT_SEQ.NEXTVAL, ?, ?, ?, ?, 0, ?, ?)";
+        String sql = "INSERT INTO Assignment ( ID_Employee, ID_Table, StartTime, EndTime, Favorite, dateassig, Shift) " +
+                "VALUES (?, ?, ?, ?, 0, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

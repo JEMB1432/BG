@@ -1,13 +1,17 @@
 package jemb.bistrogurmand.utils;
 
 public class Product {
+    private int ID_Product;
     private String name;
     private double price;
     private String available;
     private String urlImage;
     private String description;
 
-    public Product(String name, double price, String available, String urlImage, String description) {
+    public Product() {}
+
+    public Product(int ID_Product ,String name, double price, String available, String urlImage, String description) {
+        this.ID_Product = ID_Product;
         this.name = name;
         this.price = price;
         this.available = available;
@@ -53,5 +57,13 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getID_Product() {
+        return ID_Product;
+    }
+
+    public void setID_Product(int ID_Product) {
+        this.ID_Product = ID_Product;
     }
 }

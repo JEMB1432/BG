@@ -11,6 +11,9 @@ module jemb.bistrogurmand {
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
     requires io.github.cdimascio.dotenv.java;
+    requires org.apache.httpcomponents.client5.httpclient5;
+    requires org.apache.httpcomponents.core5.httpcore5;
+    requires com.fasterxml.jackson.databind;
 
     exports jemb.bistrogurmand.application;
 }

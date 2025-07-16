@@ -18,7 +18,7 @@ public class TableController {
 
         try{
             conn = DatabaseConnection.getConnection();
-            String sql = "SELECT * FROM TableRestaurant ORDER BY ID_Table";
+            String sql = "SELECT ID_Table, NUMBERTABLE, NUMBERSEATS, STATE, LOCATION FROM TableRestaurant ORDER BY ID_Table";
             response = conn.createStatement().executeQuery(sql);
 
             while (response.next()) {
