@@ -1,6 +1,7 @@
-package jemb.bistrogurmand.controllers;
+package jemb.bistrogurmand.Controllers;
 
-import jemb.bistrogurmand.dbconnection.DatabaseConnection;
+import jemb.bistrogurmand.DbConection.DatabaseConnection;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,17 +9,14 @@ import java.sql.SQLException;
 
 public class DayController {
 
-    private final Connection conn;
-
-    public DayController() {
-        this.conn = DatabaseConnection.getConnection();
-    }
-
     public double getAverageRating(int waiterId) {
         double rating = 0;
-        String sql = "SELECT AVG(rating) AS average FROM orders WHERE waiter_id = ? AND status = 'completed'";
+        //Pendiente a corregir
+        String sql = "SELECT AVG( ) AS average FROM orders WHERE waiter_id = ? AND status = 'completed'";
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, waiterId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -33,9 +31,12 @@ public class DayController {
 
     public int getActiveOrdersCount(int waiterId) {
         int count = 0;
-        String sql = "SELECT COUNT(*) AS total FROM orders WHERE waiter_id = ? AND status = 'active'";
+        //Pendiente a cambios
+        String sql = "SELECT COUNT(*) AS total FROM orders WHERE ID_EMPLOYEE = ? AND status = 'active'";
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try{
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, waiterId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -50,13 +51,14 @@ public class DayController {
 
     public int getAssignedTablesCount(int waiterId) {
         int count = 0;
-        String sql = "SELECT COUNT(*) AS total FROM assignments WHERE waiter_id = ?";
-
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String sql = "SELECT COUNT(*) AS TOTAL FROM assignment WHERE ID_EMPLOYEE = ?";
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, waiterId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                count = rs.getInt("total");
+                count = rs.getInt("TOTAL");
             }
         } catch (SQLException e) {
             e.printStackTrace();
