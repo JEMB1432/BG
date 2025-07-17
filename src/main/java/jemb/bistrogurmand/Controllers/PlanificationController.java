@@ -2,7 +2,7 @@ package jemb.bistrogurmand.Controllers;
 
 import jemb.bistrogurmand.DbConection.DatabaseConnection;
 import jemb.bistrogurmand.utils.PlanificationRestaurant;
-import jemb.bistrogurmand.utils.TableRestaurant;
+import jemb.bistrogurmand.utils.ShiftSummary;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PlanificationController {
@@ -19,7 +20,7 @@ public class PlanificationController {
         ResultSet response = null;
         List<PlanificationRestaurant> tables = new ArrayList<>();
 
-        try{
+        try {
             conn = DatabaseConnection.getConnection();
             String sql = "SELECT * FROM Assignment ORDER BY ID_Assignment";
             response = conn.createStatement().executeQuery(sql);
@@ -36,9 +37,7 @@ public class PlanificationController {
                 String shift = response.getString("Shift");
 
 
-
-
-                tables.add(new PlanificationRestaurant(ID_Assignment,ID_Employee,ID_Table,startTime,endTime,dateAssig,favorite,shift));
+                tables.add(new PlanificationRestaurant(ID_Assignment, ID_Employee, ID_Table, startTime, endTime, dateAssig, favorite, shift));
             }
         } catch (SQLException e) {
             System.err.println("Error al obtener la lista de Tablas: " + e.getMessage());
@@ -77,9 +76,7 @@ public class PlanificationController {
                 String shift = response.getString("Shift");
 
 
-
-
-                assignmentsForToday.add(new PlanificationRestaurant(ID_Assignment,ID_Employee,ID_Table,startTime,endTime,dateAssig,favorite,shift));
+                assignmentsForToday.add(new PlanificationRestaurant(ID_Assignment, ID_Employee, ID_Table, startTime, endTime, dateAssig, favorite, shift));
             }
         } catch (SQLException e) {
             System.err.println("Error al obtener asignaciones para hoy desde TableDAO: " + e.getMessage());
@@ -120,4 +117,86 @@ public class PlanificationController {
         }
         return assignments;
     }
+    public static List<ShiftSummary> getShiftSummariesForToday() {
+        List<ShiftSummary> summaries = new ArrayList<>();
+        List<String> shifts = Arrays.asList("Mañana", "Tarde", "Noche"); // Define los turnos fijos
+
+        for (String shift : shifts) {
+            int activeWaitersCount = 0;    // Total de meseros disponibles
+            int serviceWaitersCount = 0;   // Meseros con asignación hoy para este turno
+            int pendingOrdersCount = 0;    // Órdenes pendientes (se mantiene igual)
+
+            // --- 1. Conteo de Meseros Activos (Registrados y Disponibles) ---
+            // Cuenta todos los empleados que son 'Mesero' y su State es 1.
+            String activeWaitersSql = """
+                SELECT COUNT(ID_Employee)
+                FROM Employee
+                WHERE Rol = 'Mesero' AND State = 1
+            """;
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(activeWaitersSql)) {
+                // No se necesita setear parámetros para este query si solo cuenta a todos los activos.
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        activeWaitersCount = rs.getInt(1);
+                    }
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al obtener conteo de meseros activos (registrados): " + e.getMessage());
+            }
+
+
+            // --- 2. Conteo de Meseros en Servicio (con asignación para este turno HOY) ---
+            // Cuenta los meseros (Rol='Mesero', State=1) que tienen una asignación HOY para el turno actual.
+            String serviceWaitersSql = """
+                SELECT COUNT(DISTINCT a.ID_Employee)
+                FROM Assignment a
+                JOIN Employee e ON a.ID_Employee = e.ID_Employee
+                WHERE TRUNC(a.dateassig) = TRUNC(SYSDATE)
+                AND a.Shift = ?
+                AND e.Rol = 'Mesero' AND e.State = 1
+            """;
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(serviceWaitersSql)) {
+                pstmt.setString(1, shift); // Setear el turno para esta consulta
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        serviceWaitersCount = rs.getInt(1);
+                    }
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al obtener conteo de meseros en servicio para turno " + shift + ": " + e.getMessage());
+            }
+
+
+            // --- 3. Conteo de Órdenes Pendientes (se mantiene igual que antes) ---
+            // Asumimos Order_Correction con Approved = 0 y vinculadas al turno y día de asignación.
+            String pendingOrdersSql = """
+                SELECT COUNT(DISTINCT oc.ID_Correction)
+                FROM Order_Correction oc
+                JOIN Sale s ON oc.ID_Sale = s.ID_Sale
+                JOIN Assignment a ON s.ID_Assignment = a.ID_Assignment
+                WHERE TRUNC(a.dateassig) = TRUNC(SYSDATE)
+                AND a.Shift = ?
+                AND oc.Approved = 0
+            """;
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(pendingOrdersSql)) {
+                pstmt.setString(1, shift);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        pendingOrdersCount = rs.getInt(1);
+                    }
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al obtener conteo de órdenes pendientes para turno " + shift + ": " + e.getMessage());
+            }
+
+            summaries.add(new ShiftSummary(shift, activeWaitersCount, serviceWaitersCount, pendingOrdersCount));
+        }
+
+        return summaries;
+    }
 }
+
+

@@ -160,7 +160,7 @@ public class AssignmentDialog extends Stage {
             topBox.getStyleClass().add("header-bar");
             topBox.setAlignment(Pos.CENTER);
             VBox layout = new VBox(15,topBox, shiftBox, employeeBox, tableBox, buttons);
-            layout.setPadding(new Insets(20));
+            layout.setPadding(new Insets(5));
             layout.setAlignment(Pos.CENTER);
 
             Scene scene = new Scene(layout, 300, 300);
