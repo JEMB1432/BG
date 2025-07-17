@@ -10,6 +10,8 @@ public class User {
     private String userImage;
     private String stateUser;
 
+    public User(){};
+
     public User(String userID, String firstName, String lastName, String phone,
                 String email, String rolUser, String userImage, String stateUser) {
         this.userID = userID;

@@ -27,9 +27,6 @@ public class ModifyOrderView {
     private void buildUI(String tableId) {
         root.setId("modificar-pedido-root");
 
-        // 1) Sidebar a la izquierda
-        root.setLeft(new SidebarMesero().getView());
-
         // Contenido central
         VBox main = new VBox(15);
         main.setPadding(new Insets(20));

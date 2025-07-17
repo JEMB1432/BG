@@ -29,9 +29,6 @@ public class TakeorderView {
     private void buildUI() {
         root.setId("tomar-pedido-root");
 
-        // Sidebar
-        root.setLeft(new SidebarMesero().getView());
-
         // Main
         VBox main = new VBox(15);
         main.setPadding(new Insets(20));

@@ -13,8 +13,8 @@ public class UserTableColumnFactory {
             int rowsPerPage
     ) {
         TableColumn<User, Void> indexColumn = new TableColumn<>("#");
-        indexColumn.setPrefWidth(40);
-        indexColumn.setStyle("-fx-alignment: center-right;");
+        indexColumn.setPrefWidth(30);
+        indexColumn.setStyle("-fx-alignment: center-left;");
         indexColumn.getStyleClass().add("index-column");
 
         indexColumn.setCellFactory(col -> new TableCell<>() {

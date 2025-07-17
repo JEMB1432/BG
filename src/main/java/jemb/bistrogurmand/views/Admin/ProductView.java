@@ -8,56 +8,53 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.stage.Stage;
 import javafx.util.Duration;
-import jemb.bistrogurmand.Controllers.WaiterController;
-import jemb.bistrogurmand.utils.Modals.AddWaiterDialog;
-import jemb.bistrogurmand.utils.Modals.EditWaiterDialog;
+import jemb.bistrogurmand.Controllers.ProductController;
+import jemb.bistrogurmand.utils.Product;
+import jemb.bistrogurmand.utils.ProductColumnFactory;
 import jemb.bistrogurmand.utils.User;
-import jemb.bistrogurmand.utils.UserTableColumnFactory;
 
 import java.util.Optional;
 
-import static jemb.bistrogurmand.utils.UserTableColumnFactory.*;
+import static jemb.bistrogurmand.utils.ProductColumnFactory.*;
 
-public class WaiterView {
+public class ProductView {
     private BorderPane view;
-    private TableView<User> table;
-    private WaiterController waiterController;
+    private TableView<Product> table;
+    private ProductController productController;
     private TextField searchField;
     private Pagination pagination;
     private Label paginationInfo;
     private final int rowsPerPage = 10;
 
-    private ObservableList<User> masterWaiterList;
-    private ObservableList<User> currentDisplayedList;
+    private ObservableList<Product> masterProductList;
+    private ObservableList<Product> currentDisplayedList;
 
-    public WaiterView() {
-        masterWaiterList = FXCollections.observableArrayList();
+    public ProductView() {
+        masterProductList = FXCollections.observableArrayList();
         currentDisplayedList = FXCollections.observableArrayList();
 
         view = new BorderPane();
         view.getStyleClass().add("root");
         view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/tables.css").toExternalForm());
         view.setPadding(new Insets(20));
-        waiterController = new WaiterController();
+        productController = new ProductController();
 
-        // Inicializar primero los componentes
         searchField = new TextField();
         table = new TableView<>();
         table.getStyleClass().add("table-view");
         pagination = new Pagination();
 
-        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
-            // Agregar un pequeño retardo para evitar procesamiento excesivo
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             PauseTransition pause = new PauseTransition(Duration.millis(100));
-            pause.setOnFinished(e -> filterAndPaginateTable());
+            pause.setOnFinished(event -> filterAndPaginateTable());
             pause.playFromStart();
         });
 
-        // Configurar la interfaz
         createTopSection();
         configureTable();
         configurePagination();
@@ -69,28 +66,27 @@ public class WaiterView {
     private void createTopSection() {
         VBox globalSection = new VBox();
 
-        HBox topBox = new HBox(20);
+        HBox topBox = new HBox();
         topBox.getStyleClass().add("top-section");
         topBox.setAlignment(Pos.CENTER_LEFT);
-        topBox.setPadding(new Insets(0, 0, 20, 0));
+        topBox.setPadding(new Insets(0,0,20,0));
 
         HBox titleContent = new HBox();
         titleContent.setAlignment(Pos.BOTTOM_LEFT);
         titleContent.setSpacing(10);
 
-        ImageView iconTitle = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/users.png").toString()));
+        ImageView iconTitle = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/dish.png").toString()));
         iconTitle.setFitHeight(57);
         iconTitle.setFitWidth(57);
-        Label title = new Label("Gestión de Meseros");
+        Label title = new Label("Gestionar Productos");
         title.getStyleClass().add("title");
         title.setFont(new Font(20));
 
         titleContent.getChildren().addAll(iconTitle, title);
 
-        searchField.setPromptText("Buscar meseros...");
+        searchField.setPromptText("Buscar roducto ...");
         searchField.getStyleClass().add("search-field");
         searchField.setPrefWidth(Double.MAX_VALUE);
-        //searchField.textProperty().addListener((obs, oldVal, newVal) -> filterAndPaginateTable());
 
         ImageView imageViewAdd = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/add.png").toString()));
         imageViewAdd.setFitHeight(16);
@@ -98,7 +94,7 @@ public class WaiterView {
         Button addbutton = new Button("Agregar Mesero");
         addbutton.setGraphic(imageViewAdd);
         addbutton.getStyleClass().add("primary-button");
-        addbutton.setOnAction(event -> addWaiterForm());
+        addbutton.setOnAction(event -> addProductForm());
 
         ImageView imageViewUpdate = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/update.png").toString()));
         imageViewUpdate.setFitHeight(16);
@@ -113,33 +109,27 @@ public class WaiterView {
         view.setTop(globalSection);
     }
 
-    private void configureTable() {
+    private void configureTable(){
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.getStyleClass().add("table-view");
 
         table.getColumns().addAll(
-                UserTableColumnFactory.createIndexColumn(pagination, rowsPerPage),
-                createFirstNameColumn(),
-                createLastNameColumn(),
-                createPhoneColumn(),
-                createEmailColumn(),
-                createRolColumn(),
+                ProductColumnFactory.createIndexColumn(pagination, rowsPerPage),
+                createNameColumn(),
+                createDescriptionColumn(),
+                createPriceColumn(),
                 createStateColumn()
         );
-
     }
 
     private void configurePagination() {
-        // Crear la etiqueta de información
         paginationInfo = new Label();
 
-        // Configurar el cambio de página
         pagination.currentPageIndexProperty().addListener((obs, oldVal, newVal) -> {
             updateTableForPage(newVal.intValue());
             updatePaginationInfo(newVal.intValue());
         });
 
-        // Configurar el diseño
         VBox paginationBox = new VBox(10);
         paginationBox.getChildren().addAll(table, paginationInfo, pagination);
         view.setCenter(paginationBox);
@@ -164,33 +154,33 @@ public class WaiterView {
 
         Button editButton = new Button("Editar");
         editButton.getStyleClass().add("primary-button");
-        editButton.setOnAction(e -> editSelectedWaiter());
+        editButton.setOnAction(e -> editSelectedProduct());
 
         Button deleteButton = new Button("Eliminar");
         //deleteButton.setStyle("-fx-background-color: #ff4444; -fx-text-fill: white;");
         deleteButton.getStyleClass().add("danger-button");
-        deleteButton.setOnAction(e -> deleteSelectedWaiter());
+        deleteButton.setOnAction(e -> deleteSelectedProduct());
 
         buttonBox.getChildren().addAll(editButton, deleteButton);
         view.setBottom(buttonBox);
     }
 
     private void refreshTable() {
-        masterWaiterList.setAll(waiterController.getWaitersList());
+        masterProductList.setAll(productController.getProducts());
         searchField.clear();
         filterAndPaginateTable();
     }
 
     private void filterAndPaginateTable() {
         String filter = searchField.getText().toLowerCase();
-        ObservableList<User> filteredList = FXCollections.observableArrayList();
+        ObservableList<Product> filteredList = FXCollections.observableArrayList();
 
         if (filter.isEmpty()) {
-            filteredList.setAll(masterWaiterList);
+            filteredList.setAll(masterProductList);
         } else {
-            for (User waiter : masterWaiterList) {
-                if (matchesFilter(waiter, filter)) {
-                    filteredList.add(waiter);
+            for (Product product : masterProductList) {
+                if (matchesFilter(product, filter)) {
+                    filteredList.add(product);
                 }
             }
         }
@@ -199,11 +189,9 @@ public class WaiterView {
         updatePagination();
     }
 
-    private boolean matchesFilter(User waiter, String filter) {
-        return waiter.getFirstName().toLowerCase().contains(filter) ||
-                waiter.getLastName().toLowerCase().contains(filter) ||
-                waiter.getEmail().toLowerCase().contains(filter) ||
-                waiter.getPhone().toLowerCase().contains(filter);
+    private boolean matchesFilter(Product product, String filter) {
+        return product.getName().toLowerCase().contains(filter) ||
+                product.getDescription().toLowerCase().contains(filter);
     }
 
     private void updatePagination() {
@@ -237,41 +225,28 @@ public class WaiterView {
         table.refresh();
     }
 
-    private void editSelectedWaiter() {
-        User selected = table.getSelectionModel().getSelectedItem();
+    private void editSelectedProduct() {
+        Product selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
-
-            EditWaiterDialog dialog = new EditWaiterDialog(selected);
-
-            Optional<User> result = dialog.showAndWait();
-            result.ifPresent(updatedUser -> {
-                System.out.println("Mesero actualizado: " + updatedUser.getFirstName());
-                if (waiterController.updateWaiter(updatedUser)){
-                    showAlert("Empleado Actualizado","El empleado se ha actualizado correctamente",1);
-                }else {
-                    showAlert("Eror","Ocurrio un error al actualizar el empleado",3);
-                }
-                refreshTable();
-            });
+            // Implementar lógica de edición
+            System.out.println("Editar producto: " + selected.getName());
         } else {
-            showAlert("Selección requerida", "Por favor seleccione un mesero para editar.", 2);
+            showAlert("Selección requerida", "Por favor seleccione un producto para editar.");
         }
     }
 
-    private void deleteSelectedWaiter() {
-        User selected = table.getSelectionModel().getSelectedItem();
+    private void deleteSelectedProduct() {
+        Product selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.getGraphic();
-            alert.setTitle("Confirmar desactivación");
-            alert.setHeaderText("¿Desactivar mesero?");
-            alert.setContentText("Está a punto de desactivar a " + selected.getFirstName() +
-                    " " + selected.getLastName() + ". ¿Continuar?");
+            alert.setTitle("Confirmar eliminación");
+            alert.setHeaderText("¿Eliminar Producto?");
+            alert.setContentText("Está a punto de eliminar a " + selected.getName() + ". ¿Continuar?");
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 // Eliminar de todas las listas
-                masterWaiterList.remove(selected);
+                masterProductList.remove(selected);
                 currentDisplayedList.remove(selected);
 
                 // Actualizar la paginación y la tabla
@@ -284,52 +259,24 @@ public class WaiterView {
                 }
             }
         } else {
-            showAlert("Selección requerida", "Por favor seleccione un mesero para eliminar.", 2);
+            showAlert("Selección requerida", "Por favor seleccione un producto para eliminar.");
         }
     }
 
-    private void showAlert(String title, String message, int type) {
-        /*
-        1 -ALERTA DE INFORMACION
-        2 -ALERTA DE WARNING
-        3 -ALERTA DE ERROR
-         */
-        Alert alert;
-        switch (type){
-            case 1:
-                 alert = new Alert(Alert.AlertType.INFORMATION);
-                break;
-            case 2:
-                alert = new Alert(Alert.AlertType.WARNING);
-                break;
-            case 3:
-                alert = new Alert(Alert.AlertType.ERROR);
-                break;
-            default:
-                alert = new Alert(Alert.AlertType.NONE);
-        }
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
 
-    private void addWaiterForm() {
-        AddWaiterDialog dialog = new AddWaiterDialog();
-
-        Optional<User> result = dialog.showAndWait();
-        result.ifPresent(newUser -> {
-            String password = dialog.getPassword();
-            if (waiterController.insertWaiter(newUser, password)) {
-                showAlert("Mesero Agregado", "El mesero se ha agregado correctamente", 1);
-                refreshTable();
-            } else {
-                showAlert("Error", "Ocurrió un error al agregar el mesero", 3);
-            }
-        });
+    private void addProductForm(){
+        System.out.println("addProductForm");
     }
 
     public BorderPane getView() {
         return view;
     }
+
 }

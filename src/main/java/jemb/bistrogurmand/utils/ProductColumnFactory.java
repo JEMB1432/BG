@@ -1,15 +1,15 @@
 package jemb.bistrogurmand.utils;
 
-import javafx.scene.control.*;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.Label;
 
-public class TableRestaurantColumnFactory {
+public class ProductColumnFactory {
 
-    public static TableColumn<TableRestaurant, Void> createIndexColumn( Pagination pagination, int rowsPerPage) {
-        TableColumn<TableRestaurant, Void> indexColumn = new TableColumn<>("#");
+    public static TableColumn<Product, Void> createIndexColumn(Pagination pagination, int rowsPerPage) {
+        TableColumn<Product, Void> indexColumn = new TableColumn<>("#");
         indexColumn.setPrefWidth(30);
         indexColumn.setStyle("-fx-alignment: center-left;");
         indexColumn.getStyleClass().add("index-column");
@@ -22,7 +22,7 @@ public class TableRestaurantColumnFactory {
                     setText(null);
                 } else {
                     int pageIndex = pagination.getCurrentPageIndex();
-                    int rowIndex = getIndex();
+                    int rowIndex = getIndex(); // Índice dentro de la página
                     int globalIndex = (pageIndex * rowsPerPage) + rowIndex + 1;
                     setText(String.valueOf(globalIndex));
                 }
@@ -32,39 +32,40 @@ public class TableRestaurantColumnFactory {
         return indexColumn;
     }
 
-    public static TableColumn<TableRestaurant, String> createNumberColumn() {
-        TableColumn<TableRestaurant, String> column = new TableColumn<>("Número");
+    public static TableColumn<Product, String> createNameColumn() {
+        TableColumn<Product, String> column = new TableColumn<>("Nombre");
         //column.setPrefWidth(100);
         column.setStyle("-fx-alignment: center-left");
         column.getStyleClass().add("text-column");
-        column.setCellValueFactory(cellData -> new SimpleStringProperty("Mesa "+cellData.getValue().getNumberTable()));
+        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         return column;
     }
 
-    public static TableColumn<TableRestaurant, String> createNumberSeatsColumn() {
-        TableColumn<TableRestaurant, String> column = new TableColumn<>("Capacidad");
+    public static TableColumn<Product, String> createDescriptionColumn() {
+        TableColumn<Product, String> column = new TableColumn<>("Descripción");
         //column.setPrefWidth(100);
         column.setStyle("-fx-alignment: center-left");
         column.getStyleClass().add("text-column");
-        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNumberSeats()+ " personas"));
+        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
         return column;
     }
 
-    public static TableColumn<TableRestaurant, String> createLocationColumn() {
-        TableColumn<TableRestaurant, String> column = new TableColumn<>("Ubicación");
+    public static TableColumn<Product, String> createPriceColumn() {
+        TableColumn<Product, String> column = new TableColumn<>("Precio");
+        //column.setPrefWidth(100);
         column.setStyle("-fx-alignment: center");
         column.getStyleClass().add("text-column");
-        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLocation()));
+        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPrice() + ""));
         return column;
     }
 
-    public static TableColumn<TableRestaurant, String> createStateColumn() {
-        TableColumn<TableRestaurant, String> column = new TableColumn<>("Estado");
+    public static TableColumn<Product, String> createStateColumn() {
+        TableColumn<Product, String> column = new TableColumn<>("Estado");
         //column.setPrefWidth(80);
         column.setStyle("-fx-alignment: center");
         column.getStyleClass().add("text-column");
 
-        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getState()));
+        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAvailable()));
 
         column.setCellFactory(col -> new TableCell<>() {
             @Override
@@ -83,6 +84,4 @@ public class TableRestaurantColumnFactory {
 
         return column;
     }
-
 }
-
