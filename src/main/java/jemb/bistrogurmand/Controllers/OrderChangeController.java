@@ -18,7 +18,7 @@ public class OrderChangeController {
 
         try{
             conn = DatabaseConnection.getConnection();
-            String sql = "SELECT * FROM OrderRestaurant ORDER BY ID_Correction";
+            String sql = "SELECT ID_Correction,ID_Employee,ID_Sale,ID_Product FROM Order_Correction ORDER BY ID_Correction";
             response = conn.createStatement().executeQuery(sql);
 
             while (response.next()) {

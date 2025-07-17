@@ -5,6 +5,15 @@ public class OrderRestaurant {
     private int ID_Employee;
     private int ID_Sale;
     private int ID_Product;
+    private boolean Approved;
+
+    public OrderRestaurant(int ID_Correction, int ID_Employee, int ID_Sale, int ID_Product, boolean Approved) {
+        this.ID_Correction = ID_Correction;
+        this.ID_Employee = ID_Employee;
+        this.ID_Sale = ID_Sale;
+        this.ID_Product = ID_Product;
+        this.Approved=Approved;
+    }
 
     public OrderRestaurant(int ID_Correction, int ID_Employee, int ID_Sale, int ID_Product) {
         this.ID_Correction = ID_Correction;
@@ -43,5 +52,8 @@ public class OrderRestaurant {
 
     public void setID_Product(int ID_Product) {
         this.ID_Product = ID_Product;
-    }
+
+}
+public boolean isApproved() { return Approved; }
+public void setApproved(boolean approved) { this.Approved = approved; }
 }
