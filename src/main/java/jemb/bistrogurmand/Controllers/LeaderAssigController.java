@@ -64,7 +64,7 @@ public class LeaderAssigController {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, shift);
-           pstmt.setString(2, date.toString()); // Convertir LocalDate a String en formato YYYY-MM-DD
+            pstmt.setString(2, date.toString()); // Convertir LocalDate a String en formato YYYY-MM-DD
 
             try (ResultSet response = pstmt.executeQuery()) {
                 while (response.next()) {
@@ -79,7 +79,7 @@ public class LeaderAssigController {
                     String shiftA = response.getString("Shift");
                     Integer TableNumber = response.getInt("NumberTable");
 
-                    assignments.add(new PlanificationRestaurant(ID_Assignment,ID_Employee,ID_Table,startTime,endTime,dateAssig,favorite,shiftA,TableNumber));
+                    assignments.add(new PlanificationRestaurant(ID_Assignment, ID_Employee, ID_Table, startTime, endTime, dateAssig, favorite, shiftA, TableNumber));
                 }
             }
         } catch (SQLException e) {
@@ -126,5 +126,42 @@ public class LeaderAssigController {
             System.err.println("Error al verificar la existencia de la asignación: " + e.getMessage());
         }
         return false;
+    }
+
+    public static boolean updateAssignment(int ID_Assignment, int newID_Employee, int newID_Table, String newShift) {
+        String sql = "UPDATE Assignment SET ID_Employee = ?, ID_Table = ?, Shift = ? WHERE ID_Assignment = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, newID_Employee);
+            stmt.setInt(2, newID_Table);
+            stmt.setString(3, newShift);
+            stmt.setInt(4, ID_Assignment); // Usar el ID de la asignación original para WHERE
+
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 1) { // ORA-00001: unique constraint violated
+                System.err.println("La nueva combinación ya existe.");
+            } else {
+                System.err.println("Error al actualizar asignación con ID " + ID_Assignment + ": " + e.getMessage());
+            }
+            return false;
+        }
+    }
+
+
+    public static boolean deleteAssignment(int ID_Assignment) {
+        String sql = "DELETE FROM Assignment WHERE ID_Assignment = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, ID_Assignment);
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar asignación con ID " + ID_Assignment + ": " + e.getMessage());
+            return false;
+        }
     }
 }

@@ -7,12 +7,8 @@
     <list default="true" id="9f8dec4d-4ac8-4fea-8cf2-12c6327726d2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/LeaderAssigController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/LeaderAssigController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/TableDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/TableDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/DbConection/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/DbConection/DatabaseConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/PlanificationColumnFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/PlanificationColumnFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/PlanificationRestaurant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/PlanificationRestaurant.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/AssignmentDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/AssignmentDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/SumTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/SumTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/PlanificationView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/PlanificationView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/alerts.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/alerts.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
