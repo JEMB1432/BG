@@ -83,10 +83,10 @@ public class SumTable {
 
         // Columna de Turno (Índice ahora es el nombre del turno)
         TableColumn<ShiftSummary, String> shiftColumn = new TableColumn<>("Turno");
-        shiftColumn.getStyleClass().add("index-column"); // O un estilo de columna de texto
+        shiftColumn.getStyleClass().add("text-column");
         shiftColumn.setPrefWidth(100); // Ajusta el ancho
         shiftColumn.setCellValueFactory(cellData -> cellData.getValue().shiftNameProperty()); // Usa la propiedad del nombre del turno
-        shiftColumn.setStyle("-fx-alignment: center-left");
+        shiftColumn.setStyle("-fx-alignment: center");
 
 
         // Columna de Meseros Activos

@@ -18,7 +18,7 @@ public class TableDAO {
     public static List<TableRestaurant> getAllTables() {
         List<TableRestaurant> tables = new ArrayList<>();
         String sql = "SELECT tr.ID_Table, tr.NumberTable, tr.NumberSeats, tr.State, tr.Location" +
-                "            FROM TableRestaurant tr" +
+                "            FROM TableRestaurant tr WHERE tr.State='1'" +
                 "            ORDER BY ID_Table"; // Asegúrate de que esta es tu tabla de mesas
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);

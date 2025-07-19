@@ -52,9 +52,13 @@ public class LeaderAssigController {
         List<PlanificationRestaurant> assignments = new ArrayList<>();
         // Asume que tu columna de fecha es DATE o TIMESTAMP y que `TRUNC(ASSIGNMENT_DATE)` funcionará
         // para comparar solo la parte de la fecha.
-        String sql = "SELECT * FROM Assignment WHERE SHIFT = ? " +
-                "AND TRUNC(dateassig) = TRUNC(TO_DATE(?, 'YYYY-MM-DD'))" +
-                "ORDER BY ID_Assignment";
+        String sql = "SELECT a.ID_Assignment, a.ID_Employee, a.ID_Table" +
+                ", a.StartTime, a.EndTime, a.dateassig, a.Favorite, " +
+                "a.Shift,t.NumberTable " +
+                "FROM Assignment a JOIN TableRestaurant t ON " +
+                "a.ID_Table = t.ID_Table WHERE a.SHIFT = ? " +
+                "AND TRUNC(a.dateassig) = TRUNC(TO_DATE(?, 'YYYY-MM-DD')) " +
+                "ORDER BY a.ID_Assignment";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -73,8 +77,9 @@ public class LeaderAssigController {
                     LocalDate dateAssig = response.getDate("dateassig").toLocalDate();
                     boolean favorite = response.getInt("Favorite") == 1;
                     String shiftA = response.getString("Shift");
+                    Integer TableNumber = response.getInt("NumberTable");
 
-                    assignments.add(new PlanificationRestaurant(ID_Assignment,ID_Employee,ID_Table,startTime,endTime,dateAssig,favorite,shiftA));
+                    assignments.add(new PlanificationRestaurant(ID_Assignment,ID_Employee,ID_Table,startTime,endTime,dateAssig,favorite,shiftA,TableNumber));
                 }
             }
         } catch (SQLException e) {
@@ -101,5 +106,25 @@ public class LeaderAssigController {
             case "Noche" -> LocalTime.of(1, 0); // Siguiente día 1am
             default -> LocalTime.of(0, 0);
         };
+    }
+
+    public static boolean checkIfAssignmentExists(int ID_Employee, int ID_Table, String shift, LocalDate date) {
+        String sql = "SELECT COUNT(*) FROM Assignment WHERE ID_Employee = ? AND ID_Table = ? AND Shift = ? AND TRUNC(dateassig) = TRUNC(TO_DATE(?, 'YYYY-MM-DD'))";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, ID_Employee);
+            pstmt.setInt(2, ID_Table);
+            pstmt.setString(3, shift);
+            pstmt.setString(4, date.toString());
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Si el conteo es mayor que 0, la asignación existe
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al verificar la existencia de la asignación: " + e.getMessage());
+        }
+        return false;
     }
 }
