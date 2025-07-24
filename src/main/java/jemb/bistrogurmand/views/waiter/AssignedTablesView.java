@@ -1,89 +1,102 @@
 package jemb.bistrogurmand.views.waiter;
 
-import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import jemb.bistrogurmand.application.App;
 import jemb.bistrogurmand.utils.TableRestaurant;
-
-import java.util.List;
+import jemb.bistrogurmand.utils.UserSession;
 
 public class AssignedTablesView {
-    private VBox view;
+    private BorderPane view;
 
     public AssignedTablesView() {
-        view = new VBox(20);
-        view.setPadding(new Insets(40));
+        view = new BorderPane();
         view.setStyle("-fx-background-color: #f5f5f5;");
 
-        // Título
-        Label title = new Label("Mesas Asignadas");
-        title.setFont(Font.font("System", FontWeight.BOLD, 28));
+        // Sidebar
+        SidebarWaiter sidebar = new SidebarWaiter();
+        view.setLeft(sidebar);
 
-        // Contenedor blanco
-        VBox tableCard = new VBox(10);
-        tableCard.setPadding(new Insets(20));
-        tableCard.setStyle("-fx-background-color: white; -fx-background-radius: 8px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);");
+        // Main content
+        VBox mainContent = new VBox(20);
+        mainContent.setPadding(new Insets(20));
 
-        // Campo búsqueda
+        // Search field
         TextField searchField = new TextField();
         searchField.setPromptText("Buscar mesa...");
-        searchField.setMaxWidth(Double.MAX_VALUE);
+        searchField.setStyle("-fx-background-radius: 15; -fx-border-radius: 15; -fx-padding: 5 10;");
+        searchField.setMaxWidth(300);
 
-        // Tabla
+        // Title
+        Label title = new Label("Mesas Asignadas");
+        title.setFont(Font.font("System", FontWeight.BOLD, 24));
+        title.setStyle("-fx-text-fill: #2E7D32;");
+
+        // Table container
+        VBox tableContainer = new VBox(10);
+        tableContainer.setPadding(new Insets(20));
+        tableContainer.setStyle("-fx-background-color: white; -fx-background-radius: 8;");
+
+        // Table
+        TableView<TableRestaurant> table = createTable();
+
+        // Sample data (in production would come from database)
+        ObservableList<TableRestaurant> tables = FXCollections.observableArrayList(
+                new TableRestaurant("T1", 2, 4, "Disponible", "Terraza"),
+                new TableRestaurant("T2", 3, 2, "En servicio", "Interior"),
+                new TableRestaurant("T3", 4, 6, "Esperando orden", "Ventana"),
+                new TableRestaurant("T4", 5, 4, "Disponible", "Interior")
+        );
+        table.setItems(tables);
+
+        tableContainer.getChildren().addAll(searchField, table);
+        mainContent.getChildren().addAll(title, tableContainer);
+        view.setCenter(mainContent);
+    }
+
+    private TableView<TableRestaurant> createTable() {
         TableView<TableRestaurant> table = new TableView<>();
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        // Columnas
-        TableColumn<TableRestaurant, String> colMesa = new TableColumn<>("Mesa");
-        colMesa.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getNumberTable().toString()));
+        // Table column
+        TableColumn<TableRestaurant, Integer> colMesa = new TableColumn<>("Mesa");
+        colMesa.setCellValueFactory(new PropertyValueFactory<>("NumberTable"));
+        colMesa.setStyle("-fx-alignment: CENTER;");
 
+        // Status column
         TableColumn<TableRestaurant, String> colEstado = new TableColumn<>("Estado");
-        colEstado.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getState()));
+        colEstado.setCellValueFactory(new PropertyValueFactory<>("State"));
+        colEstado.setStyle("-fx-alignment: CENTER;");
 
+        // Actions column
         TableColumn<TableRestaurant, Void> colAcciones = new TableColumn<>("Acciones");
         colAcciones.setCellFactory(param -> new TableCell<>() {
             private final HBox actionBox = new HBox(5);
+            private final Button checkBtn = new Button("✔");
+            private final Button xBtn = new Button("✘");
 
             {
-                actionBox.setAlignment(Pos.CENTER_LEFT);
+                actionBox.setAlignment(Pos.CENTER);
+                checkBtn.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+                xBtn.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+                actionBox.getChildren().addAll(checkBtn, xBtn);
 
-                Button btnVer = createIconButton("📋", "#2e7d32");
-                Button btnFoto = createIconButton("🖼", "gray");
-                Button btnEdit = createIconButton("✏️", "#4caf50");
-                Button btnDelete = createIconButton("❌", "#d32f2f");
-
-                ImageView avatar = new ImageView(new Image("/avatar.png")); // Asegúrate de tener este recurso
-                avatar.setFitWidth(26);
-                avatar.setFitHeight(26);
-                avatar.setClip(new javafx.scene.shape.Circle(13, 13, 13));
-
-                btnVer.setOnAction(e -> {
+                checkBtn.setOnAction(event -> {
                     TableRestaurant mesa = getTableView().getItems().get(getIndex());
-                    showAlert("Detalles de Mesa", "Mesa " + mesa.getNumberTable() + "\nEstado: " + mesa.getState());
+                    System.out.println("Check action for table: " + mesa.getNumberTable());
                 });
 
-                btnFoto.setOnAction(e -> showAlert("Foto Mesa", "Aquí se mostraría una foto 📷"));
-
-                btnEdit.setOnAction(e -> {
+                xBtn.setOnAction(event -> {
                     TableRestaurant mesa = getTableView().getItems().get(getIndex());
-                    mesa.setState("Disponible");
-                    getTableView().refresh();
-                    showAlert("Editado", "Estado cambiado a Disponible");
+                    System.out.println("X action for table: " + mesa.getNumberTable());
                 });
-
-                btnDelete.setOnAction(e -> {
-                    TableRestaurant mesa = getTableView().getItems().get(getIndex());
-                    getTableView().getItems().remove(mesa);
-                    showAlert("Eliminado", "Mesa eliminada");
-                });
-
-                actionBox.getChildren().addAll(btnFoto, btnEdit, btnDelete, avatar);
             }
 
             @Override
@@ -97,39 +110,11 @@ public class AssignedTablesView {
             }
         });
 
-        // Agregar columnas
         table.getColumns().addAll(colMesa, colEstado, colAcciones);
-
-        // Datos de prueba
-        List<TableRestaurant> mesas = List.of(
-                new TableRestaurant("1", 2, 4, "Disponible", "Terraza"),
-                new TableRestaurant("2", 3, 2, "En servicio", "Interior"),
-                new TableRestaurant("3", 4, 6, "Esperando orden", "Ventana"),
-                new TableRestaurant("4", 5, 4, "Disponible", "Interior")
-        );
-        table.getItems().addAll(mesas);
-
-        // Armar vista
-        tableCard.getChildren().addAll(searchField, table);
-        view.getChildren().addAll(title, tableCard);
+        return table;
     }
 
-    private Button createIconButton(String icon, String color) {
-        Button btn = new Button(icon);
-        btn.setStyle("-fx-background-color: transparent; -fx-text-fill: " + color + ";");
-        btn.setFont(Font.font(14));
-        return btn;
-    }
-
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
-    public VBox getView() {
+    public BorderPane getView() {
         return view;
     }
 }

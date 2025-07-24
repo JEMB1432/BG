@@ -7,12 +7,23 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import jemb.bistrogurmand.Controllers.DayViewController;
+import jemb.bistrogurmand.DbConection.DatabaseConnection;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DayView {
     private BorderPane root;
+    private int waiterId = 1; // Deberías obtener este ID de la sesión
+    private String waiterName = "Nombre Completo";
+    private String shift = "Turno no especificado";
 
     public DayView() {
         root = new BorderPane();
+        loadWaiterData(); // Cargar datos del mesero
 
         SidebarWaiter sm = new SidebarWaiter();
 
@@ -27,17 +38,17 @@ public class DayView {
         infoCard.setPadding(new Insets(30));
         infoCard.setStyle("-fx-background-color: white; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);");
 
-        Label nombre = new Label("Nombre Completo");
+        Label nombre = new Label(waiterName);
         nombre.setFont(Font.font("System", FontWeight.BOLD, 30));
-        nombre.setTextFill(Color.web("#2E7D32")); // verde
+        nombre.setTextFill(Color.web("#2E7D32"));
 
-        Label turno = new Label("Turno: Mañana (8:00 - 14:00)");
+        Label turno = new Label(shift);
         turno.setFont(Font.font("System", FontWeight.BOLD, 24));
 
         infoCard.getChildren().addAll(nombre, turno);
 
-        // Controller para obtener datos de las tarjetas
-        jemb.bistrogurmand.controllers.DayController controller = new jemb.bistrogurmand.controllers.DayController();
+        // Controller para obtener datos
+        DayViewController controller = new DayViewController();
         double averageRating = controller.getAverageRating(waiterId);
         int activeOrders = controller.getActiveOrdersCount(waiterId);
         int assignedTables = controller.getAssignedTablesCount(waiterId);
@@ -48,7 +59,7 @@ public class DayView {
         statsCards.setAlignment(Pos.CENTER_LEFT);
 
         statsCards.getChildren().addAll(
-                crearMiniCard("Calificación promedio:", String.valueOf(averageRating), "★"),
+                crearMiniCard("Calificación promedio:", String.format("%.1f", averageRating), "★"),
                 crearMiniCard("Pedidos activos:", String.valueOf(activeOrders), "🔔"),
                 crearMiniCard("Mesas asignadas:", String.valueOf(assignedTables), "🍽")
         );
@@ -58,6 +69,35 @@ public class DayView {
         root.setLeft(sm);
     }
 
+    private void loadWaiterData() {
+        // Obtener nombre del empleado
+        String nameSql = "SELECT Name FROM Employee WHERE ID_Employee = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(nameSql)) {
+
+            stmt.setInt(1, waiterId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                waiterName = rs.getString("Name");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Obtener turno actual desde Assignment
+        String shiftSql = "SELECT Shift FROM Assignment WHERE ID_Employee = ? AND TRUNC(dateassig) = TRUNC(SYSDATE)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(shiftSql)) {
+
+            stmt.setInt(1, waiterId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                shift = "Turno: " + rs.getString("Shift");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     private VBox crearMiniCard(String titulo, String valor, String icono) {
         VBox card = new VBox(5);
@@ -71,7 +111,7 @@ public class DayView {
 
         Label data = new Label(valor + " " + icono);
         data.setFont(Font.font("System", FontWeight.BOLD, 26));
-        data.setTextFill(Color.web("#AD1457")); // magenta vino
+        data.setTextFill(Color.web("#AD1457"));
 
         card.getChildren().addAll(title, data);
         return card;
@@ -81,5 +121,3 @@ public class DayView {
         return root;
     }
 }
-
-
