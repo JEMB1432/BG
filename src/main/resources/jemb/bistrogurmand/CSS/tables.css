@@ -478,3 +478,31 @@
     -fx-text-fill: #990D35;
     -fx-font-weight: bold;
 }
+
+.edit-button {
+    -fx-background-color: rgb(0, 100, 12);
+    -fx-background-radius: 4;
+    -fx-text-fill: white;
+    -fx-padding: 3 8 3 8;
+    -fx-border-width: 0;
+}
+
+.delete-button {
+    -fx-background-color: rgb(204, 14, 0);
+    -fx-background-radius: 4;
+    -fx-text-fill: white;
+    -fx-padding: 3 8 3 8;
+    -fx-border-width: 0;
+}
+
+.see-button {
+    -fx-background-color: rgb(79, 79, 79);
+    -fx-background-radius: 4;
+    -fx-text-fill: white;
+    -fx-padding: 3 8 3 8;
+    -fx-border-width: 0;
+}
+
+.edit-button:hover, .delete-button:hover {
+    -fx-opacity: 0.8;
+}

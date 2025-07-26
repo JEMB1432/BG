@@ -1,109 +1,203 @@
 package jemb.bistrogurmand.views.waiter;
 
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.AssignedTableController;
-import jemb.bistrogurmand.application.App;
-import jemb.bistrogurmand.utils.Modals.AssignedTable;
-import jemb.bistrogurmand.utils.UserSession;
+import jemb.bistrogurmand.Controllers.AssignmentController;
+import jemb.bistrogurmand.utils.Assignment;
+import jemb.bistrogurmand.utils.AssignmentColumnFactory;
 
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.time.LocalDate;
 
-public class AssignedTablesView {
-    private final BorderPane view;
-    private TableView<AssignedTable> table;
+import static jemb.bistrogurmand.utils.AssignmentColumnFactory.*;
+
+public class AssignedTablesView extends BorderPane {
+    private BorderPane view;
+    private TableView<Assignment> table;
+    private AssignedTableController assignedTableController;
+    private TextField searchField;
+    private Pagination pagination;
+    private Label paginationInfo;
+    private final int rowsPerPage = 10;
+
+    private LocalDate dateSelected = LocalDate.now();
+
+    private ObservableList<Assignment> masterAssignmentList;
+    private ObservableList<Assignment> currentDisplayedList;
 
     public AssignedTablesView() {
+        masterAssignmentList = FXCollections.observableArrayList();
+        currentDisplayedList = FXCollections.observableArrayList();
+
         view = new BorderPane();
-        view.setStyle("-fx-background-color: #f5f5f5;");
 
-        SidebarWaiter sidebar = new SidebarWaiter();
-        view.setLeft(sidebar);
+        view.getStyleClass().add("root");
+        view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/styles.css").toExternalForm());
+        view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/tables.css").toExternalForm());
+        view.setPadding(new Insets(20));
+        assignedTableController = new AssignedTableController();
 
-        VBox mainContent = new VBox(20);
-        mainContent.setPadding(new Insets(20));
+        searchField = new TextField();
+        table = new TableView<>();
+        table.getStyleClass().add("table-view");
+        pagination = new Pagination();
 
-        TextField searchField = new TextField();
-        searchField.setPromptText("Buscar mesa...");
-        searchField.setStyle("-fx-background-radius: 15; -fx-border-radius: 15; -fx-padding: 5 10;");
-        searchField.setMaxWidth(300);
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            // Agregar un pequeño retardo para evitar procesamiento excesivo
+            PauseTransition pause = new PauseTransition(Duration.millis(100));
+            pause.setOnFinished(e -> filterAndPaginateTable());
+            pause.playFromStart();
+        });
 
-        Label title = new Label("Mesas Asignadas");
-        title.setFont(Font.font("System", FontWeight.BOLD, 24));
-        title.setStyle("-fx-text-fill: #2E7D32;");
 
-        VBox tableContainer = new VBox(10);
-        tableContainer.setPadding(new Insets(20));
-        tableContainer.setStyle("-fx-background-color: white; -fx-background-radius: 8;");
 
-        table = createTable();
-
-        loadAssignedTables();
-
-        tableContainer.getChildren().addAll(searchField, table);
-        mainContent.getChildren().addAll(title, tableContainer);
-        view.setCenter(mainContent);
+        createTopSection();
+        configureTable();
+        configurePagination();
+        loadInitialData();
     }
 
-    private TableView<AssignedTable> createTable() {
-        TableView<AssignedTable> table = new TableView<>();
+    private void createTopSection() {
+        VBox topContent = new VBox();
+        topContent.setSpacing(20);
+
+        HBox titleCardView = new HBox();
+        titleCardView.getStyleClass().add("title-card-view");
+        titleCardView.setSpacing(15);
+        titleCardView.setAlignment(Pos.BOTTOM_LEFT);
+
+        ImageView iconTitle = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/table.png").toString()));
+        iconTitle.setFitHeight(48);
+        iconTitle.setFitWidth(48);
+        Label titleView = new Label("Mesas Asignadas");
+        titleView.getStyleClass().add("title");
+        titleView.setAlignment(Pos.BOTTOM_LEFT);
+
+        HBox topBox = new HBox(20);
+        topBox.getStyleClass().add("top-section-dash");
+        topBox.setAlignment(Pos.CENTER_RIGHT);
+        topBox.setPrefWidth(Double.MAX_VALUE);
+        topBox.setPadding(new Insets(0, 0, 0, 0));
+
+        searchField.setPromptText("Buscar asignaciones...");
+        searchField.getStyleClass().add("search-field");
+
+        ImageView imageViewUpdate = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/update.png").toString()));
+        imageViewUpdate.setFitHeight(16);
+        imageViewUpdate.setFitWidth(16);
+        Button refreshButton = new Button("Actualizar");
+        refreshButton.setGraphic(imageViewUpdate);
+        refreshButton.getStyleClass().add("secondary-button");
+        refreshButton.setOnAction(e -> refreshTable());
+
+        topBox.getChildren().addAll(searchField, refreshButton);
+        titleCardView.getChildren().addAll(iconTitle, titleView);
+        topContent.getChildren().addAll(titleCardView, topBox);
+        view.setTop(topContent);
+    }
+
+    private void configureTable() {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.getStyleClass().add("table-view");
 
-        TableColumn<AssignedTable, Integer> colMesa = new TableColumn<>("Mesa");
-        colMesa.setCellValueFactory(new PropertyValueFactory<>("tableNumber"));
-        colMesa.setStyle("-fx-alignment: CENTER;");
-
-        TableColumn<AssignedTable, String> colUbicacion = new TableColumn<>("Ubicación");
-        colUbicacion.setCellValueFactory(new PropertyValueFactory<>("location"));
-        colUbicacion.setStyle("-fx-alignment: CENTER;");
-
-        TableColumn<AssignedTable, String> colTurno = new TableColumn<>("Turno");
-        colTurno.setCellValueFactory(new PropertyValueFactory<>("shift"));
-        colTurno.setStyle("-fx-alignment: CENTER;");
-
-        TableColumn<AssignedTable, String> colHorario = new TableColumn<>("Horario");
-        colHorario.setCellValueFactory(cellData -> {
-            AssignedTable at = cellData.getValue();
-            String formatted = at.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")) +
-                    " - " + at.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"));
-            return new javafx.beans.property.SimpleStringProperty(formatted);
-        });
-        colHorario.setStyle("-fx-alignment: CENTER;");
-
-        TableColumn<AssignedTable, String> colFecha = new TableColumn<>("Fecha");
-        colFecha.setCellValueFactory(cellData -> {
-            return new javafx.beans.property.SimpleStringProperty(
-                    cellData.getValue().getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-            );
-        });
-        colFecha.setStyle("-fx-alignment: CENTER;");
-
-        TableColumn<AssignedTable, String> colFavorita = new TableColumn<>("Favorita");
-        colFavorita.setCellValueFactory(cellData -> {
-            return new javafx.beans.property.SimpleStringProperty(
-                    cellData.getValue().isFavorite() ? "Sí" : "No"
-            );
-        });
-        colFavorita.setStyle("-fx-alignment: CENTER;");
-
-        table.getColumns().addAll(colMesa, colUbicacion, colTurno, colHorario, colFecha, colFavorita);
-        return table;
+        table.getColumns().addAll(
+                AssignmentColumnFactory.createIndexColumn(pagination,rowsPerPage),
+                createTableColumn(),
+                createShiftColumn(),
+                createTimeColumn(),
+                createButtonsColumn()
+        );
     }
 
-    private void loadAssignedTables() {
-        //int waiterId = UserSession.getUser().getId(); // Requiere que UserSession tenga ese método
-        AssignedTableController controller = new AssignedTableController();
-       // List<AssignedTable> tableList = controller.getAssignedTablesByWaiter(waiterId);
-        //ObservableList<AssignedTable> observableList = FXCollections.observableArrayList(tableList);
-        //table.setItems(observableList);
+    private void configurePagination() {
+        paginationInfo = new Label();
+
+        pagination.currentPageIndexProperty().addListener((observable, oldValue, newValue) -> {
+            updateTableForPage(newValue.intValue());
+            updatePaginationInfo(newValue.intValue());
+        });
+
+        VBox paginationBox = new VBox(10);
+        paginationBox.getChildren().addAll(table, paginationInfo, pagination);
+        view.setCenter(paginationBox);
+    }
+
+    private void updatePaginationInfo(int pageIndex) {
+        int from  = pageIndex * rowsPerPage +1;
+        int to = Math.min((pageIndex + 1) * rowsPerPage, currentDisplayedList.size());
+        int total = currentDisplayedList.size();
+        paginationInfo.setText(String.format("Mostrando %d-%d de %d resultados", from, to, total));
+    }
+
+    private void loadInitialData(){
+        refreshTable();
+    }
+
+    private void refreshTable() {
+        masterAssignmentList.setAll(assignedTableController.getAssignments());
+        searchField.clear();
+        filterAndPaginateTable();
+    }
+
+    private void filterAndPaginateTable() {
+        String filter = searchField.getText().toLowerCase();
+        ObservableList<Assignment> filteredList = FXCollections.observableArrayList();
+
+        if(filter.isEmpty()) {
+            filteredList.addAll(masterAssignmentList);
+        }else {
+            for (Assignment assignment : masterAssignmentList) {
+                if (matchesFilter(assignment, filter)){
+                    filteredList.add(assignment);
+                }
+            }
+        }
+
+        currentDisplayedList.setAll(filteredList);
+        updatePagination();
+    }
+
+    private boolean matchesFilter(Assignment assignment, String filter) {
+        return assignment.getEmployeeAssign().toLowerCase().contains(filter) ||
+                assignment.getTableAssign().toLowerCase().contains(filter) ||
+                assignment.getShiftAssign().toLowerCase().contains(filter);
+    }
+
+    private void updatePagination() {
+        int itemCount = currentDisplayedList.size();
+        int pageCount = (int) Math.ceil((double) itemCount / rowsPerPage);
+
+        pagination.setPageCount(pageCount > 0 ? pageCount : 1);
+
+        if(pagination.getCurrentPageIndex() >= pageCount && pageCount > 0) {
+            pagination.setCurrentPageIndex(0);
+        }
+
+        updateTableForPage(pagination.getCurrentPageIndex());
+    }
+
+    private void updateTableForPage(int pageIndex) {
+        int fromIndex = pageIndex * rowsPerPage;
+        int toIndex = Math.min(fromIndex + rowsPerPage, currentDisplayedList.size());
+
+        if(currentDisplayedList.isEmpty()){
+            table.setItems(FXCollections.observableArrayList());
+        }else {
+            table.setItems(FXCollections.observableArrayList(currentDisplayedList.subList(fromIndex, toIndex)));
+        }
+
+        updatePaginationInfo(pageIndex);
+        table.refresh();
     }
 
     public BorderPane getView() {

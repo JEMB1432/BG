@@ -1,16 +1,17 @@
 package jemb.bistrogurmand.utils;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 
 public class AssignmentColumnFactory {
 
     public static TableColumn<Assignment, Void> createIndexColumn(Pagination pagination, int rowsPerPage) {
         TableColumn<Assignment, Void> indexColumn = new TableColumn<>("#");
-        indexColumn.setPrefWidth(30);
+        indexColumn.setPrefWidth(20);
         indexColumn.setStyle("-fx-alignment: center-left;");
         indexColumn.getStyleClass().add("index-column");
 
@@ -79,6 +80,72 @@ public class AssignmentColumnFactory {
                         case "noche" -> label.getStyleClass().add("shift-night");
                     }
                     setGraphic(label);
+                }
+            }
+        });
+
+        return column;
+    }
+
+    public static TableColumn<Assignment, String> createButtonsColumn() {
+        TableColumn<Assignment, String> column = new TableColumn<>(" ");
+        column.setStyle("-fx-alignment: center");
+        column.getStyleClass().add("text-column");
+
+        column.setCellFactory(param -> new TableCell<>() {
+            private final Button seeButton = new Button("");
+            private final Button editButton = new Button("");
+            private final Button deleteButton = new Button("");
+            private final HBox buttonsContainer = new HBox(5, seeButton, editButton, deleteButton);
+
+            {
+                // Estilo de los botones
+                ImageView seeImage = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/edit.png").toString()));
+                seeImage.setFitHeight(16);
+                seeImage.setFitWidth(16);
+                seeButton.setGraphic(seeImage);
+                seeButton.getStyleClass().add("see-button");
+
+                ImageView editImage = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/edit.png").toString()));
+                editImage.setFitHeight(16);
+                editImage.setFitWidth(16);
+                editButton.setGraphic(editImage);
+                editButton.getStyleClass().add("edit-button");
+
+                ImageView deleteImage = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/delete.png").toString()));
+                deleteImage.setFitHeight(16);
+                deleteImage.setFitWidth(16);
+                deleteButton.setGraphic(deleteImage);
+                deleteButton.getStyleClass().add("delete-button");
+
+                buttonsContainer.setAlignment(Pos.CENTER);
+
+                // Eventos de los botones
+                editButton.setOnAction(event -> {
+                    Assignment assignment = getTableView().getItems().get(getIndex());
+                    System.out.println("Editar: " + assignment); // Aquí tu lógica de edición
+                    // Puedes llamar a un método para editar el assignment
+                });
+
+                deleteButton.setOnAction(event -> {
+                    Assignment assignment = getTableView().getItems().get(getIndex());
+                    System.out.println("Eliminar: " + assignment); // Aquí tu lógica de eliminación
+                    // Puedes llamar a un método para eliminar el assignment
+                });
+
+                seeButton.setOnAction(event -> {
+                    Assignment assignment = getTableView().getItems().get(getIndex());
+                    System.out.println("See: " + assignment);
+                });
+            }
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(buttonsContainer);
                 }
             }
         });
