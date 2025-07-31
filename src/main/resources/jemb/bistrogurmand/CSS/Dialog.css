@@ -51,6 +51,10 @@
     -fx-border-color: #e5e5e5;
 }
 
+.text-area{
+    -fx-pref-height: 90px;
+}
+
 /* Botones del diálogo */
 .dialog-pane .button-bar .button {
     -fx-background-radius: 5px;

@@ -13,13 +13,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import jemb.bistrogurmand.Controllers.CategoryController;
 import jemb.bistrogurmand.Controllers.ProductController;
+import jemb.bistrogurmand.utils.Category;
+import jemb.bistrogurmand.utils.Modals.AddCategoryDialog;
 import jemb.bistrogurmand.utils.Modals.AddProductDialog;
 import jemb.bistrogurmand.utils.Modals.EditProductDialog;
 import jemb.bistrogurmand.utils.Product;
 import jemb.bistrogurmand.utils.ProductColumnFactory;
-import jemb.bistrogurmand.utils.User;
 
+import java.util.List;
 import java.util.Optional;
 
 import static jemb.bistrogurmand.utils.ProductColumnFactory.*;
@@ -28,6 +31,7 @@ public class ProductView {
     private BorderPane view;
     private TableView<Product> table;
     private ProductController productController;
+    private CategoryController categoryController;
     private TextField searchField;
     private Pagination pagination;
     private Label paginationInfo;
@@ -45,6 +49,7 @@ public class ProductView {
         view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/tables.css").toExternalForm());
         view.setPadding(new Insets(20));
         productController = new ProductController();
+        categoryController = new CategoryController();
 
         searchField = new TextField();
         table = new TableView<>();
@@ -84,6 +89,14 @@ public class ProductView {
         title.getStyleClass().add("title");
         title.setFont(new Font(20));
 
+        ImageView imageViewCategory = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/add.png").toString()));
+        imageViewCategory.setFitHeight(16);
+        imageViewCategory.setFitWidth(16);
+        Button addCategoryButton = new Button("Agregar Categoria");
+        addCategoryButton.setGraphic(imageViewCategory);
+        addCategoryButton.getStyleClass().add("category-button");
+        addCategoryButton.setOnAction(event -> addCategoryForm());
+
         titleContent.getChildren().addAll(iconTitle, title);
 
         searchField.setPromptText("Buscar roducto ...");
@@ -106,12 +119,12 @@ public class ProductView {
         refreshButton.getStyleClass().add("secondary-button");
         refreshButton.setOnAction(e -> refreshTable());
 
-        topBox.getChildren().addAll(searchField, addbutton, refreshButton);
+        topBox.getChildren().addAll(addCategoryButton, searchField, addbutton, refreshButton);
         globalSection.getChildren().addAll(titleContent, topBox);
         view.setTop(globalSection);
     }
 
-    private void configureTable(){
+    private void configureTable() {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.getStyleClass().add("table-view");
 
@@ -154,7 +167,11 @@ public class ProductView {
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
         buttonBox.setPadding(new Insets(20, 0, 0, 0));
 
-        Button editButton = new Button("Editar");
+        ImageView imageViewEdit = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/edit.png").toString()));
+        imageViewEdit.setFitHeight(16);
+        imageViewEdit.setFitWidth(16);
+        Button editButton = new Button("Editar producto seleccionado");
+        editButton.setGraphic(imageViewEdit);
         editButton.getStyleClass().add("primary-button");
         editButton.setOnAction(e -> editSelectedProduct());
 
@@ -227,26 +244,57 @@ public class ProductView {
         table.refresh();
     }
 
+
     private void editSelectedProduct() {
         Product selected = table.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            EditProductDialog dialog = new EditProductDialog(selected);
+        if (selected == null) {
+            showAlert("Selección requerida", "Por favor seleccione un producto para editar", 2);
+            return;
+        }
 
-            Optional<Product> result = dialog.showAndWait();
-            result.ifPresent(updatedProduct -> {
-                if (updatedProduct != null) {
-                    if (productController.updateProduct(updatedProduct)) {
+        try {
+            // Obtener categorías disponibles y las actuales del producto
+            List<Category> availableCategories = categoryController.getCategories();
+            List<Category> currentCategories = productController.getProductCategories(selected.getID_Product());
+
+            // Validar que se obtuvieron las categorías
+            if (availableCategories == null || availableCategories.isEmpty()) {
+                showAlert("Error", "No se pudieron obtener las categorías disponibles", 3);
+                return;
+            }
+
+            EditProductDialog dialog = new EditProductDialog(selected, availableCategories, currentCategories);
+            Optional<EditProductDialog.ProductWithCategories> result = dialog.showAndWait();
+
+            result.ifPresent(updated -> {
+                if (updated != null && updated.getProduct() != null) {
+                    // Validar que las categorías seleccionadas no estén vacías
+                    if (updated.getSelectedCategories() == null || updated.getSelectedCategories().isEmpty()) {
+                        showAlert("Error", "Debe seleccionar al menos una categoría", 2);
+                        return;
+                    }
+
+                    // Actualizar producto con categorías
+                    boolean success = productController.updateProductWithCategories(
+                            updated.getProduct(),
+                            updated.getSelectedCategories()
+                    );
+
+                    if (success) {
                         showAlert("Producto Actualizado", "El producto se ha actualizado correctamente", 1);
                         refreshTable();
                     } else {
                         showAlert("Error", "Ocurrió un error al actualizar el producto", 3);
                     }
                 } else {
-                    showAlert("Error", "Por favor ingrese valores válidos", 3);
+                    showAlert("Error", "Los datos del producto no son válidos", 3);
                 }
             });
-        } else {
-            showAlert("Selección requerida", "Por favor seleccione un producto para editar", 2);
+
+        } catch (Exception e) {
+            System.err.println("Error en editSelectedProduct: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Error", "Ocurrió un error inesperado: " + e.getMessage(), 3);
         }
     }
 
@@ -305,19 +353,43 @@ public class ProductView {
     }
 
     private void addProductForm() {
-        AddProductDialog dialog = new AddProductDialog();
+        // Obtener las categorías disponibles
+        List<Category> availableCategories = categoryController.getCategories();
 
-        Optional<Product> result = dialog.showAndWait();
-        result.ifPresent(newProduct -> {
-            if (newProduct != null) {
-                if (productController.addProduct(newProduct)) {
+        AddProductDialog dialog = new AddProductDialog(availableCategories);
+
+        Optional<AddProductDialog.ProductWithCategories> result = dialog.showAndWait();
+        result.ifPresent(productWithCategories -> {
+            if (productWithCategories != null) {
+                Product product = productWithCategories.getProduct();
+                List<Category> categories = productWithCategories.getCategories();
+
+                if (productController.addProductWithCategories(product, categories)) {
                     showAlert("Producto Agregado", "El producto se ha agregado correctamente", 1);
                     refreshTable();
                 } else {
                     showAlert("Error", "Ocurrió un error al agregar el producto", 3);
                 }
-            } else {
-                showAlert("Error", "Por favor complete todos los campos correctamente", 3);
+            }
+        });
+    }
+
+    private void addCategoryForm() {
+        AddCategoryDialog dialog = new AddCategoryDialog();
+        CategoryController categoryController = new CategoryController();
+
+        Optional<String[]> result = dialog.showAndWait();
+        result.ifPresent(categoryData -> {
+            if (categoryData != null && categoryData.length == 2) {
+                String name = categoryData[0];
+                String state = categoryData[1];
+
+                if (categoryController.addCategory(name, state)) {
+                    showAlert("Categoría Agregada", "La categoría se ha agregado correctamente", 1);
+                    // Actualizar la lista de categorías si es necesario
+                } else {
+                    showAlert("Error", "Ocurrió un error al agregar la categoría", 3);
+                }
             }
         });
     }

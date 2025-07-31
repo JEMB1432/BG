@@ -13,9 +13,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.AssignmentController;
+import jemb.bistrogurmand.Controllers.DashboardController;
 import jemb.bistrogurmand.utils.Assignment;
 import jemb.bistrogurmand.utils.AssignmentColumnFactory;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -35,6 +37,10 @@ public class GenerateDashboardInfo {
     private ObservableList<Assignment> masterAssignmentList;
     private ObservableList<Assignment> currentDisplayedList;
 
+    private DashboardController dashboardController;
+
+    DatePicker datePicker = new DatePicker();
+
     public GenerateDashboardInfo() {
         masterAssignmentList = FXCollections.observableArrayList();
         currentDisplayedList = FXCollections.observableArrayList();
@@ -45,6 +51,7 @@ public class GenerateDashboardInfo {
         view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/tables.css").toExternalForm());
         view.setPadding(new Insets(20));
         assignmentController = new AssignmentController();
+        dashboardController = new DashboardController();
 
         searchField = new TextField();
         table = new TableView<>();
@@ -58,6 +65,16 @@ public class GenerateDashboardInfo {
             pause.playFromStart();
         });
 
+        datePicker.setEditable(false);
+        datePicker.setPrefWidth(350);
+        datePicker.setValue(LocalDate.now());
+        datePicker.getStyleClass().add("date-picker");
+        datePicker.setOnAction(e -> {
+            dateSelected = datePicker.getValue();
+            createTopSection();
+            refreshTable();
+        });
+
         createTopSection();
         configureTable();
         configurePagination();
@@ -68,6 +85,7 @@ public class GenerateDashboardInfo {
     private void createTopSection() {
         VBox topContent = new VBox();
         topContent.setSpacing(20);
+        topContent.getStyleClass().add("top-content");
 
         HBox titleCardView = new HBox();
         titleCardView.getStyleClass().add("title-card-view");
@@ -81,43 +99,11 @@ public class GenerateDashboardInfo {
         titleView.getStyleClass().add("title");
         titleView.setAlignment(Pos.BOTTOM_LEFT);
 
-        HBox cards = new HBox(50);
-        topContent.getStyleClass().add("top-content");
-
-        float saleInfo = 1850.00F;
-        VBox cardSale = new VBox(20);
-        cardSale.getStyleClass().add("card-sale");
-        Label titleSale = new Label("Ventas");
-        titleSale.getStyleClass().add("title-card");
-        Label totalSale = new Label("$" + saleInfo);
-        totalSale.getStyleClass().add("total-card");
-        cardSale.getChildren().addAll(titleSale, totalSale);
-
-        int orderInfo = 10;
-        VBox cardOrder = new VBox(20);
-        cardOrder.getStyleClass().add("card-sale");
-        Label titleOrder = new Label("Órdenes");
-        titleOrder.getStyleClass().add("title-card");
-        Label totalOrder = new Label(""+ orderInfo);
-        totalOrder.getStyleClass().add("total-card");
-        cardOrder.getChildren().addAll(titleOrder, totalOrder);
-
         HBox topBox = new HBox(20);
         topBox.getStyleClass().add("top-section-dash");
         topBox.setAlignment(Pos.CENTER_RIGHT);
         topBox.setPrefWidth(Double.MAX_VALUE);
         topBox.setPadding(new Insets(0, 0, 0, 0));
-
-        DatePicker datePicker = new DatePicker();
-        datePicker.setEditable(false);
-        datePicker.setPrefWidth(350);
-        datePicker.setValue(LocalDate.now());
-        datePicker.getStyleClass().add("date-picker");
-        datePicker.setOnAction(e -> {
-            dateSelected = datePicker.getValue();
-            refreshTable();
-            //System.out.println(newDate);
-        });
 
         searchField.setPromptText("Buscar asignaciones...");
         searchField.getStyleClass().add("search-field");
@@ -132,8 +118,7 @@ public class GenerateDashboardInfo {
 
         topBox.getChildren().addAll(datePicker, searchField, refreshButton);
         titleCardView.getChildren().addAll(iconTitle, titleView);
-        cards.getChildren().addAll(cardSale,cardOrder);
-        topContent.getChildren().addAll(titleCardView, cards, topBox);
+        topContent.getChildren().addAll(titleCardView, createCards(), topBox);
         view.setTop(topContent);
     }
 
@@ -230,7 +215,32 @@ public class GenerateDashboardInfo {
         updatePaginationInfo(pageIndex);
         table.refresh();
     }
-    
+
+    public HBox createCards(){
+        HBox cards = new HBox(50);
+
+        BigDecimal saleInfo = dashboardController.getDailySalesTotal(dateSelected);
+        VBox cardSale = new VBox(20);
+        cardSale.getStyleClass().add("card-sale");
+        Label titleSale = new Label("Ventas totales");
+        titleSale.getStyleClass().add("title-card");
+        Label totalSale = new Label("$" + saleInfo);
+        totalSale.getStyleClass().add("total-card");
+        cardSale.getChildren().addAll(titleSale, totalSale);
+
+        int orderInfo = dashboardController.getDailyOrdersTotal(dateSelected);
+        VBox cardOrder = new VBox(20);
+        cardOrder.getStyleClass().add("card-sale");
+        Label titleOrder = new Label("Órdenes totales");
+        titleOrder.getStyleClass().add("title-card");
+        Label totalOrder = new Label(""+ orderInfo);
+        totalOrder.getStyleClass().add("total-card");
+        cardOrder.getChildren().addAll(titleOrder, totalOrder);
+
+        cards.getChildren().addAll(cardSale,cardOrder);
+        return cards;
+    }
+
     public BorderPane getView() {
         return view;
     }

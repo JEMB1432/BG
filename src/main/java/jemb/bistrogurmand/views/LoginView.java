@@ -123,7 +123,7 @@ public class LoginView {
         loginButton.setOnAction(e -> {
             // Lógica de validación
             LoginController loginController = new LoginController();
-            User userLoged = loginController.tryLogin(usernameField.getText(), passwordField.getText());
+            User userLoged = loginController.tryLogin(usernameField.getText().trim(), passwordField.getText().trim());
             if (userLoged != null) {
                 UserSession.setCurrentUser(userLoged);
                 switch(userLoged.getRolUser().toLowerCase()

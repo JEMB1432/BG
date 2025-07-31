@@ -1,5 +1,6 @@
 package jemb.bistrogurmand.utils.Modals;
 
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -9,23 +10,27 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import jemb.bistrogurmand.utils.Category;
 import jemb.bistrogurmand.utils.ImgBBUploader;
 import jemb.bistrogurmand.utils.Product;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+public class AddProductDialog extends Dialog<AddProductDialog.ProductWithCategories> {
 
-public class AddProductDialog extends Dialog<Product> {
-    // Declaración de campos como variables de clase
     private TextField nameField;
     private TextField priceField;
     private TextArea descriptionArea;
     private ImageView imageView;
     private String imageUrl;
     private ToggleGroup availableToggleGroup;
+    private ListView<Category> categoriesListView;
+    private List<Category> selectedCategories = new ArrayList<>();
 
-    public AddProductDialog() {
+    public AddProductDialog(List<Category> availableCategories) {
         setTitle("Agregar Nuevo Producto");
         setHeaderText("Complete los datos del nuevo producto");
 
@@ -44,7 +49,7 @@ public class AddProductDialog extends Dialog<Product> {
         getDialogPane().getButtonTypes().addAll(cancelButtonType, saveButtonType);
 
         // Crear formulario
-        GridPane grid = createFormGrid();
+        GridPane grid = createFormGrid(availableCategories);
         getDialogPane().setContent(grid);
 
         // Validar campos antes de habilitar el botón Guardar
@@ -53,13 +58,13 @@ public class AddProductDialog extends Dialog<Product> {
         // Configurar conversor de resultados
         setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
-                return createProductFromForm();
+                return createProductWithCategoriesFromForm();
             }
             return null;
         });
     }
 
-    private GridPane createFormGrid() {
+    private GridPane createFormGrid(List<Category> availableCategories) {
         GridPane grid = new GridPane();
         grid.getStyleClass().add("grid-pane");
         grid.setHgap(10);
@@ -92,6 +97,13 @@ public class AddProductDialog extends Dialog<Product> {
         selectImageBtn.getStyleClass().add("secondary-button");
         selectImageBtn.setOnAction(e -> selectProductImage());
 
+        // Lista de categorías con checkboxes
+        categoriesListView = new ListView<>();
+        categoriesListView.getStyleClass().add("list-view");
+        categoriesListView.setCellFactory(param -> new CategoryListCell());
+        categoriesListView.setItems(FXCollections.observableArrayList(availableCategories));
+        categoriesListView.setPrefHeight(150);
+
         // Añadir controles al grid
         grid.add(new Label("Nombre:"), 1, 0);
         grid.add(nameField, 2, 0);
@@ -109,7 +121,42 @@ public class AddProductDialog extends Dialog<Product> {
         grid.add(imageView, 2, 4);
         grid.add(selectImageBtn, 3, 4);
 
+        grid.add(new Label("Categorías:"), 1, 5);
+        grid.add(categoriesListView, 2, 5, 2, 1);
+
         return grid;
+    }
+
+    private class CategoryListCell extends ListCell<Category> {
+        private final CheckBox checkBox = new CheckBox();
+        private final HBox hbox = new HBox(checkBox);
+
+        public CategoryListCell() {
+            super();
+            hbox.setSpacing(10);
+            checkBox.setOnAction(event -> {
+                Category category = getItem();
+                if (checkBox.isSelected()) {
+                    if (!selectedCategories.contains(category)) {
+                        selectedCategories.add(category);
+                    }
+                } else {
+                    selectedCategories.remove(category);
+                }
+            });
+        }
+
+        @Override
+        protected void updateItem(Category category, boolean empty) {
+            super.updateItem(category, empty);
+            if (empty || category == null) {
+                setGraphic(null);
+            } else {
+                checkBox.setText(category.getName());
+                checkBox.setSelected(selectedCategories.contains(category));
+                setGraphic(hbox);
+            }
+        }
     }
 
     private HBox createAvailabilityRadioButtons(String defaultAvailability) {
@@ -158,7 +205,7 @@ public class AddProductDialog extends Dialog<Product> {
     }
 
     private void validateFields() {
-        Button saveButton = (Button) getDialogPane().lookupButton(getDialogPane().getButtonTypes().get(0));
+        Button saveButton = (Button) getDialogPane().lookupButton(getDialogPane().getButtonTypes().get(1));
         saveButton.setDisable(true);
 
         nameField.textProperty().addListener((obs, oldVal, newVal) -> validateForm(saveButton));
@@ -169,7 +216,8 @@ public class AddProductDialog extends Dialog<Product> {
         boolean isValid = !nameField.getText().trim().isEmpty()
                 && !priceField.getText().trim().isEmpty()
                 && isNumeric(priceField.getText())
-                && imageUrl != null;
+                && imageUrl != null
+                && !selectedCategories.isEmpty(); // Asegurar que se seleccione al menos una categoría
 
         saveButton.setDisable(!isValid);
     }
@@ -183,7 +231,7 @@ public class AddProductDialog extends Dialog<Product> {
         }
     }
 
-    private Product createProductFromForm() {
+    private ProductWithCategories createProductWithCategoriesFromForm() {
         try {
             Product product = new Product();
             product.setName(nameField.getText());
@@ -192,7 +240,7 @@ public class AddProductDialog extends Dialog<Product> {
             product.setAvailable(availableToggleGroup.getSelectedToggle().getUserData().toString());
             product.setUrlImage(imageUrl);
 
-            return product;
+            return new ProductWithCategories(product, selectedCategories);
         } catch (NumberFormatException e) {
             showAlert("Error", "Por favor ingrese un precio válido", Alert.AlertType.ERROR);
             return null;
@@ -205,5 +253,24 @@ public class AddProductDialog extends Dialog<Product> {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    // Clase para devolver tanto el producto como sus categorías
+    public static class ProductWithCategories {
+        private final Product product;
+        private final List<Category> categories;
+
+        public ProductWithCategories(Product product, List<Category> categories) {
+            this.product = product;
+            this.categories = categories;
+        }
+
+        public Product getProduct() {
+            return product;
+        }
+
+        public List<Category> getCategories() {
+            return categories;
+        }
     }
 }

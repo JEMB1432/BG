@@ -191,6 +191,15 @@
     -fx-background-color: #156a46;
 }
 
+.category-button {
+    -fx-background-color: #d33600;
+    -fx-text-fill: white;
+}
+
+.category-button:hover {
+    -fx-background-color: #a12400;
+}
+
 .danger-button {
     -fx-background-color: -fx-danger-color; /* Usar la variable con -fx- */
     -fx-text-fill: white;
