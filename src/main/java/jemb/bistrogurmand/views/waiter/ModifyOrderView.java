@@ -11,6 +11,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import jemb.bistrogurmand.Controllers.OrderController;
+import jemb.bistrogurmand.DbConection.DatabaseConnection;
+import jemb.bistrogurmand.utils.UserSession;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 public class ModifyOrderView {
     private final BorderPane root;
@@ -26,6 +31,9 @@ public class ModifyOrderView {
 
     private void buildUI(String tableId) {
         root.setId("modificar-pedido-root");
+
+        // 1) Sidebar a la izquierda
+        root.setLeft(new SidebarWaiter().getView());
 
         // Contenido central
         VBox main = new VBox(15);
@@ -57,17 +65,36 @@ public class ModifyOrderView {
         txtReason.setWrapText(true);
 
         // Botón de envío
-        Button btnSend = new Button("Enviar solicitud a líder de meseros");
-        btnSend.getStyleClass().add("btn-send");
+        Button btnSend = new Button("Enviar");
         btnSend.setOnAction(e -> {
             String orderId = cbOrders.getValue();
             String reason  = txtReason.getText().trim();
-            if (orderId == null || orderId.isEmpty()) {
-                showAlert("Selecciona primero el pedido a modificar.");
-            } else if (reason.isEmpty()) {
-                showAlert("Debes escribir un motivo de modificación.");
-            } else {
-                orderController.requestModification(orderId, reason);
+
+            if (true) {
+                if (orderId == null || orderId.isEmpty()) {
+                    showAlert("Selecciona primero el pedido a modificar.");
+                    return;
+                }
+                if (reason.isEmpty()) {
+                    showAlert("Debes escribir un motivo de modificación.");
+                    return;
+                }
+                try (Connection conn = DatabaseConnection.getConnection()) {
+                    String sql = "INSERT INTO ORDER_CORRECTION (ID_CORRECTION, ID_EMPLOYEE, ID_SALE, ID_PRODUCT, APPROVED) " +
+                            "VALUES (ORDER_CORRECTION_SEQ.NEXTVAL, ?, ?, ?, ?)";
+
+                    PreparedStatement stmt = conn.prepareStatement(sql);
+                    stmt.setLong(1, Long.parseLong(UserSession.getCurrentUser().getUserID())); // ID_EMPLOYEE
+                    stmt.setLong(2, Long.parseLong(orderId));              // ID_SALE
+                    stmt.setLong(3, -1);                                   // ID_PRODUCT (placeholder)
+                    stmt.setInt(4, 0);                                     // APPROVED = 0 (pendiente)
+
+                    stmt.executeUpdate();
+                    showAlert("Solicitud enviada correctamente.");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    showAlert("Error al enviar solicitud: " + ex.getMessage());
+                }
             }
         });
         main.getChildren().addAll(
