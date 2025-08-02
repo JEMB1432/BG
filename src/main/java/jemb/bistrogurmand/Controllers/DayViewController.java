@@ -5,6 +5,7 @@ import jemb.bistrogurmand.DbConection.DatabaseConnection;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 
 public class DayViewController {
 
@@ -73,10 +74,15 @@ public class DayViewController {
     public String getShiftTime(int waiterId) {
         String sql = "SELECT SHIFT, TO_CHAR(StartTime, 'HH24:MI') AS StartTime, TO_CHAR(EndTime, 'HH24:MI') AS EndTime " +
                 "FROM Assignment WHERE ID_Employee = ? AND DATEASSIG = ? " +
-                "ORDER BY StartTime"; // Ordenamos por hora de inicio
+                "ORDER BY StartTime";
 
         LocalTime now = LocalTime.now();
-        String currentShift = "Sin turno asignado";
+        String result = "Sin turno asignado";
+
+        // Variables para tracking
+        String currentShift = null;
+        String nextShift = null;
+        LocalTime nextStartTime = null;
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -84,41 +90,61 @@ public class DayViewController {
             ps.setInt(1, waiterId);
             ps.setDate(2, Date.valueOf(LocalDate.now()));
 
-            ResultSet rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String shift = rs.getString("SHIFT");
+                    LocalTime startTime = LocalTime.parse(rs.getString("StartTime"));
+                    LocalTime endTime = LocalTime.parse(rs.getString("EndTime"));
 
-            while (rs.next()) {
-                String shift = rs.getString("SHIFT");
-                LocalTime startTime = LocalTime.parse(rs.getString("StartTime"));
-                LocalTime endTime = LocalTime.parse(rs.getString("EndTime"));
+                    boolean isInShift = false;
 
-                // Manejo especial para turno de noche que cruza medianoche
-                if (endTime.isBefore(startTime)) {
-                    if (now.isAfter(startTime) || now.isBefore(endTime)) {
-                        currentShift = String.format("Turno: %s (%s - %s)",
+                    // Verificar si está en turno actualmente
+                    if (endTime.isBefore(startTime)) {
+                        // Turno nocturno que cruza medianoche
+                        isInShift = !now.isBefore(startTime) || !now.isAfter(endTime);
+                    } else {
+                        // Turno normal
+                        isInShift = !now.isBefore(startTime) && !now.isAfter(endTime);
+                    }
+
+                    if (isInShift) {
+                        currentShift = String.format("Turno activo: %s (%s - %s)",
                                 capitalizeShift(shift),
                                 rs.getString("StartTime"),
                                 rs.getString("EndTime"));
-                        break;
+                        break; // Si encontramos turno activo, lo priorizamos
+                    }
+
+                    // Si no está en turno, buscar el siguiente turno del día
+                    if (currentShift == null && now.isBefore(startTime)) {
+                        if (nextShift == null || startTime.isBefore(nextStartTime)) {
+                            nextShift = String.format("Próximo turno: %s (%s - %s)",
+                                    capitalizeShift(shift),
+                                    rs.getString("StartTime"),
+                                    rs.getString("EndTime"));
+                            nextStartTime = startTime;
+                        }
                     }
                 }
-                // Para turnos normales
-                else if (now.isAfter(startTime) && now.isBefore(endTime)) {
-                    currentShift = String.format("Turno: %s (%s - %s)",
-                            capitalizeShift(shift),
-                            rs.getString("StartTime"),
-                            rs.getString("EndTime"));
-                    break;
+
+                // Determinar qué mostrar
+                if (currentShift != null) {
+                    result = currentShift;
+                } else if (nextShift != null) {
+                    result = nextShift;
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
             return "Error al obtener turno";
+        } catch (DateTimeParseException e) {
+            e.printStackTrace();
+            return "Error en formato de tiempo";
         }
 
-        return currentShift;
+        return result;
     }
 
-    // Método auxiliar para capitalizar el nombre del turno
     private String capitalizeShift(String shift) {
         if (shift == null || shift.isEmpty()) {
             return shift;
@@ -127,9 +153,9 @@ public class DayViewController {
     }
 
     public static void main(String[] args) {
-        System.out.println(new DayViewController().getAverageRating(41));
-        System.out.println(new DayViewController().getActiveOrdersCount(41));
-        System.out.println(new DayViewController().getAssignedTablesCount(41));
-        System.out.println(new DayViewController().getShiftTime(41));
+        System.out.println(new DayViewController().getAverageRating(35));
+        System.out.println(new DayViewController().getActiveOrdersCount(35));
+        System.out.println(new DayViewController().getAssignedTablesCount(35));
+        System.out.println(new DayViewController().getShiftTime(35));
     }
 }

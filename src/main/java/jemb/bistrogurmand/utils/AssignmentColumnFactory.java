@@ -93,14 +93,21 @@ public class AssignmentColumnFactory {
         column.getStyleClass().add("text-column");
 
         column.setCellFactory(param -> new TableCell<>() {
+            private final Button takeButton = new Button("");
             private final Button seeButton = new Button("");
             private final Button editButton = new Button("");
             private final Button deleteButton = new Button("");
-            private final HBox buttonsContainer = new HBox(5, seeButton, editButton, deleteButton);
+            private final HBox buttonsContainer = new HBox(5,takeButton, seeButton, editButton, deleteButton);
 
             {
                 // Estilo de los botones
-                ImageView seeImage = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/edit.png").toString()));
+                ImageView takeImage = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/take.png").toString()));
+                takeImage.setFitHeight(16);
+                takeImage.setFitWidth(16);
+                takeButton.setGraphic(takeImage);
+                takeButton.getStyleClass().add("take-button");
+
+                ImageView seeImage = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/see.png").toString()));
                 seeImage.setFitHeight(16);
                 seeImage.setFitWidth(16);
                 seeButton.setGraphic(seeImage);
@@ -121,6 +128,12 @@ public class AssignmentColumnFactory {
                 buttonsContainer.setAlignment(Pos.CENTER);
 
                 // Eventos de los botones
+                takeButton.setOnAction(event -> {
+                    Assignment assignment = getTableView().getItems().get(getIndex());
+                    System.out.println("Tomar orden: " + assignment); // Aquí tu lógica de edición
+                    // Puedes llamar a un método para editar el assignment
+                });
+
                 editButton.setOnAction(event -> {
                     Assignment assignment = getTableView().getItems().get(getIndex());
                     System.out.println("Editar: " + assignment); // Aquí tu lógica de edición
