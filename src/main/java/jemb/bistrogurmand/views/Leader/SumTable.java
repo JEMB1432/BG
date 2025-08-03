@@ -10,15 +10,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
-import jemb.bistrogurmand.Controllers.PlanificationController; // Importar TableDAO
+import jemb.bistrogurmand.Controllers.PlanificationController;
 import jemb.bistrogurmand.utils.PlanificationRestaurant;
-import jemb.bistrogurmand.utils.ShiftSummary; // Importar el nuevo modelo de datos
+import jemb.bistrogurmand.utils.ShiftSummary;
 
 public class SumTable {
     private BorderPane view;
     private TableView<ShiftSummary> table;
 
-    private ObservableList<ShiftSummary> masterSummaryList; // Nueva lista para el resumen
+    private ObservableList<ShiftSummary> masterSummaryList;
 
     public SumTable() {
         masterSummaryList = FXCollections.observableArrayList();
@@ -33,16 +33,16 @@ public class SumTable {
         table = new TableView<>();
         table.getStyleClass().add("table-view");
 
-        // Configurar la interfaz
+
         createTopSection();
         configureTable();
 
-// En tu constructor de SumTable, o en un método de configuración del layout
-        VBox centerLayout = new VBox(10, table); // Crea un VBox solo con la tabla
-        view.setCenter(centerLayout); // Añade el VBox al centro del BorderPane
 
-        // Cargar datos después de que todo está configurado
-        loadInitialData(); // Esto cargará el resumen
+        VBox centerLayout = new VBox(10, table);
+        view.setCenter(centerLayout);
+
+
+        loadInitialData();
     }
 
     private void createTopSection() {
@@ -81,20 +81,20 @@ public class SumTable {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.getStyleClass().add("table-view");
 
-        // Columna de Turno (Índice ahora es el nombre del turno)
+
         TableColumn<ShiftSummary, String> shiftColumn = new TableColumn<>("Turno");
         shiftColumn.getStyleClass().add("text-column");
         shiftColumn.setPrefWidth(100); // Ajusta el ancho
         shiftColumn.setCellValueFactory(cellData -> cellData.getValue().shiftNameProperty()); // Usa la propiedad del nombre del turno
         shiftColumn.setStyle("-fx-alignment: center");
 
-
+/*
         // Columna de Meseros Activos
         TableColumn<ShiftSummary, Number> activeWaitersColumn = new TableColumn<>("Meseros activos");
         activeWaitersColumn.setStyle("-fx-alignment: center"); // Centrar el número
         activeWaitersColumn.getStyleClass().add("number-column"); // Un estilo para números
         activeWaitersColumn.setCellValueFactory(cellData -> cellData.getValue().activeWaitersProperty()); // Usa la propiedad de conteo
-
+*/
 
         // Columna de Meseros en Servicio
         TableColumn<ShiftSummary, Number> serviceWaitersColumn = new TableColumn<>("Meseros en servicio");
@@ -103,30 +103,30 @@ public class SumTable {
         serviceWaitersColumn.setCellValueFactory(cellData -> cellData.getValue().serviceWaitersProperty());
 
 
+        // Columna de Mesas Libres
+        TableColumn<ShiftSummary, Number> freeTablesColumn = new TableColumn<>("Mesas Libres");
+        freeTablesColumn.setStyle("-fx-alignment: center");
+        freeTablesColumn.getStyleClass().add("number-column");
+        freeTablesColumn.setCellValueFactory(cellData -> cellData.getValue().activeWaitersProperty());
+
+
         // Columna de Órdenes Pendientes
         TableColumn<ShiftSummary, Number> pendingOrdersColumn = new TableColumn<>("Órdenes Pendientes");
         pendingOrdersColumn.setStyle("-fx-alignment: center");
         pendingOrdersColumn.getStyleClass().add("number-column");
         pendingOrdersColumn.setCellValueFactory(cellData -> cellData.getValue().pendingOrdersProperty());
 
-
-        table.getColumns().addAll(shiftColumn, activeWaitersColumn, serviceWaitersColumn, pendingOrdersColumn);
+        //table.getColumns().addAll(shiftColumn, activeWaitersColumn, serviceWaitersColumn, pendingOrdersColumn);
+        table.getColumns().addAll(shiftColumn, serviceWaitersColumn, freeTablesColumn, pendingOrdersColumn);
     }
 
 
     private void loadInitialData() {
-        refreshTable(); // Esto cargará los datos de resumen
+        refreshTable();
     }
-
-    //-----------------------------------------------------------------------------------------------------------------------//
-
     private void refreshTable() {
-        // Llamar al nuevo método en TableDAO para obtener el resumen por turnos
-        masterSummaryList.setAll(PlanificationController.getShiftSummariesForToday()); // Carga los datos resumidos
-        // No necesitas searchField.clear() ni filterAndPaginateTable()
-        // pagination.setPageCount(1); // Siempre 1 página para 3 filas
-        table.setItems(masterSummaryList); // Directamente, ya que no hay paginación ni filtro por búsqueda
-        //table.refresh(); // Asegura que la tabla se redibuje
+        masterSummaryList.setAll(PlanificationController.getShiftSummariesForToday());
+        table.setItems(masterSummaryList);
     }
 
 

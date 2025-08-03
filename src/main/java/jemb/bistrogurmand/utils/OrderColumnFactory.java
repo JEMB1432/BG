@@ -78,9 +78,21 @@ public class OrderColumnFactory {
                 if (empty || estado == null) {
                     setGraphic(null);
                 } else {
-                    String status = estado.equals("1") ? "Aprobado" : "Pendiente";
+                    //String status = estado.equals("1") ? "Aprobado" : "Pendiente";
+                    String status = switch (estado) {
+                        case "1" -> "Aprobado";
+                        case "0" -> "Pendiente";
+                        case "2" -> "No Aprobado";
+                        default -> "Desconocido";
+                    };
                     Label label = new Label(status);
-                    label.getStyleClass().add(estado.equals("1") ? "badge" : "badge-red");
+                    //label.getStyleClass().add(estado.equals("1") ? "badge" : "badge-red");
+                    label.getStyleClass().add(switch (estado) {
+                        case "1" -> "badge";
+                        case "0" -> "badge-yellow";
+                        case "2" -> "badge-red";
+                        default -> "badge-red";
+                    });
                     setGraphic(label);
                 }
             }

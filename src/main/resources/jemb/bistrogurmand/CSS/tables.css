@@ -487,3 +487,15 @@
     -fx-text-fill: #9a9a9a; /* Color de texto gris */
     -fx-font-style: italic; /* Texto en cursiva */
 }
+
+.badge-yellow {
+    -fx-background-color: #FFF3E0;               /* Amarillo muy claro */
+    -fx-text-fill: #E65100;                     /* Naranja oscuro */
+    -fx-padding: 3 8;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+    -fx-border-color: #FFB300;                  /* Amarillo dorado */
+    -fx-border-width: 1;
+}
