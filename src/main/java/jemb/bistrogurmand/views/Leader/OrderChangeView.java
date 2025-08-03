@@ -20,6 +20,8 @@ import jemb.bistrogurmand.utils.OrderRestaurant;
 import jemb.bistrogurmand.utils.TableRestaurant;
 import jemb.bistrogurmand.utils.TableRestaurantColumnFactory;
 
+import java.time.LocalDate;
+
 import static jemb.bistrogurmand.utils.OrderColumnFactory.*;
 import static jemb.bistrogurmand.utils.TableRestaurantColumnFactory.*;
 
@@ -89,14 +91,6 @@ public class OrderChangeView {
         searchField.getStyleClass().add("search-field");
         searchField.setPrefWidth(Double.MAX_VALUE);
 
-        //ImageView imageViewAdd = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/add.png").toString()));
-       // imageViewAdd.setFitHeight(16);
-     //   imageViewAdd.setFitWidth(16);
-       // Button addbutton = new Button("Agregar Mesa");
-     //   addbutton.setGraphic(imageViewAdd);
-       // addbutton.getStyleClass().add("primary-button");
-      //  addbutton.setOnAction(event -> addTableForm());
-
         ImageView imageViewUpdate = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/update.png").toString()));
         imageViewUpdate.setFitHeight(16);
         imageViewUpdate.setFitWidth(16);
@@ -110,6 +104,7 @@ public class OrderChangeView {
         view.setTop(globalSection);
     }
 
+    /* SIN MOSTRAR DESHABILITADOS
     private void configureTable() {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.getStyleClass().add("table-view");
@@ -117,9 +112,37 @@ public class OrderChangeView {
         table.getColumns().addAll(
                 OrderColumnFactory.createIndexColumn(pagination,rowsPerPage),
                 createID_EmployeeColumn(),
-                createID_SaleColumn(),
-                createID_ProductColumn()
+                createID_ProductColumn(),
+                OrderColumnFactory.createStateColumn()
         );
+    }*/
+
+    private void configureTable() {
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.getStyleClass().add("table-view");
+
+        table.getColumns().addAll(
+                OrderColumnFactory.createIndexColumn(pagination, rowsPerPage),
+                createID_EmployeeColumn(),
+                createID_ProductColumn(),
+                OrderColumnFactory.createStateColumn()
+        );
+
+        table.setRowFactory(tv -> new TableRow<OrderRestaurant>() {
+            @Override
+            protected void updateItem(OrderRestaurant item, boolean empty) {
+                super.updateItem(item, empty);
+                getStyleClass().removeAll("disabled-row", "active-row");
+                if (item != null && !empty) {
+                    if (item.getApproved() == 2) {
+                        getStyleClass().add("disabled-row");
+                    } else if (item.getApproved() == 1) {
+                        // Si quieres, puedes agregar un estilo para las aprobadas
+                        getStyleClass().add("active-row");
+                    }
+                }
+            }
+        });
     }
 
     private void configurePagination() {
@@ -152,47 +175,51 @@ public class OrderChangeView {
         buttomBox.setAlignment(Pos.CENTER_RIGHT);
         buttomBox.setPadding(new Insets(20, 0, 0, 0));
 
-        Button editButton = new Button("Editar");
-        editButton.getStyleClass().add("primary-button");
-        editButton.setOnAction(event -> editSelectedTable());
+        Button acceptButton = new Button("Aprobar");
+        acceptButton.getStyleClass().add("secondary-button");
+        acceptButton.setOnAction(event -> acceptSelectedTable());
 
-        Button deleteButton = new Button("Eliminar");
-        deleteButton.getStyleClass().add("danger-button");
-        deleteButton.setOnAction(event -> deleteSelectedTable());
+        Button cancelButton = new Button("No aprobar");
+        cancelButton.getStyleClass().add("danger-button");
+        cancelButton.setOnAction(event -> cancelSelectedTable());
 
-        buttomBox.getChildren().addAll(editButton, deleteButton);
+        buttomBox.getChildren().addAll(acceptButton, cancelButton);
         view.setBottom(buttomBox);
     }
 
     private void refreshTable() {
-        masterTableRestaurantList.setAll(tableController.getOrderRestaurants());
+        masterTableRestaurantList.clear();
+        masterTableRestaurantList.setAll(tableController.getDailyOrderCorrections());
         searchField.clear();
         filterAndPaginateTable();
+        table.refresh();
+    }
+    private void refreshCancel() {
+        searchField.clear();
+        filterAndPaginateTable();
+        table.refresh();
     }
 
     private void filterAndPaginateTable() {
         String filter = searchField.getText().toLowerCase();
         ObservableList<OrderRestaurant> filteredList = FXCollections.observableArrayList();
 
-        /*if(filter.isEmpty()) {
+        if (filter.isEmpty()) {
             filteredList.addAll(masterTableRestaurantList);
-        }else {
-            for (OrderRestaurant tableRestaurant : masterTableRestaurantList) {
-                if (matchesFilter(tableRestaurant, filter)){
-                    filteredList.add(tableRestaurant);
+        } else {
+            for (OrderRestaurant order : masterTableRestaurantList) {
+                if (order.getEmployeeName().toLowerCase().contains(filter) ||
+                        order.getProductName().toLowerCase().contains(filter) ||
+                        String.valueOf(order.getID_Correction()).contains(filter)) {
+                    filteredList.add(order);
                 }
             }
-        }*/
+        }
 
         currentDisplayedList.setAll(filteredList);
         updatePagination();
     }
 
-    /*private boolean matchesFilter(OrderRestaurant tableRestaurant, String filter) {
-        return tableRestaurant.getID_Employee().toString contains(filter) ||
-                tableRestaurant.getLocation().toLowerCase().contains(filter) ||
-                tableRestaurant.getNumberSeats().toString().contains(filter);
-    }*/
 
     private void updatePagination() {
         int itemCount = currentDisplayedList.size();
@@ -221,25 +248,57 @@ public class OrderChangeView {
         table.refresh();
     }
 
-    private void editSelectedTable() {
+    private void acceptSelectedTable() {
         OrderRestaurant selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            // Implementar lógica de edición
-            System.out.println("Editar pedido: ");
+            // Llama al controlador para aprobar la corrección en la base de datos
+            if (tableController.approveOrderCorrection(selected.getID_Correction())) {
+                showAlert("Éxito", "La corrección ha sido aprobada.", Alert.AlertType.INFORMATION);
+                refreshTable();
+            } else {
+                showAlert("Error", "No se pudo aprobar la corrección. Inténtelo de nuevo.", Alert.AlertType.ERROR);
+            }
         } else {
-            showAlert("Selección requerida", "Por favor seleccione una mesa para editar.");
+            showAlert("Selección Requerida", "Por favor, seleccione una orden para cambiar su estado", Alert.AlertType.WARNING);
         }
     }
 
-    private void deleteSelectedTable() {
+    private void cancelSelectedTable() {
+        OrderRestaurant selected = table.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            selected.setApproved(2);
+            refreshCancel();
+            showAlert("Éxito", "La corrección ha sido marcada como no aprobada.", Alert.AlertType.INFORMATION);
 
+        } else {
+            showAlert("Selección Requerida", "Por favor, seleccione una orden para cambiar su estado", Alert.AlertType.WARNING);
+        }
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+    /*  ALTERANDO BD APPROVED =2
+    private void cancelSelectedTable() {
+        OrderRestaurant selected = table.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            if (tableController.rejectOrderCorrection(selected.getID_Correction())) {
+                selected.setApproved(2); // Usamos 2 para "No Aprobado"
+                refreshTable();
+                showAlert("Éxito", "La corrección ha sido marcada como no aprobada.", Alert.AlertType.INFORMATION);
+            } else {
+                showAlert("Error", "No se pudo marcar la corrección. Inténtelo de nuevo.", Alert.AlertType.ERROR);
+            }
+        } else {
+            showAlert("Selección Requerida", "Por favor, seleccione una orden para cambiar su estado", Alert.AlertType.WARNING);
+        }
+    }*/
+
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("/jemb/bistrogurmand/CSS/alerts.css").toExternalForm()
+        );
         alert.showAndWait();
     }
 

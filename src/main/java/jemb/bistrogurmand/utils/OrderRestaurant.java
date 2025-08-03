@@ -1,13 +1,18 @@
 package jemb.bistrogurmand.utils;
 
+import java.time.LocalDateTime;
+
 public class OrderRestaurant {
     private int ID_Correction;
     private int ID_Employee;
     private int ID_Sale;
     private int ID_Product;
-    private boolean Approved;
+    private int Approved;
+    private String EmployeeName;
+    private String ProductName;
+    private LocalDateTime SaleDate;
 
-    public OrderRestaurant(int ID_Correction, int ID_Employee, int ID_Sale, int ID_Product, boolean Approved) {
+    public OrderRestaurant(int ID_Correction, int ID_Employee, int ID_Sale, int ID_Product, int Approved) {
         this.ID_Correction = ID_Correction;
         this.ID_Employee = ID_Employee;
         this.ID_Sale = ID_Sale;
@@ -15,11 +20,15 @@ public class OrderRestaurant {
         this.Approved=Approved;
     }
 
-    public OrderRestaurant(int ID_Correction, int ID_Employee, int ID_Sale, int ID_Product) {
+    public OrderRestaurant(int ID_Correction, int ID_Employee, String EmployeeName, int ID_Sale, int ID_Product, String ProductName, int State, LocalDateTime SaleDate) {
         this.ID_Correction = ID_Correction;
         this.ID_Employee = ID_Employee;
+        this.EmployeeName=EmployeeName;
         this.ID_Sale = ID_Sale;
         this.ID_Product = ID_Product;
+        this.ProductName=ProductName;
+        this.Approved=State;
+        this.SaleDate=SaleDate;
     }
 
     public int getID_Correction() {
@@ -54,6 +63,36 @@ public class OrderRestaurant {
         this.ID_Product = ID_Product;
 
 }
-public boolean isApproved() { return Approved; }
-public void setApproved(boolean approved) { this.Approved = approved; }
+
+    public int getApproved() {
+        return Approved;
+    }
+
+    public void setApproved(int approved) {
+        Approved = approved;
+    }
+
+    public String getEmployeeName() {
+        return EmployeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        EmployeeName = employeeName;
+    }
+
+    public String getProductName() {
+        return ProductName;
+    }
+
+    public void setProductName(String productName) {
+        ProductName = productName;
+    }
+
+    public LocalDateTime getSaleDate() {
+        return SaleDate;
+    }
+
+    public void setSaleDate(LocalDateTime saleDate) {
+        SaleDate = saleDate;
+    }
 }

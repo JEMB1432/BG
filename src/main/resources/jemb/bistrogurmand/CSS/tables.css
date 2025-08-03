@@ -478,3 +478,12 @@
     -fx-text-fill: #990D35;
     -fx-font-weight: bold;
 }
+
+
+
+.table-view .disabled-row {
+    -fx-opacity: 0.5; /* Hace la fila semitransparente */
+    -fx-background-color: #f2f2f2; /* Color de fondo gris claro */
+    -fx-text-fill: #9a9a9a; /* Color de texto gris */
+    -fx-font-style: italic; /* Texto en cursiva */
+}

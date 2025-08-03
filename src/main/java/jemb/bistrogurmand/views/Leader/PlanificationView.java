@@ -245,7 +245,6 @@ public class PlanificationView {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
-        // Aplica el estilo de CSS si tienes un archivo para alertas genéricas
         alert.getDialogPane().getStylesheets().add(
                 getClass().getResource("/jemb/bistrogurmand/CSS/alerts.css").toExternalForm()
         );
@@ -254,24 +253,24 @@ public class PlanificationView {
 
     private void addTableForm() {
         AssignmentDialog dialog = new AssignmentDialog();
-        dialog.showAndWait(); // Modal
-        refreshTable(); // Refresca la tabla después de que el modal se cierra
+        dialog.showAndWait();
+        refreshTable();
     }
 
-    // --- NUEVO MÉTODO PARA EDITAR ASIGNACIÓN ---
+
     private void editSelectedAssignment() {
         PlanificationRestaurant selectedAssignment = table.getSelectionModel().getSelectedItem();
         if (selectedAssignment != null) {
             // Crea una instancia del nuevo modal de edición
             EditAssignmentPlan dialog = new EditAssignmentPlan(selectedAssignment);
-            dialog.showAndWait(); // Muestra el modal de forma modal
-            refreshTable(); // Refresca la tabla principal después de que el modal se cierra
+            dialog.showAndWait();
+            refreshTable();
         } else {
             showAlert("Selección Requerida", "Por favor, seleccione una asignación de la tabla para editar.", Alert.AlertType.WARNING);
         }
     }
 
-    // --- NUEVO MÉTODO PARA ELIMINAR ASIGNACIÓN (similar a tu código comentado) ---
+
     private void deleteSelectedAssignment() {
         PlanificationRestaurant selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {

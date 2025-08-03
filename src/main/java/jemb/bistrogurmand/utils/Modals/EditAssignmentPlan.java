@@ -249,7 +249,7 @@ public class EditAssignmentPlan extends Stage {
         if (employee != null && shift != null && table != null) {
             int employeeId = Integer.parseInt(employee.getUserID());
             int tableId = Integer.parseInt(table.getID_Table());
-            int tableNum=table.getNumberTable();
+            Integer tableNum=table.getNumberTable();
 
             // Verificar si los datos seleccionados son idénticos a los originales y no hay cambios.
             // Si no hay cambios, no necesitamos hacer nada.
@@ -279,9 +279,17 @@ public class EditAssignmentPlan extends Stage {
             }
 
 
-            // 2. Mesa ya asignada (excluyendo la asignación original si la mesa no cambia)
+            /* 2. OG
             if (tableId != assignmentToEdit.getID_Table()) { // Si la mesa está cambiando
                 if (assignedTableIds != null && assignedTableIds.contains(tableId)) {
+                    showAlert("Mesa Asignada", "Esta mesa ya está asignada a otro mesero para el turno y día seleccionados.", Alert.AlertType.WARNING);
+                    return;
+                }
+            }*/
+
+            // 2. Mesa ya asignada (excluyendo la asignación original si la mesa no cambia)
+            if (table.getNumberTable() != assignmentToEdit.getTableNumber()) { // Si el NÚMERO de mesa está cambiando
+                if (assignedTableIds != null && assignedTableIds.contains(table.getNumberTable())) {
                     showAlert("Mesa Asignada", "Esta mesa ya está asignada a otro mesero para el turno y día seleccionados.", Alert.AlertType.WARNING);
                     return;
                 }
