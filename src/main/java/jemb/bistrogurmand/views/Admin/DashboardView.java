@@ -3,6 +3,7 @@ package jemb.bistrogurmand.views.Admin;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -32,10 +33,12 @@ public class DashboardView {
     }
 
     private void changeCentralContent(String views) {
-        Region newContent = null;
+        Region newContent;
+
         switch (views.toLowerCase()) {
             case "dashboard":
                 newContent = new GenerateDashboardInfo().getView();
+                newContent.setMaxHeight(Region.USE_COMPUTED_SIZE);
                 break;
             case "meseros":
                 newContent = new WaiterView().getView();
@@ -50,7 +53,12 @@ public class DashboardView {
                 newContent = new Label("Vista no encontrada");
         }
 
-        view.setCenter(newContent);
+        ScrollPane scrollable = new ScrollPane(newContent);
+        scrollable.setFitToWidth(true);
+        scrollable.setFitToHeight(false);
+        scrollable.setStyle("-fx-background-color: transparent; -fx-border-width: 0");
+
+        view.setCenter(scrollable);
     }
 
     public BorderPane getView() {

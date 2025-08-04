@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.chart.BarChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,10 +17,10 @@ import jemb.bistrogurmand.Controllers.AssignmentController;
 import jemb.bistrogurmand.Controllers.DashboardController;
 import jemb.bistrogurmand.utils.Assignment;
 import jemb.bistrogurmand.utils.AssignmentColumnFactory;
+import jemb.bistrogurmand.utils.RadarChartCustom;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 import static jemb.bistrogurmand.utils.AssignmentColumnFactory.*;
 
@@ -49,6 +50,7 @@ public class GenerateDashboardInfo {
         view.getStyleClass().add("root");
         view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/styles.css").toExternalForm());
         view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/tables.css").toExternalForm());
+        view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/graphic.css").toExternalForm());
         view.setPadding(new Insets(20));
         assignmentController = new AssignmentController();
         dashboardController = new DashboardController();
@@ -99,6 +101,30 @@ public class GenerateDashboardInfo {
         titleView.getStyleClass().add("title");
         titleView.setAlignment(Pos.BOTTOM_LEFT);
 
+        // Sección de gráficos
+        HBox chartsContainer = new HBox(20);
+        chartsContainer.setPadding(new Insets(20, 0, 0, 0));
+        chartsContainer.setAlignment(Pos.CENTER);
+        chartsContainer.getStyleClass().add("card-charts");
+
+        // Gráfico de ventas por turno
+        VBox salesChartBox = new VBox(10);
+        salesChartBox.getStyleClass().add("chart-container");
+        BarChart<String, Number> salesChart = dashboardController.createShiftSalesChart(dateSelected);
+        salesChartBox.getChildren().addAll(
+                new Label("Desempeño por Turno"),
+                salesChart
+        );
+
+        // Gráfico de calificaciones
+        VBox ratingsChartBox = new VBox(10);
+        ratingsChartBox.getStyleClass().add("chart-container");
+        RadarChartCustom ratingsChart = dashboardController.createEmployeeRatingsChart(dateSelected);
+        ratingsChartBox.getChildren().addAll(
+                new Label("Evaluación de Empleados"),
+                ratingsChart
+        );
+
         HBox topBox = new HBox(20);
         topBox.getStyleClass().add("top-section-dash");
         topBox.setAlignment(Pos.CENTER_RIGHT);
@@ -118,13 +144,17 @@ public class GenerateDashboardInfo {
 
         topBox.getChildren().addAll(datePicker, searchField, refreshButton);
         titleCardView.getChildren().addAll(iconTitle, titleView);
-        topContent.getChildren().addAll(titleCardView, createCards(), topBox);
+        chartsContainer.getChildren().addAll(salesChartBox, ratingsChartBox);
+        topContent.getChildren().addAll(titleCardView, createCards(), chartsContainer, topBox);
         view.setTop(topContent);
     }
 
     private void configureTable() {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.getStyleClass().add("table-view");
+        table.setPrefHeight(800);
+        table.setMinHeight(800);
+        table.setMaxHeight(800);
 
         table.getColumns().addAll(
                 AssignmentColumnFactory.createIndexColumn(pagination,rowsPerPage),

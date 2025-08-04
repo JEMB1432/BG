@@ -1,0 +1,31 @@
+/* Estilos generales para gráficos */
+
+.card-charts{
+    -fx-padding: 5px 0px;
+}
+
+.chart-style {
+    -fx-font-size: 12px;
+    -fx-legend-visible: false;
+    -fx-background-color: transparent;
+}
+
+.chart-container {
+    -fx-padding: 15;
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
+}
+
+.chart-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+/* Estilo específico para el gráfico de radar */
+.polar-chart {
+    -fx-radar-fill: rgba(75, 192, 192, 0.2);
+    -fx-radar-stroke: #4BC0C0;
+    -fx-radar-stroke-width: 2px;
+}
