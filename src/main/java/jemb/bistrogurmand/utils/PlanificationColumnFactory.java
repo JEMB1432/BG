@@ -34,7 +34,7 @@ public class PlanificationColumnFactory {
     }
     public static TableColumn<PlanificationRestaurant, String> createEmployeeColumn() {
         TableColumn<PlanificationRestaurant, String> column = new TableColumn<>("Mesero");
-        column.setStyle("-fx-alignment: center-left");
+        column.setStyle("-fx-alignment: center");
         column.getStyleClass().add("text-column");
         column.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getEmployeeName()));

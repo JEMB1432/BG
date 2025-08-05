@@ -117,17 +117,19 @@ public class PlanificationController {
         }
         return assignments;
     }
+
     public static List<ShiftSummary> getShiftSummariesForToday() {
         List<ShiftSummary> summaries = new ArrayList<>();
         List<String> shifts = Arrays.asList("Mañana", "Tarde", "Noche"); // Define los turnos fijos
 
         for (String shift : shifts) {
-            int activeWaitersCount = 0;    // Total de meseros disponibles
+            //int activeWaitersCount = 0;    // Total de meseros disponibles
             int serviceWaitersCount = 0;   // Meseros con asignación hoy para este turno
+            int freeTablesCount = 0;
             int pendingOrdersCount = 0;    // Órdenes pendientes (se mantiene igual)
 
-            // --- 1. Conteo de Meseros Activos (Registrados y Disponibles) ---
-            // Cuenta todos los empleados que son 'Mesero' y su State es 1.
+           /*  --- 0. Conteo de Meseros Activos (Registrados y Disponibles) ---
+             Cuenta todos los empleados que son 'Mesero' y su State es 1.
             String activeWaitersSql = """
                 SELECT COUNT(ID_Employee)
                 FROM Employee
@@ -143,10 +145,10 @@ public class PlanificationController {
                 }
             } catch (SQLException e) {
                 System.err.println("Error al obtener conteo de meseros activos (registrados): " + e.getMessage());
-            }
+            }*/
 
 
-            // --- 2. Conteo de Meseros en Servicio (con asignación para este turno HOY) ---
+            // --- 1. Conteo de Meseros en Servicio (con asignación para este turno HOY) ---
             // Cuenta los meseros (Rol='Mesero', State=1) que tienen una asignación HOY para el turno actual.
             String serviceWaitersSql = """
                 SELECT COUNT(DISTINCT a.ID_Employee)
@@ -168,6 +170,31 @@ public class PlanificationController {
                 System.err.println("Error al obtener conteo de meseros en servicio para turno " + shift + ": " + e.getMessage());
             }
 
+            // --- 2. Conteo de Mesas Libres (sin asignación para este turno HOY) ---
+            String freeTablesSql = """
+    SELECT COUNT(DISTINCT t.ID_Table)
+    FROM TableRestaurant t
+    WHERE t.State = '1'
+    AND t.ID_Table NOT IN (
+        SELECT a.ID_Table 
+        FROM Assignment a
+        WHERE TRUNC(a.dateassig) = TRUNC(SYSDATE)
+        AND a.Shift = ?
+    )
+""";
+
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(freeTablesSql)) {
+                pstmt.setString(1, shift); // El mismo parámetro de turno
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        freeTablesCount = rs.getInt(1); // Asigna el conteo a tu variable
+                    }
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al obtener conteo de mesas libres para turno " + shift + ": " + e.getMessage());
+            }
+
 
             // --- 3. Conteo de Órdenes Pendientes (se mantiene igual que antes) ---
             // Asumimos Order_Correction con Approved = 0 y vinculadas al turno y día de asignación.
@@ -176,7 +203,7 @@ public class PlanificationController {
                 FROM Order_Correction oc
                 JOIN Sale s ON oc.ID_Sale = s.ID_Sale
                 JOIN Assignment a ON s.ID_Assignment = a.ID_Assignment
-                WHERE TRUNC(a.dateassig) = TRUNC(SYSDATE)
+                WHERE TRUNC(s.SaleDate) = TRUNC(SYSDATE)
                 AND a.Shift = ?
                 AND oc.Approved = 0
             """;
@@ -192,7 +219,8 @@ public class PlanificationController {
                 System.err.println("Error al obtener conteo de órdenes pendientes para turno " + shift + ": " + e.getMessage());
             }
 
-            summaries.add(new ShiftSummary(shift, activeWaitersCount, serviceWaitersCount, pendingOrdersCount));
+            //summaries.add(new ShiftSummary(shift, activeWaitersCount, serviceWaitersCount, pendingOrdersCount));
+            summaries.add(new ShiftSummary(shift, serviceWaitersCount,freeTablesCount, pendingOrdersCount));
         }
 
         return summaries;

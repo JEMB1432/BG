@@ -8,7 +8,7 @@ public class ShiftSummary {
     private final SimpleIntegerProperty serviceWaiters;
     private final SimpleIntegerProperty pendingOrders;
 
-    public ShiftSummary(String shiftName, int activeWaiters, int serviceWaiters, int pendingOrders) {
+    public ShiftSummary(String shiftName, int serviceWaiters, int activeWaiters, int pendingOrders) {
         this.shiftName = new SimpleStringProperty(shiftName);
         this.activeWaiters = new SimpleIntegerProperty(activeWaiters);
         this.serviceWaiters = new SimpleIntegerProperty(serviceWaiters);

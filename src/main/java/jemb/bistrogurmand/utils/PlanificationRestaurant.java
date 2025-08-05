@@ -11,7 +11,7 @@ public class PlanificationRestaurant {
     private Integer ID_Employee;
     private String employeeName; // Nuevo campo
     private Integer ID_Table;
-    private int tableNumber;
+    private Integer tableNumber;
     private LocalTime startTime;      // Hora de inicio
     private LocalTime endTime;        // Hora de fin
     private LocalDate dateAssig;      // Fecha de asignación
@@ -30,11 +30,11 @@ public class PlanificationRestaurant {
         this.employeeName = employeeName;
     }
 
-    public int getTableNumber() {
+    public Integer getTableNumber() {
         return tableNumber;
     }
 
-    public void setTableNumber(int tableNumber) {
+    public void setTableNumber(Integer tableNumber) {
         this.tableNumber = tableNumber;
     }
 
@@ -134,5 +134,21 @@ public class PlanificationRestaurant {
 
     public void setTable(TableDAO table) {
         this.table = table;
+    }
+
+    //nuevo constructor para bug
+
+    public PlanificationRestaurant(Integer ID_Assignment, Integer ID_Employee, Integer ID_Table,
+                                   LocalTime startTime, LocalTime endTime, LocalDate dateAssig,
+                                   boolean favorite, String shift, Integer TableNumber)  {
+        this.ID_Assignment = ID_Assignment;
+        this.ID_Employee = ID_Employee;
+        this.ID_Table = ID_Table;
+        this.tableNumber = TableNumber;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.dateAssig = dateAssig;
+        this.favorite = favorite;
+        this.shift = shift;
     }
 }

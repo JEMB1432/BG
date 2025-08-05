@@ -40,36 +40,36 @@ public class OrderColumnFactory {
     public static TableColumn<OrderRestaurant, String> createID_EmployeeColumn() {
         TableColumn<OrderRestaurant, String> column = new TableColumn<>("Empleado");
         //column.setPrefWidth(100);
-        column.setStyle("-fx-alignment: center-left");
+        column.setStyle("-fx-alignment: center");
         column.getStyleClass().add("text-column");
-        column.setCellValueFactory(cellData -> new SimpleStringProperty("Empleado"+cellData.getValue().getID_Employee()));
+        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmployeeName()));
         return column;
     }
 
-    public static TableColumn<OrderRestaurant, String> createID_SaleColumn() {
+    /*public static TableColumn<OrderRestaurant, String> createID_SaleColumn() {
         TableColumn<OrderRestaurant, String> column = new TableColumn<>("Venta");
         //column.setPrefWidth(100);
         column.setStyle("-fx-alignment: center-left");
         column.getStyleClass().add("text-column");
-        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getID_Sale()+ " "));
+        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().get));
         return column;
-    }
+    }*/
 
     public static TableColumn<OrderRestaurant, String> createID_ProductColumn() {
         TableColumn<OrderRestaurant, String> column = new TableColumn<>("Producto");
         column.setStyle("-fx-alignment: center");
         column.getStyleClass().add("text-column");
-        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getID_Product()+""));
+        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductName()));
         return column;
     }
 
-    /*public static TableColumn<TableRestaurant, String> createStateColumn() {
-        TableColumn<TableRestaurant, String> column = new TableColumn<>("Estado");
+    public static TableColumn<OrderRestaurant, String> createStateColumn() {
+        TableColumn<OrderRestaurant, String> column = new TableColumn<>("Estado");
         //column.setPrefWidth(80);
         column.setStyle("-fx-alignment: center");
         column.getStyleClass().add("text-column");
 
-        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getState()));
+        column.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getApproved())));
 
         column.setCellFactory(col -> new TableCell<>() {
             @Override
@@ -78,16 +78,28 @@ public class OrderColumnFactory {
                 if (empty || estado == null) {
                     setGraphic(null);
                 } else {
-                    String status = estado.equals("1") ? "Activo" : "Inactivo";
+                    //String status = estado.equals("1") ? "Aprobado" : "Pendiente";
+                    String status = switch (estado) {
+                        case "1" -> "Aprobado";
+                        case "0" -> "Pendiente";
+                        case "2" -> "No Aprobado";
+                        default -> "Desconocido";
+                    };
                     Label label = new Label(status);
-                    label.getStyleClass().add(estado.equals("1") ? "badge" : "badge-red");
+                    //label.getStyleClass().add(estado.equals("1") ? "badge" : "badge-red");
+                    label.getStyleClass().add(switch (estado) {
+                        case "1" -> "badge";
+                        case "0" -> "badge-yellow";
+                        case "2" -> "badge-red";
+                        default -> "badge-red";
+                    });
                     setGraphic(label);
                 }
             }
         });
 
         return column;
-    }*/
+    }
 
 }
 

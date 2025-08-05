@@ -68,3 +68,4 @@
 .alert.warning .graphic-container > StackPane > Region { -fx-background-color: #FFC107; } /* Amarillo para advertencia */
 .alert.error .graphic-container > StackPane > Region { -fx-background-color: #F44336; } /* Rojo para error */
 .alert.confirm .graphic-container > StackPane > Region { -fx-background-color: #4CAF50; } /* Verde para confirmación */
+.alert.cancel.graphic-container > StackPane > Region { -fx-background-color: #941537; } /* Azul para información */

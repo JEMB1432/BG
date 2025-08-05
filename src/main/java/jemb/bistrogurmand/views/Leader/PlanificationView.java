@@ -12,20 +12,20 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.stage.Modality; // Importar Modality
+import javafx.stage.Stage; // Importar Stage
 import javafx.util.Duration;
+import jemb.bistrogurmand.Controllers.LeaderAssigController;
 import jemb.bistrogurmand.Controllers.PlanificationController;
-import jemb.bistrogurmand.Controllers.TableController;
+// import jemb.bistrogurmand.Controllers.TableController;
 import jemb.bistrogurmand.Controllers.TableDAO;
-import jemb.bistrogurmand.utils.PlanificationColumnFactory;
-import jemb.bistrogurmand.utils.PlanificationRestaurant;
-import jemb.bistrogurmand.utils.TableRestaurant;
-import jemb.bistrogurmand.utils.TableRestaurantColumnFactory;
+import jemb.bistrogurmand.utils.*;
+import jemb.bistrogurmand.utils.Modals.EditAssignmentPlan;
+
+import java.util.Optional;
 
 import static jemb.bistrogurmand.utils.PlanificationColumnFactory.createShiftColumn;
 import static jemb.bistrogurmand.utils.PlanificationColumnFactory.*;
-import static jemb.bistrogurmand.utils.TableRestaurantColumnFactory.*;
 
 public class PlanificationView {
     private BorderPane view;
@@ -120,13 +120,12 @@ public class PlanificationView {
 
         table.getColumns().addAll(
                 PlanificationColumnFactory.createIndexColumn(pagination,rowsPerPage),
-                //createNumberPColumn(),
+                //createNumberPColumn(), // Asumo que esto no es necesario si tienes createTableColumn()
                 createEmployeeColumn(),
                 createTableColumn(),
                 createShiftColumn()
         );
     }
-
 
     private void configurePagination() {
         paginationInfo = new Label();
@@ -158,18 +157,21 @@ public class PlanificationView {
         buttomBox.setAlignment(Pos.CENTER_RIGHT);
         buttomBox.setPadding(new Insets(20, 0, 0, 0));
 
-        /*Button editButton = new Button("Editar");
-        editButton.getStyleClass().add("primary-button");
-        editButton.setOnAction(event -> editSelectedTable());
+        // --- Botón de Editar ---
+        Button editButton = new Button("Editar");
+        editButton.getStyleClass().add("secondary-button");
+        editButton.setOnAction(event -> editSelectedAssignment()); // Nuevo método para manejar la edición
 
+        // --- Botón de Eliminar (opcional, si lo quieres reactivar) ---
         Button deleteButton = new Button("Eliminar");
         deleteButton.getStyleClass().add("danger-button");
-        deleteButton.setOnAction(event -> deleteSelectedTable());*/
+        deleteButton.setOnAction(event -> deleteSelectedAssignment()); // Nuevo método para manejar la eliminación
+
         Label lblInfoDiaria= new Label("La tabla muestra las asignaciones por día");
         lblInfoDiaria.setStyle("-fx-alignment: center");
         lblInfoDiaria.getStyleClass().add("text-column");
 
-        buttomBox.getChildren().addAll(/*editButton, deleteButton*/lblInfoDiaria);
+        buttomBox.getChildren().addAll(lblInfoDiaria, editButton, deleteButton); // Añadir los botones
         view.setBottom(buttomBox);
     }
 
@@ -197,12 +199,18 @@ public class PlanificationView {
         updatePagination();
     }
 
-    private boolean matchesFilter(PlanificationRestaurant planificationRestaurant, String filter) {
+   /* private boolean matchesFilter(PlanificationRestaurant planificationRestaurant, String filter) {
         String name=TableDAO.EmployeeDAO.getEmployeeNameById(planificationRestaurant.getID_Employee());
         String table=TableDAO.getTableNumberById(planificationRestaurant.getID_Table());
         return name.contains(filter) ||
                 table.contains(filter) ||
                 planificationRestaurant.getShift().contains(filter);
+    }*/
+
+    private boolean matchesFilter(PlanificationRestaurant planificationRestaurant, String filter) {
+        return planificationRestaurant.getEmployeeName().toLowerCase().contains(filter) ||
+                String.valueOf(planificationRestaurant.getTableNumber()).toLowerCase().contains(filter) ||
+                planificationRestaurant.getShift().toLowerCase().contains(filter);
     }
 
     private void updatePagination() {
@@ -232,37 +240,63 @@ public class PlanificationView {
         table.refresh();
     }
 
-    /*private void editSelectedTable() {
-        TableRestaurant selected = table.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            // Implementar lógica de edición
-            System.out.println("Editar mesa: " + selected.getNumberTable().toString());
-        } else {
-            showAlert("Selección requerida", "Por favor seleccione una mesa para editar.");
-        }
-    }
-
-    private void deleteSelectedTable() {
-
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("/jemb/bistrogurmand/CSS/alerts.css").toExternalForm()
+        );
         alert.showAndWait();
     }
-*/
+
     private void addTableForm() {
-            AssignmentDialog dialog = new AssignmentDialog();
-            dialog.showAndWait(); // Modal
+        AssignmentDialog dialog = new AssignmentDialog();
+        dialog.showAndWait();
         refreshTable();
     }
 
-   /* Stage modal = new Stage();
-    modal.initModality(Modality.APPLICATION_MODAL); // Bloquea la ventana principal
-*/
+
+    private void editSelectedAssignment() {
+        PlanificationRestaurant selectedAssignment = table.getSelectionModel().getSelectedItem();
+        if (selectedAssignment != null) {
+            // Crea una instancia del nuevo modal de edición
+            EditAssignmentPlan dialog = new EditAssignmentPlan(selectedAssignment);
+            dialog.showAndWait();
+            refreshTable();
+        } else {
+            showAlert("Selección Requerida", "Por favor, seleccione una asignación de la tabla para editar.", Alert.AlertType.WARNING);
+        }
+    }
+
+
+    private void deleteSelectedAssignment() {
+        PlanificationRestaurant selected = table.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmar Eliminación");
+            alert.setHeaderText("¿Eliminar asignación?");
+            alert.setContentText("Está a punto de eliminar la asignación de "
+                    + selected.getEmployeeName() + " en la Mesa " + selected.getTableNumber()
+                    + " para el turno " + selected.getShift() + ". ¿Continuar?");
+
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/alerts.css").toExternalForm());
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                boolean success = LeaderAssigController.deleteAssignment(selected.getID_Assignment());
+                if (success) {
+                    showAlert("Eliminación Exitosa", "La asignación ha sido eliminada correctamente.", Alert.AlertType.INFORMATION);
+                    refreshTable(); // Refrescar la tabla
+                } else {
+                    showAlert("Error de Eliminación", "No se pudo eliminar la asignación. Verifique los logs.", Alert.AlertType.ERROR);
+                }
+            }
+        } else {
+            showAlert("Selección Requerida", "Por favor, seleccione una asignación de la tabla para eliminar.", Alert.AlertType.WARNING);
+        }
+    }
 
     public BorderPane getView() {
         return view;
