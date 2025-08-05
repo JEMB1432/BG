@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.AssignmentController;
@@ -68,7 +69,7 @@ public class GenerateDashboardInfo {
         });
 
         datePicker.setEditable(false);
-        datePicker.setPrefWidth(350);
+        datePicker.setPrefWidth(270);
         datePicker.setValue(LocalDate.now());
         datePicker.getStyleClass().add("date-picker");
         datePicker.setOnAction(e -> {
@@ -106,15 +107,20 @@ public class GenerateDashboardInfo {
         chartsContainer.setPadding(new Insets(20, 0, 0, 0));
         chartsContainer.setAlignment(Pos.CENTER);
         chartsContainer.getStyleClass().add("card-charts");
+        chartsContainer.setFillHeight(true);
 
         // Gráfico de ventas por turno
         VBox salesChartBox = new VBox(10);
         salesChartBox.getStyleClass().add("chart-container");
         BarChart<String, Number> salesChart = dashboardController.createShiftSalesChart(dateSelected);
         salesChartBox.getChildren().addAll(
-                new Label("Desempeño por Turno"),
+                new Label(" "),
                 salesChart
         );
+
+        Label salesChartTitle = new Label("Gráficas de información: ");
+        salesChartTitle.getStyleClass().add("title-chart");
+        salesChartTitle.setPrefWidth(Double.MAX_VALUE);
 
         // Gráfico de calificaciones
         VBox ratingsChartBox = new VBox(10);
@@ -124,6 +130,11 @@ public class GenerateDashboardInfo {
                 new Label("Evaluación de Empleados"),
                 ratingsChart
         );
+
+        HBox.setHgrow(salesChartBox, Priority.ALWAYS);
+        HBox.setHgrow(ratingsChartBox, Priority.ALWAYS);
+        salesChartBox.setMaxWidth(Double.MAX_VALUE);
+        ratingsChartBox.setMaxWidth(Double.MAX_VALUE);
 
         HBox topBox = new HBox(20);
         topBox.getStyleClass().add("top-section-dash");
@@ -142,19 +153,31 @@ public class GenerateDashboardInfo {
         refreshButton.getStyleClass().add("secondary-button");
         refreshButton.setOnAction(e -> refreshTable());
 
-        topBox.getChildren().addAll(datePicker, searchField, refreshButton);
+        Button todayButton = new Button("Hoy");
+        todayButton.getStyleClass().add("primary-button");
+        todayButton.setOnAction(e -> {
+                    dateSelected = LocalDate.now();
+                    createTopSection();
+                    refreshTable();
+        });
+
+        Label titleTable = new Label("Asignaciones del día: " + dateSelected.toString());
+        titleTable.getStyleClass().add("title-table");
+        titleTable.setPrefWidth(Double.MAX_VALUE);
+        titleTable.setAlignment(Pos.CENTER);
+
+        topBox.getChildren().addAll(todayButton, datePicker, searchField, refreshButton);
         titleCardView.getChildren().addAll(iconTitle, titleView);
-        chartsContainer.getChildren().addAll(salesChartBox, ratingsChartBox);
-        topContent.getChildren().addAll(titleCardView, createCards(), chartsContainer, topBox);
+        chartsContainer.getChildren().addAll( salesChartBox, ratingsChartBox);
+        topContent.getChildren().addAll(titleCardView, createCards(), salesChartTitle, chartsContainer, titleTable, topBox);
         view.setTop(topContent);
     }
 
     private void configureTable() {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.getStyleClass().add("table-view");
-        table.setPrefHeight(800);
-        table.setMinHeight(800);
-        table.setMaxHeight(800);
+        table.setMaxHeight(Double.MAX_VALUE); // Permite crecer
+        table.setPrefHeight(400);
 
         table.getColumns().addAll(
                 AssignmentColumnFactory.createIndexColumn(pagination,rowsPerPage),

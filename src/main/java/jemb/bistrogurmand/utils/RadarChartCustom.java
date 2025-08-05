@@ -71,7 +71,7 @@ public class RadarChartCustom extends StackPane {
             double endY = CENTER_Y + MAX_RADIUS * Math.sin(angle);
 
             Line axisLine = new Line(CENTER_X, CENTER_Y, endX, endY);
-            axisLine.setStroke(Color.LIGHTGRAY);
+            axisLine.setStroke(Color.web("#232323"));
             axisLine.setStrokeWidth(0.5);
             this.getChildren().add(axisLine);
         }
@@ -100,7 +100,7 @@ public class RadarChartCustom extends StackPane {
             this.getChildren().add(dataPoint);
         }
 
-        dataPolygon.setFill(Color.web("#990D35").deriveColor(0, 1, 1, 0.3));
+        dataPolygon.setFill(Color.web("#990D35").deriveColor(0, 1, 1, 1));
         dataPolygon.setStroke(Color.web("#990D35"));
         dataPolygon.setStrokeWidth(2);
 
@@ -150,8 +150,9 @@ public class RadarChartCustom extends StackPane {
         }
 
         Text title = new Text("Calificación por Empleado");
-        title.setFont(Font.font(16));
-        title.setFill(Color.DARKSLATEGRAY);
+        title.setFont(Font.font(13));
+        title.setStyle("-fx-font-weight: bold");
+        title.setFill(Color.web("#fff"));
         title.setLayoutX(CENTER_X);
         title.setLayoutY(10);
         this.getChildren().add(title);

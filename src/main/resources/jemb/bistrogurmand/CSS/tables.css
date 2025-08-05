@@ -41,7 +41,7 @@
 }
 
 .search-field {
-    -fx-pref-width: 500;
+    -fx-pref-width: 450;
     -fx-prompt-text-fill: derive(-fx-control-inner-background, -20%);
     -fx-background-color: #fff;
     -fx-background-radius: 4;
@@ -61,7 +61,7 @@
 
 
 .table-view {
-    -fx-min-height: 800px !important;
+    /*-fx-pref-height: 800px !important;*/
     -fx-background-color: white;
     -fx-background-radius: 8;
     -fx-border-radius: 8;

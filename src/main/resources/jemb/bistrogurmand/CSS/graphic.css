@@ -1,7 +1,25 @@
 /* Estilos generales para gráficos */
 
+.title-chart{
+    -fx-text-fill: #969696;
+    -fx-font-size: 16px;
+    -fx-font-weight: regular;
+    -fx-underline: true;
+}
+
+.title-table {
+    -fx-text-fill: #232323;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 15 20;
+    -fx-background-color: #fafafa;
+    -fx-background-radius: 8 8 0 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
+}
+
 .card-charts{
     -fx-padding: 5px 0px;
+    -fx-alignment: center;
 }
 
 .chart-style {
@@ -15,6 +33,10 @@
     -fx-background-color: white;
     -fx-background-radius: 10;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-min-width: 0;
+    -fx-pref-width: 50%;
+    -fx-max-width: Infinity;
+    -fx-alignment: center;
 }
 
 .chart-title {
@@ -28,4 +50,13 @@
     -fx-radar-fill: rgba(75, 192, 192, 0.2);
     -fx-radar-stroke: #4BC0C0;
     -fx-radar-stroke-width: 2px;
+}
+
+/* Títulos de gráficos */
+.chart-container > .label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-alignment: center;
+    -fx-padding: 0 0 10px 0;
 }

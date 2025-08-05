@@ -98,9 +98,9 @@ public class DashboardController {
         for (XYChart.Data<String, Number> data : series.getData()) {
             Node node = data.getNode();
             switch (data.getXValue()) {
-                case "Mañana": node.setStyle("-fx-bar-fill: rgba(253, 126, 20, 0.20); -fx-border-width: 1.2px; -fx-border-color: #e36700;"); break;
-                case "Tarde": node.setStyle("-fx-bar-fill: rgba(0, 73, 210, 0.2); -fx-border-width: 1.2px; -fx-border-color: #0051a2;"); break;
-                case "Noche": node.setStyle("-fx-bar-fill: rgba(125, 0, 227, 0.2); -fx-border-width: 1.2px; -fx-border-color: #7d00e3;"); break;
+                case "Mañana": node.setStyle("-fx-bar-fill: #FDA65D; -fx-border-width: 0.2px; -fx-border-color: #e36700;"); break;
+                case "Tarde": node.setStyle("-fx-bar-fill: #8DB4FF; -fx-border-width: 0.2px; -fx-border-color: #0051a2;"); break;
+                case "Noche": node.setStyle("-fx-bar-fill: #C58DFF; -fx-border-width: 0.2px; -fx-border-color: #7d00e3;"); break;
             }
         }
 

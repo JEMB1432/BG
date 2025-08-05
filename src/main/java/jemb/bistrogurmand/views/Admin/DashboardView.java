@@ -38,8 +38,13 @@ public class DashboardView {
         switch (views.toLowerCase()) {
             case "dashboard":
                 newContent = new GenerateDashboardInfo().getView();
-                newContent.setMaxHeight(Region.USE_COMPUTED_SIZE);
-                break;
+                ScrollPane scrollable = new ScrollPane(newContent);
+                scrollable.setFitToWidth(true);
+                scrollable.setFitToHeight(false);
+                scrollable.setPrefHeight(800);
+                scrollable.setStyle("-fx-background-color: transparent; -fx-border-width: 0");
+                view.setCenter(scrollable);
+                return;
             case "meseros":
                 newContent = new WaiterView().getView();
                 break;
@@ -53,12 +58,7 @@ public class DashboardView {
                 newContent = new Label("Vista no encontrada");
         }
 
-        ScrollPane scrollable = new ScrollPane(newContent);
-        scrollable.setFitToWidth(true);
-        scrollable.setFitToHeight(false);
-        scrollable.setStyle("-fx-background-color: transparent; -fx-border-width: 0");
-
-        view.setCenter(scrollable);
+        view.setCenter(newContent);
     }
 
     public BorderPane getView() {
