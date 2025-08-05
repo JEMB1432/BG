@@ -134,6 +134,8 @@ public class LoginView {
                     case "lider":
                         App.loadView("summary");
                         break;
+                    case "mesero":
+                        App.loadView("day");
                 }
             }else {
                 errorLogin.setText("Usuario y/o contraseña incorrectos");

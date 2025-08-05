@@ -13,6 +13,8 @@ import jemb.bistrogurmand.views.Admin.MenuView;
 import jemb.bistrogurmand.utils.User;
 import jemb.bistrogurmand.views.Leader.SummaryView;
 import jemb.bistrogurmand.views.LoginView;
+import jemb.bistrogurmand.views.waiter.DayView;
+import jemb.bistrogurmand.views.waiter.AssignedTablesView;
 
 public class App extends Application {
     private static User currentUser;
@@ -38,7 +40,6 @@ public class App extends Application {
         primaryStage.getIcons().add(image);
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
-        //primaryStage.setStyle
         primaryStage.setResizable(true);
 
         Screen screen = Screen.getPrimary();
@@ -53,7 +54,7 @@ public class App extends Application {
         primaryStage.show();
     }
 
-    /* Metodo público para cambiar vistas*/
+    /* Método público para cambiar vistas */
     public static void loadView(String nombreVista) {
         try {
             Pane root;
@@ -70,6 +71,12 @@ public class App extends Application {
                     break;
                 case "summary":
                     root = new SummaryView().getView();
+                    break;
+                case "day":
+                    root = new DayView().getView();
+                    break;
+                case "assigned-tables":
+                    root = new AssignedTablesView().getView();
                     break;
                 default:
                     throw new IllegalArgumentException("Vista no encontrada: " + nombreVista);
