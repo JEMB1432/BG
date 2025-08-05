@@ -263,7 +263,7 @@ public class OrderChangeView {
         }
     }
 
-    private void cancelSelectedTable() {
+   /* private void cancelSelectedTable() {
         OrderRestaurant selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
             selected.setApproved(2);
@@ -273,9 +273,9 @@ public class OrderChangeView {
         } else {
             showAlert("Selección Requerida", "Por favor, seleccione una orden para cambiar su estado", Alert.AlertType.WARNING);
         }
-    }
+    }*/
 
-    /*  ALTERANDO BD APPROVED =2
+    //  ALTERANDO BD APPROVED =2
     private void cancelSelectedTable() {
         OrderRestaurant selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
@@ -289,7 +289,7 @@ public class OrderChangeView {
         } else {
             showAlert("Selección Requerida", "Por favor, seleccione una orden para cambiar su estado", Alert.AlertType.WARNING);
         }
-    }*/
+    }
 
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);

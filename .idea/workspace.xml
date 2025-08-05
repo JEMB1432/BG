@@ -6,11 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="9f8dec4d-4ac8-4fea-8cf2-12c6327726d2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/PlanificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/PlanificationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/OrderColumnFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/OrderColumnFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/ShiftSummary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/ShiftSummary.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/SumTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/SumTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/tables.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/tables.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/OrderChangeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/OrderChangeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/OrderChangeView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/OrderChangeView.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

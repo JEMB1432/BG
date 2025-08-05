@@ -62,7 +62,7 @@ public class OrderChangeController {
                     + "JOIN Employee e ON oc.ID_Employee = e.ID_Employee "
                     + "JOIN Product p ON oc.ID_Product = p.ID_Product "
                     + "JOIN Sale s ON oc.ID_Sale = s.ID_Sale "
-                    + "WHERE TRUNC(s.SaleDate) = TRUNC(SYSDATE) AND oc.Approved=0 "
+                    + "WHERE TRUNC(s.SaleDate) = TRUNC(SYSDATE) AND (oc.Approved=0 OR oc.Approved=2) "
                     + "ORDER BY s.SaleDate DESC";
             response = conn.createStatement().executeQuery(sql);
 
