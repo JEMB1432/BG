@@ -1,22 +1,22 @@
-package jemb.bistrogurmand.utils.modals;
+package jemb.bistrogurmand.utils.Modals;
 
 import javafx.beans.property.*;
 
 public class OrderItem {
-    private final Product product;
+    private final jemb.bistrogurmand.utils.modals.Product product;
     private final SimpleIntegerProperty quantity;
     private final SimpleStringProperty productName;
     private final SimpleDoubleProperty price;
     private final SimpleStringProperty observation = new SimpleStringProperty("");
 
-    public OrderItem(Product product, int initialQty) {
+    public OrderItem(jemb.bistrogurmand.utils.modals.Product product, int initialQty) {
         this.product     = product;
         this.quantity    = new SimpleIntegerProperty(initialQty);
         this.productName = new SimpleStringProperty(product.getName());
         this.price       = new SimpleDoubleProperty(product.getPrice());
     }
 
-    public Product getProduct()               { return product; }
+    public jemb.bistrogurmand.utils.modals.Product getProduct()               { return product; }
     public int getQuantity()                  { return quantity.get(); }
     public void setQuantity(int qty)          { quantity.set(qty); }
     public SimpleIntegerProperty quantityProperty() { return quantity; }

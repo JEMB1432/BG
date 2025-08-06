@@ -1,0 +1,18 @@
+/* modify-order.css */
+
+.dialog-pane {
+    -fx-background-color: #ffffff;
+}
+
+.dialog-pane .content {
+    -fx-padding: 20;
+}
+
+.combo-box, .text-area {
+    -fx-font-size: 14px;
+}
+
+.button-bar .button {
+    -fx-background-color: #007ACC;
+    -fx-text-fill: white;
+}

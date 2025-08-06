@@ -5,19 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f8dec4d-4ac8-4fea-8cf2-12c6327726d2" name="Changes" comment="">
-<HEAD>
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/ModifyOrderDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/JornadaView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/JornadaView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/ModifyOrderView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/ModifyOrderView.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/Modals/AddWaiterDialog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/Dialog.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/WaiterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/WaiterController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/GenerateDashboardInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/GenerateDashboardInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/WaiterView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/WaiterView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/tables.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/tables.css" afterDir="false" />
->>>>>>> origin/DevFabian
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/DayController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/DayViewController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/modals/OrderItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/modals/OrderItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/DayView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/DayView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/ModifyOrderView.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/SidebarWaiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/SidebarWaiter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/TakeorderView.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,32 +24,27 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
-        <option value="JavaFXApplication" />
         <option value="CSS File" />
+        <option value="JavaFXApplication" />
         <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="DevFabian" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
+    &quot;lastFilter&quot;: {
     &quot;state&quot;: &quot;OPEN&quot;,
     &quot;assignee&quot;: &quot;JEMB1432&quot;
-  }
-}</component>
+    }
+    }</component>
   <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/JEMB1432/BG.git&quot;,
-    &quot;accountId&quot;: &quot;aaf439bf-e642-4760-8d7f-0468ede139ce&quot;
-  }
-}</component>
+    &quot;accountId&quot;: &quot;ab40d7dc-f8ad-4b08-9ba1-d246de5e7ac4&quot;
+    }
+    }</component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -62,48 +53,27 @@
     </option>
   </component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 3
-}</component>
+    &quot;associatedIndex&quot;: 3
+    }</component>
   <component name="ProjectId" id="2yThRXdOahR7VtwSNfhjZw2dZPC" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-<HEAD>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.App.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TestBD.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.BistroGurmand [clean,install].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;devAuri&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/ZZZ/OneDrive/Escritorio/BG&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
-
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.App.executor": "Run",
+    "Application.DayViewController.executor": "Run",
+    "Application.Main.executor": "Run",
     "Application.WaiterController.executor": "Run",
+    "Application.jemb.bistrogurmand.application.Main.executor": "Run",
     "Maven.BistroGurmand [clean,install].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "dev",
+    "git-widget-placeholder": "devAuri",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/PC-Escritorio/Music/BG",
+    "last_opened_file_path": "C:/Users/PC-Escritorio/Downloads/BG",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -113,11 +83,10 @@
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
     "vue.rearranger.settings.migration": "true"
->>>>>>> origin/DevFabian
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\PC-Escritorio\Documents\BistroGurmand\src\main\resources\jemb\bistrogurmand" />
@@ -132,7 +101,7 @@
       <command value="mvn clean install" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.App">
+  <component name="RunManager" selected="Application.jemb.bistrogurmand.application.Main">
     <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="jemb.bistrogurmand.application.App" />
       <module name="BistroGurmand" />
@@ -146,21 +115,45 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-<<<<<<< HEAD
-    <configuration name="TestBD" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="jemb.bistrogurmand.TestBD" />
+    <configuration name="DayViewController" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="jemb.bistrogurmand.Controllers.DayViewController" />
       <module name="BistroGurmand" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="jemb.bistrogurmand.*" />
-=======
+          <option name="PATTERN" value="jemb.bistrogurmand.Controllers.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="BistroGurmand" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="WaiterController" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="jemb.bistrogurmand.Controllers.WaiterController" />
       <module name="BistroGurmand" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="jemb.bistrogurmand.Controllers.*" />
->>>>>>> origin/DevFabian
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="jemb.bistrogurmand.application.Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="jemb.bistrogurmand.application.Main" />
+      <module name="BistroGurmand" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="jemb.bistrogurmand.application.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -170,15 +163,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.jemb.bistrogurmand.application.Main" />
         <item itemvalue="Application.App" />
-<<<<<<< HEAD
-        <item itemvalue="Application.TestBD" />
-        <item itemvalue="Application.App" />
-        <item itemvalue="Application.App" />
-        <item itemvalue="Application.App" />
-=======
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.DayViewController" />
         <item itemvalue="Application.WaiterController" />
->>>>>>> origin/DevFabian
       </list>
     </recent_temporary>
   </component>
@@ -223,11 +212,6 @@
       <workItem from="1751081461526" duration="1669000" />
       <workItem from="1751083147949" duration="5166000" />
       <workItem from="1751137501896" duration="13156000" />
-<<<<<<< HEAD
-      <workItem from="1751210289861" duration="34027000" />
-      <workItem from="1752473724233" duration="154000" />
-      <workItem from="1752538896352" duration="12480000" />
-=======
       <workItem from="1751210289861" duration="34587000" />
       <workItem from="1751332871985" duration="3876000" />
       <workItem from="1751344127800" duration="2734000" />
@@ -240,23 +224,13 @@
       <workItem from="1752349162319" duration="10349000" />
       <workItem from="1752379923852" duration="2147000" />
       <workItem from="1752434738790" duration="18039000" />
->>>>>>> origin/DevFabian
+      <workItem from="1753377115373" duration="20305000" />
+      <workItem from="1753475739800" duration="9849000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -5,7 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jemb.bistrogurmand.DbConection.DatabaseConnection;
 import jemb.bistrogurmand.utils.modals.Category;
-import jemb.bistrogurmand.utils.modals.OrderItem;
+import jemb.bistrogurmand.utils.Modals.OrderItem;
 import jemb.bistrogurmand.utils.modals.Product;
 import jemb.bistrogurmand.utils.UserSession;
 
