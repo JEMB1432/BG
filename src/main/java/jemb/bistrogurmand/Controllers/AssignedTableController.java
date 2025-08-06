@@ -43,7 +43,7 @@ public class AssignedTableController {
                 String timeEndAssign = response.getString("EndTime");
                 String shiftAssign = response.getString("Shift");
 
-                assignments.add(new Assignment(tableAssign,employeeAssign,dateAssign,timeStartAssign,timeEndAssign,shiftAssign));
+                assignments.add(new Assignment(response.getInt("ID_Assignment"),tableAssign,employeeAssign,dateAssign,timeStartAssign,timeEndAssign,shiftAssign));
             }
         }catch (SQLException e) {
             System.err.println("Error al obtener la lista de Tablas: " + e.getMessage());

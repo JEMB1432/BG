@@ -17,14 +17,26 @@ import java.util.stream.Collectors;
 
 
 public class ProductController {
-
-    /**
-     * Obtiene todos los productos de la base de datos.
-     * @return Lista de productos, lista vacía si no hay productos o ocurre un error
-     */
     public List<Product> getProducts() {
         List<Product> products = new ArrayList<>();
         String sql = "SELECT ID_PRODUCT, NAME, PRICE, AVAILABLE, IMAGE_URL, DESCRIPTION FROM PRODUCT";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet response = ps.executeQuery()) {
+
+            while (response.next()) {
+                products.add(mapResultSetToProduct(response));
+            }
+        } catch (SQLException e) {
+            handleException("Error al obtener la lista de productos", e);
+        }
+        return products;
+    }
+
+    public List<Product> getAvailableProducts() {
+        List<Product> products = new ArrayList<>();
+        String sql = "SELECT ID_PRODUCT, NAME, PRICE, AVAILABLE, IMAGE_URL, DESCRIPTION FROM PRODUCT WHERE AVAILABLE = 1";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);

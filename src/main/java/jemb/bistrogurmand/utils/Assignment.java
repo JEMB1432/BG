@@ -1,6 +1,7 @@
 package jemb.bistrogurmand.utils;
 
 public class Assignment {
+    private int id;
     private String tableAssign;
     private String employeeAssign;
     private String dateAssign;
@@ -8,9 +9,12 @@ public class Assignment {
     private String timeEndAssign;
     private String shiftAssign;
 
-    public Assignment(String tableAssign, String employeeAssign,
+    public Assignment() {}
+
+    public Assignment(int id,String tableAssign, String employeeAssign,
                       String dateAssign, String timeStartAssign,
                       String timeEndAssign, String shiftAssign) {
+        this.id = id;
         this.tableAssign = tableAssign;
         this.employeeAssign = employeeAssign;
         this.dateAssign = dateAssign;
@@ -65,5 +69,13 @@ public class Assignment {
 
     public void setShiftAssign(String shiftAssign) {
         this.shiftAssign = shiftAssign;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

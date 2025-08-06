@@ -13,9 +13,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.AssignedTableController;
-import jemb.bistrogurmand.Controllers.AssignmentController;
+import jemb.bistrogurmand.Controllers.OrderController;
+import jemb.bistrogurmand.Controllers.ProductController;
 import jemb.bistrogurmand.utils.Assignment;
 import jemb.bistrogurmand.utils.AssignmentColumnFactory;
+import jemb.bistrogurmand.utils.User;
+import jemb.bistrogurmand.utils.UserSession;
 
 import java.time.LocalDate;
 
@@ -31,11 +34,16 @@ public class AssignedTablesView extends BorderPane {
     private final int rowsPerPage = 10;
 
     private LocalDate dateSelected = LocalDate.now();
+    private int currentWaiterId;
 
     private ObservableList<Assignment> masterAssignmentList;
     private ObservableList<Assignment> currentDisplayedList;
 
     public AssignedTablesView() {
+        User currentUser = new UserSession().getCurrentUser();
+        int id = Integer.parseInt(currentUser.getUserID());
+        this.currentWaiterId = id;
+
         masterAssignmentList = FXCollections.observableArrayList();
         currentDisplayedList = FXCollections.observableArrayList();
 
@@ -46,6 +54,11 @@ public class AssignedTablesView extends BorderPane {
         view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/tables.css").toExternalForm());
         view.setPadding(new Insets(20));
         assignedTableController = new AssignedTableController();
+
+        // Inicializar controladores
+        ProductController productController = new ProductController();
+        OrderController orderController = new OrderController();
+        AssignmentColumnFactory.initialize(productController, orderController, currentWaiterId);
 
         searchField = new TextField();
         table = new TableView<>();
@@ -58,8 +71,6 @@ public class AssignedTablesView extends BorderPane {
             pause.setOnFinished(e -> filterAndPaginateTable());
             pause.playFromStart();
         });
-
-
 
         createTopSection();
         configureTable();
@@ -111,7 +122,7 @@ public class AssignedTablesView extends BorderPane {
         table.getStyleClass().add("table-view");
 
         table.getColumns().addAll(
-                AssignmentColumnFactory.createIndexColumn(pagination,rowsPerPage),
+                AssignmentColumnFactory.createIndexColumn(pagination, rowsPerPage),
                 createTableColumn(),
                 createShiftColumn(),
                 createTimeColumn(),
@@ -133,13 +144,13 @@ public class AssignedTablesView extends BorderPane {
     }
 
     private void updatePaginationInfo(int pageIndex) {
-        int from  = pageIndex * rowsPerPage +1;
+        int from = pageIndex * rowsPerPage + 1;
         int to = Math.min((pageIndex + 1) * rowsPerPage, currentDisplayedList.size());
         int total = currentDisplayedList.size();
         paginationInfo.setText(String.format("Mostrando %d-%d de %d resultados", from, to, total));
     }
 
-    private void loadInitialData(){
+    private void loadInitialData() {
         refreshTable();
     }
 
@@ -153,11 +164,11 @@ public class AssignedTablesView extends BorderPane {
         String filter = searchField.getText().toLowerCase();
         ObservableList<Assignment> filteredList = FXCollections.observableArrayList();
 
-        if(filter.isEmpty()) {
+        if (filter.isEmpty()) {
             filteredList.addAll(masterAssignmentList);
-        }else {
+        } else {
             for (Assignment assignment : masterAssignmentList) {
-                if (matchesFilter(assignment, filter)){
+                if (matchesFilter(assignment, filter)) {
                     filteredList.add(assignment);
                 }
             }
@@ -179,7 +190,7 @@ public class AssignedTablesView extends BorderPane {
 
         pagination.setPageCount(pageCount > 0 ? pageCount : 1);
 
-        if(pagination.getCurrentPageIndex() >= pageCount && pageCount > 0) {
+        if (pagination.getCurrentPageIndex() >= pageCount && pageCount > 0) {
             pagination.setCurrentPageIndex(0);
         }
 
@@ -190,9 +201,9 @@ public class AssignedTablesView extends BorderPane {
         int fromIndex = pageIndex * rowsPerPage;
         int toIndex = Math.min(fromIndex + rowsPerPage, currentDisplayedList.size());
 
-        if(currentDisplayedList.isEmpty()){
+        if (currentDisplayedList.isEmpty()) {
             table.setItems(FXCollections.observableArrayList());
-        }else {
+        } else {
             table.setItems(FXCollections.observableArrayList(currentDisplayedList.subList(fromIndex, toIndex)));
         }
 

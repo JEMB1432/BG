@@ -15,5 +15,6 @@ module jemb.bistrogurmand {
     requires org.apache.httpcomponents.core5.httpcore5;
     requires com.fasterxml.jackson.databind;
 
+    opens jemb.bistrogurmand.utils to javafx.base, javafx.fxml;
     exports jemb.bistrogurmand.application;
 }

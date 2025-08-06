@@ -1,155 +1,72 @@
-// src/jemb/bistrogurmand/Controllers/OrderController.java
 package jemb.bistrogurmand.Controllers;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import jemb.bistrogurmand.DbConection.DatabaseConnection;
-import jemb.bistrogurmand.utils.Modals.Category;
-import jemb.bistrogurmand.utils.Modals.OrderItem;
-import jemb.bistrogurmand.utils.Modals.Product;
-import jemb.bistrogurmand.utils.UserSession;
+import jemb.bistrogurmand.utils.OrderItem;
 
 import java.sql.*;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 public class OrderController {
-    private final ObservableList<OrderItem> currentOrder = FXCollections.observableArrayList();
-    private final Map<String, OrderItem> lookup       = new HashMap<>();
-    private final Map<String, String> observations    = new HashMap<>();
-    private final String tableId;
+    public int createInitialSale(int assignmentId, int employeeId) {
+        String sql = "INSERT INTO SALE (ID_ASSIGNMENT, ID_EMPLOYEE, TOTAL, SALEDATE, RATING, STATUS) " +
+                "VALUES (?, ?, 0, CURRENT_TIMESTAMP, 0, 1)";
 
-    // Constructor que recibe el ID de la mesa
-    public OrderController(String tableId) {
-        this.tableId = tableId;
-    }
-
-    public ObservableList<OrderItem> getCurrentOrder() {
-        return currentOrder;
-    }
-
-    public List<Category> getCategories() {
-        List<Category> categories = new ArrayList<>();
-        String sql = "SELECT ID_Category, Name FROM Category ORDER BY Name";
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+             PreparedStatement stmt = conn.prepareStatement(sql, new String[]{"ID_SALE"})) {
 
-            while (rs.next()) {
-                categories.add(new Category(
-                        rs.getString("ID_Category"),
-                        rs.getString("Name")
-                ));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return categories;
-    }
+            stmt.setInt(1, assignmentId);
+            stmt.setInt(2, employeeId);
 
-    public List<Product> getProductsByCategory(String categoryId) {
-        List<Product> products = new ArrayList<>();
-        String sql = "SELECT ID_Product, Name, Price FROM Product WHERE ID_Category = ? ORDER BY Name";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, categoryId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    products.add(new Product(
-                            rs.getString("ID_Product"),
-                            rs.getString("Name"),
-                            rs.getDouble("Price")
-                    ));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return products;
-    }
-
-    public void addItem(Product p, int qty) {
-        String key = p.getId();
-        if (lookup.containsKey(key)) {
-            OrderItem item = lookup.get(key);
-            item.setQuantity(item.getQuantity() + qty);
-        } else {
-            OrderItem item = new OrderItem(p, qty);
-            lookup.put(key, item);
-            currentOrder.add(item);
-        }
-    }
-
-    public void addObservation(String productId, String obs) {
-        observations.put(productId, obs);
-    }
-
-    public void removeItem(OrderItem item) {
-        lookup.remove(item.getProduct().getId());
-        observations.remove(item.getProduct().getId());
-        currentOrder.remove(item);
-    }
-    public List<String> getOrdersForTable() {
-        return Arrays.asList("PED-001", "PED-002", "PED-003");
-    }
-
-    public void requestModification(String orderId, String reason) {
-
-    }
-
-    public void sendOrder() {
-        String insertOrderSql  = "INSERT INTO ORDERS (ID_Table, ID_Employee, DATE_Order) VALUES (?, ?, ?)";
-        String insertDetailSql = "INSERT INTO ORDER_DETAILS (ID_Order, ID_Product, Quantity, Observation) VALUES (?, ?, ?, ?)";
-        Connection conn = null;
-        try {
-            conn = DatabaseConnection.getConnection();
-            conn.setAutoCommit(false);
-
-            // 1) Insertar cabecera y obtener ID generado
-            long orderId;
-            try (PreparedStatement ps = conn.prepareStatement(insertOrderSql, Statement.RETURN_GENERATED_KEYS)) {
-                ps.setString(1, tableId);
-                ps.setString(2, UserSession.getCurrentUser().getUserID());
-                ps.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
-                ps.executeUpdate();
-                try (ResultSet keys = ps.getGeneratedKeys()) {
-                    if (keys.next()) {
-                        orderId = keys.getLong(1);
-                    } else {
-                        throw new SQLException("No se generó ID de pedido");
+            if (stmt.executeUpdate() > 0) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
                     }
                 }
             }
-
-            // 2) Insertar detalles
-            try (PreparedStatement ps2 = conn.prepareStatement(insertDetailSql)) {
-                for (OrderItem item : currentOrder) {
-                    ps2.setLong   (1, orderId);
-                    ps2.setString (2, item.getProduct().getId());
-                    ps2.setInt    (3, item.getQuantity());
-                    ps2.setString (4, observations.get(item.getProduct().getId()));
-                    ps2.addBatch();
-                }
-                ps2.executeBatch();
-            }
-
-            conn.commit();
-            // 3) Limpiar pedido en memoria
-            currentOrder.clear();
-            lookup.clear();
-            observations.clear();
-
+            return -1;
         } catch (SQLException e) {
             e.printStackTrace();
-            if (conn != null) {
-                try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
-            }
-        } finally {
-            DatabaseConnection.closeConnection(conn);
+            return -1;
         }
     }
 
-    public String getCurrentTable() {
-        return tableId;
+    public boolean addItemsToSale(int saleId, List<OrderItem> items) {
+        if (items == null || items.isEmpty()) return false;
+
+        String sql = "INSERT INTO SALEINFO (ID_SALE, ID_PRODUCT, AMOUNT) VALUES (?, ?, ?)";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            for (OrderItem item : items) {
+                stmt.setInt(1, saleId);
+                stmt.setInt(2, item.getProductId());
+                stmt.setInt(3, item.getQuantity());
+                stmt.addBatch();
+            }
+
+            stmt.executeBatch();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean finalizeSale(int saleId, double rating) {
+        String sql = "UPDATE SALE SET RATING = ?, STATUS = 0 WHERE ID_SALE = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setDouble(1, rating);
+            stmt.setInt(2, saleId);
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

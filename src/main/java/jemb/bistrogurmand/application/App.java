@@ -8,6 +8,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import jemb.bistrogurmand.utils.UserSession;
 import jemb.bistrogurmand.views.Admin.DashboardView;
 import jemb.bistrogurmand.views.Admin.MenuView;
 import jemb.bistrogurmand.utils.User;
@@ -58,7 +59,6 @@ public class App extends Application {
     public static void loadView(String nombreVista) {
         try {
             Pane root;
-
             switch(nombreVista.toLowerCase()) {
                 case "login":
                     root = new LoginView().getView();

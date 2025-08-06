@@ -3,6 +3,8 @@ package jemb.bistrogurmand.views.waiter;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
+import jemb.bistrogurmand.utils.User;
+import jemb.bistrogurmand.utils.UserSession;
 import jemb.bistrogurmand.views.Leader.SidebarLeader;
 
 public class DayView {
