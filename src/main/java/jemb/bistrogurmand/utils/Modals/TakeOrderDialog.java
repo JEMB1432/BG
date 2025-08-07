@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import jemb.bistrogurmand.utils.OrderItem;
 import jemb.bistrogurmand.utils.Product;
@@ -32,6 +33,8 @@ public class TakeOrderDialog extends Dialog<List<OrderItem>> {
         getDialogPane().getStylesheets().add(
                 getClass().getResource("/jemb/bistrogurmand/CSS/Dialog.css").toExternalForm()
         );
+
+        getDialogPane().setPrefWidth(600);
 
         // Configurar icono
         Stage stage = (Stage) getDialogPane().getScene().getWindow();
@@ -80,8 +83,17 @@ public class TakeOrderDialog extends Dialog<List<OrderItem>> {
         grid.add(new Label("Productos Disponibles:"), 0, 0);
         grid.add(productsTable, 0, 1);
         grid.add(addButton, 0, 2);
-        grid.add(new Label("Su Orden:"), 0, 3);
+        Label lblSelected = new Label("Su Orden:");
+        lblSelected.setStyle("-fx-font-weight: bold; -fx-underline: true;");
+        grid.add(lblSelected, 0, 3);
         grid.add(orderTable, 0, 4);
+
+        productsTable.setMaxWidth(Double.MAX_VALUE);
+        orderTable.setMaxWidth(Double.MAX_VALUE);
+
+        GridPane.setHgrow(productsTable, Priority.ALWAYS);
+        GridPane.setHgrow(orderTable, Priority.ALWAYS);
+
 
         return grid;
     }
@@ -112,7 +124,7 @@ public class TakeOrderDialog extends Dialog<List<OrderItem>> {
         TableColumn<OrderItem, String> nameCol = new TableColumn<>("Producto");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("productName"));
 
-        TableColumn<OrderItem, Double> priceCol = new TableColumn<>("Precio Unit.");
+        TableColumn<OrderItem, Double> priceCol = new TableColumn<>("Precio Unitario.");
         priceCol.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
 
         TableColumn<OrderItem, Integer> quantityCol = new TableColumn<>("Cantidad");

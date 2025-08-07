@@ -16,5 +16,6 @@ module jemb.bistrogurmand {
     requires com.fasterxml.jackson.databind;
 
     opens jemb.bistrogurmand.utils to javafx.base, javafx.fxml;
+    opens jemb.bistrogurmand.utils.Modals to javafx.base;
     exports jemb.bistrogurmand.application;
 }

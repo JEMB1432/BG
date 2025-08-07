@@ -1,5 +1,6 @@
 package jemb.bistrogurmand.utils;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class Sale {
@@ -7,13 +8,13 @@ public class Sale {
     int idAssignment;
     int idEmployee;
     float total;
-    Date saleDate;
+    Timestamp saleDate;
     float rating;
     int status;
 
     public Sale(){}
 
-    public Sale(int idSale, int idAssignment, int idEmployee, float total, Date saleDate, float rating, int status) {
+    public Sale(int idSale, int idAssignment, int idEmployee, float total, Timestamp saleDate, float rating, int status) {
         this.idSale = idSale;
         this.idAssignment = idAssignment;
         this.idEmployee = idEmployee;
@@ -55,11 +56,11 @@ public class Sale {
         this.total = total;
     }
 
-    public Date getSaleDate() {
+    public Timestamp getSaleDate() {
         return saleDate;
     }
 
-    public void setSaleDate(Date saleDate) {
+    public void setSaleDate(Timestamp saleDate) {
         this.saleDate = saleDate;
     }
 

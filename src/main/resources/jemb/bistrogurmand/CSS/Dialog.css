@@ -119,3 +119,120 @@
     -fx-fill: -fx-dark-color;
     -fx-font-weight: normal;
 }
+
+.primary-button {
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.primary-button :hover {
+    -fx-background-color: #da134d;
+    -fx-cursor: hand;
+}
+
+.edit-button-d {
+    -fx-background-color: -fx-secondary-color;
+    -fx-text-fill: #fff;
+    -fx-font-size: 12px;
+}
+
+.close-button-d {
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+}
+
+.close-button-d:hover, .edit-button-d:hover {
+    -fx-cursor: hand;
+}
+
+.delete-button {
+    -fx-background-color: #7a0000;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+}
+.delete-button:hover {
+    -fx-background-color: #c20000;
+    -fx-cursor: hand;
+}
+
+.quantity-button{
+    -fx-background-color: #bdbdbd;
+    -fx-text-fill: #343434;
+    -fx-background-radius: 50px;
+    -fx-pref-width: 20px;
+    -fx-pref-height: 20px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bolder;
+    -fx-padding: 0;
+    -fx-alignment: center;
+}
+.quantity-button:hover {
+    -fx-background-color: #595959;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.table-view {
+    /*-fx-pref-height: 800px !important;*/
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-padding: 0;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #e8e8e8;
+    -fx-background-radius: 8 8 0 0;
+    -fx-background-insets: 0 0 0 0;
+    -fx-padding: 2 0 2 0;
+    -fx-alignment: center-left;
+    -fx-border-color: rgba(35, 35, 35, 0.5);
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-text-fill: #d2d2d2;
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+    -fx-padding: 8 0 8 0;
+}
+
+.table-view .table-cell {
+    -fx-padding: 5 10 !important;
+    -fx-border-color: transparent;
+    -fx-alignment: center-left;
+}
+
+.table-row-cell {
+    -fx-border-color: transparent;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0;
+    -fx-background-color: white;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f9f9f9;
+    -fx-text-fill: #232323;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: rgba(13, 153, 62, 0.8);
+    -fx-text-fill: -fx-dark-color !important;
+}
+
+
+.table-view .scroll-bar:vertical {
+    -fx-background-color: #e7e7e7;
+    -fx-pref-width: 10px;
+}
+
+
+.table-view .scroll-bar .thumb {
+    -fx-background-color: #4d4d4d;
+    -fx-background-radius: 5px;
+}
+
