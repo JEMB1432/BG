@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.OrderChangeController;
+import jemb.bistrogurmand.Controllers.OrderController;
 import jemb.bistrogurmand.Controllers.TableController;
 import jemb.bistrogurmand.utils.OrderColumnFactory;
 import jemb.bistrogurmand.utils.OrderRestaurant;
@@ -254,6 +255,8 @@ public class OrderChangeView {
             // Llama al controlador para aprobar la corrección en la base de datos
             if (tableController.approveOrderCorrection(selected.getID_Correction())) {
                 showAlert("Éxito", "La corrección ha sido aprobada.", Alert.AlertType.INFORMATION);
+                OrderController orderController = new OrderController();
+                orderController.applyCorrection(selected.getID_Correction());
                 refreshTable();
             } else {
                 showAlert("Error", "No se pudo aprobar la corrección. Inténtelo de nuevo.", Alert.AlertType.ERROR);
