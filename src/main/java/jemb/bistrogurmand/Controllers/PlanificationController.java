@@ -197,16 +197,14 @@ public class PlanificationController {
 
 
             // --- 3. Conteo de Órdenes Pendientes (se mantiene igual que antes) ---
-            // Asumimos Order_Correction con Approved = 0 y vinculadas al turno y día de asignación.
             String pendingOrdersSql = """
-                SELECT COUNT(DISTINCT oc.ID_Correction)
-                FROM Order_Correction oc
-                JOIN Sale s ON oc.ID_Sale = s.ID_Sale
-                JOIN Assignment a ON s.ID_Assignment = a.ID_Assignment
-                WHERE TRUNC(s.SaleDate) = TRUNC(SYSDATE)
-                AND a.Shift = ?
-                AND oc.Approved = 0
-            """;
+        SELECT COUNT(DISTINCT s.ID_Sale)
+        FROM Sale s
+        JOIN Assignment a ON s.ID_Assignment = a.ID_Assignment
+        WHERE TRUNC(s.SaleDate) = TRUNC(SYSDATE)
+        AND a.Shift = ?
+        AND s.STATUS = 1
+        """;
             try (Connection conn = DatabaseConnection.getConnection();
                  PreparedStatement pstmt = conn.prepareStatement(pendingOrdersSql)) {
                 pstmt.setString(1, shift);

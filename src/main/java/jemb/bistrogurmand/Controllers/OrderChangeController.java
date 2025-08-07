@@ -131,4 +131,67 @@ public class OrderChangeController {
             DatabaseConnection.closeConnection(conn);
         }
     }
+
+    //aqui comienza
+    public void syncApprovedCorrectionWithSale(int correctionId) throws SQLException {
+    String getCorrectionSql = "SELECT ID_Sale, ID_Product, Amount FROM Order_Correction WHERE ID_Correction = ?";
+    String checkSaleInfoSql = "SELECT COUNT(*) FROM SaleInfo WHERE ID_Sale = ? AND ID_Product = ?";
+    String insertSaleInfoSql = "INSERT INTO SaleInfo (ID_Sale, ID_Product, Amount) VALUES (?, ?, 1)";
+    String updateSaleInfoSql = "UPDATE SaleInfo SET Amount = Amount + 1 WHERE ID_Sale = ? AND ID_Product = ?";
+    String deleteSaleInfoSql = "DELETE FROM SaleInfo WHERE ID_Sale = ? AND ID_Product = ? AND Amount = 1";
+
+    try (Connection conn = DatabaseConnection.getConnection();
+         PreparedStatement getCorrectionStmt = conn.prepareStatement(getCorrectionSql)) {
+
+        getCorrectionStmt.setInt(1, correctionId);
+
+        try (ResultSet correctionRs = getCorrectionStmt.executeQuery()) {
+            if (correctionRs.next()) {
+                int saleId = correctionRs.getInt("ID_Sale");
+                int productId = correctionRs.getInt("ID_Product");
+                double price = correctionRs.getDouble("Price");
+
+                // Verificar si existe en SaleInfo
+                try (PreparedStatement checkStmt = conn.prepareStatement(checkSaleInfoSql)) {
+                    checkStmt.setInt(1, saleId);
+                    checkStmt.setInt(2, productId);
+
+                    try (ResultSet checkRs = checkStmt.executeQuery()) {
+                        if (checkRs.next() && checkRs.getInt(1) > 0) {
+                            // Actualizar cantidad si ya existe
+                            try (PreparedStatement updateStmt = conn.prepareStatement(updateSaleInfoSql)) {
+                                updateStmt.setInt(1, saleId);
+                                updateStmt.setInt(2, productId);
+                                updateStmt.executeUpdate();
+                            }
+                        } else {
+                            // Insertar nuevo registro si no existe
+                            try (PreparedStatement insertStmt = conn.prepareStatement(insertSaleInfoSql)) {
+                                insertStmt.setInt(1, saleId);
+                                insertStmt.setInt(2, productId);
+                                insertStmt.executeUpdate();
+                            }
+                        }
+                    }
+                }
+
+                // Actualizar el total en Sale (el trigger ya se encargará)
+                updateSaleTotal(saleId, conn);
+            }
+        }
+    }
+}
+
+private void updateSaleTotal(int saleId, Connection conn) throws SQLException {
+    String updateTotalSql = "UPDATE Sale SET Total = (SELECT SUM(si.Amount * p.Price) " +
+                          "FROM SaleInfo si JOIN Product p ON si.ID_Product = p.ID_Product " +
+                          "WHERE si.ID_Sale = ?) WHERE ID_Sale = ?";
+
+    try (PreparedStatement stmt = conn.prepareStatement(updateTotalSql)) {
+        stmt.setInt(1, saleId);
+        stmt.setInt(2, saleId);
+        stmt.executeUpdate();
+    }
+}
+     //Aquitermina
 }

@@ -5,23 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f8dec4d-4ac8-4fea-8cf2-12c6327726d2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/SaleController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/Modals/TakeOrderDialog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/OrderItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/Sale.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/AssignedTableController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/AssignedTableController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/AssignmentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/AssignmentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/OrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/ProductController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/application/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/application/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/Assignment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/Assignment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/AssignmentColumnFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/AssignmentColumnFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/AssignedTablesView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/AssignedTablesView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/DayView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/DayView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/ModifyOrderView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/ModifyOrderView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/TakeorderView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/TakeorderView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/OrderChangeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/OrderChangeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/PlanificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/PlanificationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/DbConection/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/DbConection/DatabaseConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/OrderChangeView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/OrderChangeView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/SumTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Leader/SumTable.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,7 +68,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "dev",
+    "git-widget-placeholder": "devJohn",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/PC-Escritorio/Pictures/BG",
     "list.type.of.created.stylesheet": "CSS",
