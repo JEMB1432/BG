@@ -34,7 +34,7 @@ public class ProductController {
         return products;
     }
 
-    public List<Product> getAvailableProducts() {
+    public  List<Product> getAvailableProducts() {
         List<Product> products = new ArrayList<>();
         String sql = "SELECT ID_PRODUCT, NAME, PRICE, AVAILABLE, IMAGE_URL, DESCRIPTION FROM PRODUCT WHERE AVAILABLE = 1";
 

@@ -13,9 +13,12 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jemb.bistrogurmand.Controllers.OrderController;
+import jemb.bistrogurmand.Controllers.ProductController;
 import jemb.bistrogurmand.Controllers.SaleController;
 import jemb.bistrogurmand.DbConection.DatabaseConnection;
+import jemb.bistrogurmand.utils.Product;
 import jemb.bistrogurmand.utils.Sale;
+import jemb.bistrogurmand.utils.Modals.OrderItem;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -144,11 +147,15 @@ public class ViewSalesDialog extends Dialog<Void> {
     }
 
     private void requestCorrection(Sale sale) {
-        // Obtener los productos actuales de la venta
-        List<OrderItem> currentItems = getSaleItems(sale.getIdSale());
+        // Obtener productos disponibles
+        ProductController productController = new ProductController();
+        List<Product> availableProducts = productController.getAvailableProducts();
+
+        // Obtener productos actuales de la venta
+        List<OrderCorrectionDialog.OrderItem> currentItems = getSaleItems(sale.getIdSale());
 
         // Mostrar diálogo de corrección
-        OrderCorrectionDialog dialog = new OrderCorrectionDialog(currentItems);
+        OrderCorrectionDialog dialog = new OrderCorrectionDialog(availableProducts, currentItems);
         Optional<Map<Integer, Integer>> result = dialog.showAndWait();
 
         result.ifPresent(modifications -> {
@@ -161,8 +168,8 @@ public class ViewSalesDialog extends Dialog<Void> {
         });
     }
 
-    private List<OrderItem> getSaleItems(int saleId) {
-        List<OrderItem> items = new ArrayList<>();
+    private List<OrderCorrectionDialog.OrderItem> getSaleItems(int saleId) {
+        List<OrderCorrectionDialog.OrderItem> items = new ArrayList<>();
         String sql = "SELECT p.ID_PRODUCT, p.NAME, p.PRICE, si.AMOUNT " +
                 "FROM SALEINFO si " +
                 "JOIN PRODUCT p ON p.ID_PRODUCT = si.ID_PRODUCT " +
@@ -175,7 +182,7 @@ public class ViewSalesDialog extends Dialog<Void> {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                items.add(new OrderItem(
+                items.add(new OrderCorrectionDialog.OrderItem(
                         rs.getInt("ID_PRODUCT"),
                         rs.getString("NAME"),
                         rs.getDouble("PRICE"),

@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-/*
+
 public class DatabaseConnection {
     private static final Dotenv dotenv = Dotenv.load();
 
@@ -41,7 +41,8 @@ public class DatabaseConnection {
         }
     }
 }
-*/
+
+/*
 public class DatabaseConnection {
     private static final String URL = "jdbc:oracle:thin:@localhost:1521:XE";
     private static final String USERNAME = "SYSTEM";
@@ -64,4 +65,4 @@ public class DatabaseConnection {
     public static void closeStatement(Statement stmt) {
 
     }
-}
+}*/
