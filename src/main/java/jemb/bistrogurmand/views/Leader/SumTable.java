@@ -104,7 +104,7 @@ public class SumTable {
 
 
         // Columna de Mesas Libres
-        TableColumn<ShiftSummary, Number> freeTablesColumn = new TableColumn<>("Mesas Libres");
+        TableColumn<ShiftSummary, Number> freeTablesColumn = new TableColumn<>("Mesas sin Asignación");
         freeTablesColumn.setStyle("-fx-alignment: center");
         freeTablesColumn.getStyleClass().add("number-column");
         freeTablesColumn.setCellValueFactory(cellData -> cellData.getValue().activeWaitersProperty());

@@ -312,4 +312,32 @@ public class OrderChangeView {
     public BorderPane getView() {
         return view;
     }
+
+    /*
+    // En tu método que maneja el botón de aprobar
+private void handleApproveButton(OrderCorrection correction) {
+    try {
+        // 1. Primero sincronizar los cambios
+        syncApprovedCorrectionWithSale(correction.getIdCorrection());
+
+        // 2. Luego marcar como aprobado
+        String updateSql = "UPDATE Order_Correction SET Approved = 1 WHERE ID_Correction = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(updateSql)) {
+            stmt.setInt(1, correction.getIdCorrection());
+            stmt.executeUpdate();
+        }
+
+        // 3. Mostrar mensaje de éxito
+        showAlert("Éxito", "Corrección aprobada y sincronizada con la venta", Alert.AlertType.INFORMATION);
+
+        // 4. Refrescar la vista
+        refreshTable();
+
+    } catch (SQLException e) {
+        showAlert("Error", "No se pudo completar la aprobación: " + e.getMessage(), Alert.AlertType.ERROR);
+        e.printStackTrace();
+    }
+}
+     */
 }
