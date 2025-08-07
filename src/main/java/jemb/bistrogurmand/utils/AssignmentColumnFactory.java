@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import jemb.bistrogurmand.Controllers.OrderController;
 import jemb.bistrogurmand.Controllers.ProductController;
 import jemb.bistrogurmand.utils.Modals.TakeOrderDialog;
+import jemb.bistrogurmand.utils.Modals.ViewSalesDialog;
 
 import java.util.List;
 import java.util.Optional;
@@ -112,9 +113,7 @@ public class AssignmentColumnFactory {
         column.setCellFactory(param -> new TableCell<>() {
             private final Button takeButton = new Button("");
             private final Button seeButton = new Button("");
-            private final Button editButton = new Button("");
-            private final Button deleteButton = new Button("");
-            private final HBox buttonsContainer = new HBox(5, takeButton, seeButton, editButton, deleteButton);
+            private final HBox buttonsContainer = new HBox(5, takeButton, seeButton);
 
             {
                 // Estilo de los botones
@@ -130,18 +129,6 @@ public class AssignmentColumnFactory {
                 seeButton.setGraphic(seeImage);
                 seeButton.getStyleClass().add("see-button");
 
-                ImageView editImage = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/edit.png").toString()));
-                editImage.setFitHeight(16);
-                editImage.setFitWidth(16);
-                editButton.setGraphic(editImage);
-                editButton.getStyleClass().add("edit-button");
-
-                ImageView deleteImage = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/delete.png").toString()));
-                deleteImage.setFitHeight(16);
-                deleteImage.setFitWidth(16);
-                deleteButton.setGraphic(deleteImage);
-                deleteButton.getStyleClass().add("delete-button");
-
                 buttonsContainer.setAlignment(Pos.CENTER);
 
                 // Eventos de los botones
@@ -150,21 +137,12 @@ public class AssignmentColumnFactory {
                     takeOrder(assignment);
                 });
 
-                editButton.setOnAction(event -> {
-                    Assignment assignment = getTableView().getItems().get(getIndex());
-                    System.out.println("Editar: " + assignment);
-                    // Puedes llamar a un método para editar el assignment
-                });
-
-                deleteButton.setOnAction(event -> {
-                    Assignment assignment = getTableView().getItems().get(getIndex());
-                    System.out.println("Eliminar: " + assignment);
-                    // Puedes llamar a un método para eliminar el assignment
-                });
-
                 seeButton.setOnAction(event -> {
                     Assignment assignment = getTableView().getItems().get(getIndex());
-                    System.out.println("See: " + assignment);
+
+                    // Abrir diálogo de ventas
+                    ViewSalesDialog dialog = new ViewSalesDialog(assignment.getId(), currentWaiterId);
+                    dialog.showAndWait();
                 });
             }
 
@@ -172,35 +150,25 @@ public class AssignmentColumnFactory {
                 // 1. Obtener lista de productos disponibles
                 List<Product> availableProducts = productController.getAvailableProducts();
 
-                // 2. Crear venta inicial
-                int saleId = orderController.createInitialSale(assignment.getId(), currentWaiterId);
-                if (saleId <= 0) {
-                    showAlert("Error", "No se pudo iniciar la venta", Alert.AlertType.ERROR);
-                    return;
-                }
-
-                // 3. Mostrar diálogo para seleccionar productos
+                // 2. Mostrar diálogo para seleccionar productos
                 TakeOrderDialog dialog = new TakeOrderDialog(availableProducts);
-                Optional<List<OrderItem>> result = dialog.showAndWait(); // ← Cambio aquí
+                Optional<List<OrderItem>> result = dialog.showAndWait();
 
-                result.ifPresent(orderItems -> { // ← Y aquí
-                    if (!orderItems.isEmpty()) { // ← Y aquí
+                result.ifPresent(orderItems -> {
+                    if (!orderItems.isEmpty()) {
+                        // 3. Crear venta inicial SOLO si el usuario confirmó
+                        int saleId = orderController.createInitialSale(assignment.getId(), currentWaiterId);
+
+                        if (saleId <= 0) {
+                            showAlert("Error", "No se pudo iniciar la venta", Alert.AlertType.ERROR);
+                            return;
+                        }
+
                         // 4. Agregar items a la venta
-                        if (orderController.addItemsToSale(saleId, orderItems)) { // ← Y aquí
-                            // 5. Mostrar diálogo para calificación
-                            Optional<Double> rating = showRatingDialog();
-                            rating.ifPresent(r -> {
-                                // 6. Finalizar venta con calificación
-                                if (orderController.finalizeSale(saleId, r)) {
-                                    showAlert("Venta Completada",
-                                            "La venta se ha registrado correctamente",
-                                            Alert.AlertType.INFORMATION);
-                                } else {
-                                    showAlert("Error",
-                                            "No se pudo registrar la calificación",
-                                            Alert.AlertType.ERROR);
-                                }
-                            });
+                        if (orderController.addItemsToSale(saleId, orderItems)) {
+                            showAlert("Productos Agregados",
+                                    "Los productos se han añadido correctamente",
+                                    Alert.AlertType.INFORMATION);
                         } else {
                             showAlert("Error",
                                     "No se pudieron agregar los productos a la venta",
@@ -208,42 +176,6 @@ public class AssignmentColumnFactory {
                         }
                     }
                 });
-            }
-
-            private Optional<Double> showRatingDialog() {
-                Dialog<Double> dialog = new Dialog<>();
-                dialog.setTitle("Calificar Venta");
-                dialog.setHeaderText("Por favor califique la experiencia del cliente");
-
-                // Configurar botones
-                ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-                dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
-
-                // Crear slider para calificación
-                Slider slider = new Slider(0, 5, 3);
-                slider.setShowTickLabels(true);
-                slider.setShowTickMarks(true);
-                slider.setMajorTickUnit(1);
-                slider.setBlockIncrement(0.5);
-                slider.setSnapToTicks(true);
-
-                Label valueLabel = new Label(String.format("Calificación: %.1f", slider.getValue()));
-                slider.valueProperty().addListener((obs, oldVal, newVal) ->
-                        valueLabel.setText(String.format("Calificación: %.1f", newVal)));
-
-                VBox content = new VBox(10, slider, valueLabel);
-                content.setPadding(new Insets(20));
-                dialog.getDialogPane().setContent(content);
-
-                // Configurar resultado
-                dialog.setResultConverter(dialogButton -> {
-                    if (dialogButton == okButtonType) {
-                        return slider.getValue();
-                    }
-                    return null;
-                });
-
-                return dialog.showAndWait();
             }
 
             @Override

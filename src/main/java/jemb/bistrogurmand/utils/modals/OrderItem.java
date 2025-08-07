@@ -1,33 +1,34 @@
 package jemb.bistrogurmand.utils.Modals;
 
+import jemb.bistrogurmand.utils.Product;
 import javafx.beans.property.*;
 
 public class OrderItem {
-    private final Product product;
+    private final int productId;
+    private final String productName;
+    private final double unitPrice;
     private final SimpleIntegerProperty quantity;
-    private final SimpleStringProperty productName;
-    private final SimpleDoubleProperty price;
-    private final SimpleStringProperty observation = new SimpleStringProperty("");
 
-    public OrderItem(Product product, int initialQty) {
-        this.product     = product;
-        this.quantity    = new SimpleIntegerProperty(initialQty);
-        this.productName = new SimpleStringProperty(product.getName());
-        this.price       = new SimpleDoubleProperty(product.getPrice());
+    public OrderItem(int productId, String productName, double unitPrice, int quantity) {
+        this.productId = productId;
+        this.productName = productName;
+        this.unitPrice = unitPrice;
+        this.quantity = new SimpleIntegerProperty(quantity);
     }
 
-    public Product getProduct()               { return product; }
-    public int getQuantity()                  { return quantity.get(); }
-    public void setQuantity(int qty)          { quantity.set(qty); }
+    // Getters
+    public int getProductId() { return productId; }
+    public String getProductName() { return productName; }
+    public double getUnitPrice() { return unitPrice; }
+    public int getQuantity() { return quantity.get(); }
+    public double getTotalPrice() { return unitPrice * quantity.get(); }
+
+    // Property accessors
     public SimpleIntegerProperty quantityProperty() { return quantity; }
 
-    public String getProductName()            { return productName.get(); }
-    public SimpleStringProperty productNameProperty() { return productName; }
-
-    public double getPrice()                  { return price.get(); }
-    public SimpleDoubleProperty priceProperty() { return price; }
-
-    public String getObservation()            { return observation.get(); }
-    public void setObservation(String obs)    { observation.set(obs); }
-    public SimpleStringProperty observationProperty() { return observation; }
+    // Métodos para modificar cantidad
+    public void incrementQuantity() { quantity.set(quantity.get() + 1); }
+    public void decrementQuantity() {
+        if (quantity.get() > 1) quantity.set(quantity.get() - 1);
+    }
 }

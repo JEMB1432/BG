@@ -115,7 +115,7 @@ public class DashboardController {
 
         String query = "SELECT e.NAME || ' ' || e.LASTNAME as empleado, AVG(s.RATING) as rating, COUNT(s.ID_SALE) as num_ventas " +
                 "FROM SALE s JOIN EMPLOYEE e ON s.ID_EMPLOYEE = e.ID_EMPLOYEE " +
-                "WHERE TRUNC(s.SALEDATE) = ? " +
+                "WHERE TRUNC(s.SALEDATE) = ? AND s.STATUS = 0 " +
                 "GROUP BY e.NAME, e.LASTNAME " +
                 "HAVING COUNT(s.ID_SALE) > 1 " +
                 "ORDER BY empleado";
