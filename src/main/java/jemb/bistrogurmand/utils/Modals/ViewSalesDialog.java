@@ -203,16 +203,45 @@ public class ViewSalesDialog extends Dialog<Void> {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             for (Map.Entry<Integer, Integer> entry : modifications.entrySet()) {
-                stmt.setInt(1, currentWaiterId); // ID del mesero actual
-                stmt.setInt(2, saleId);
-                stmt.setInt(3, entry.getKey());  // ID_PRODUCT
-                stmt.setInt(4, entry.getValue()); // NEW_AMOUNT
-                stmt.addBatch();
+                int productId = entry.getKey();
+                int newAmount = entry.getValue();
+
+                // Solo guardar correcciones con cambios significativos
+                if (shouldSaveCorrection(saleId, productId, newAmount)) {
+                    stmt.setInt(1, currentWaiterId); // ID del mesero actual
+                    stmt.setInt(2, saleId);
+                    stmt.setInt(3, productId);
+                    stmt.setInt(4, newAmount);
+                    stmt.addBatch();
+                }
             }
 
             stmt.executeBatch();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private boolean shouldSaveCorrection(int saleId, int productId, int newAmount) {
+        // Obtener cantidad actual del producto en la venta
+        int currentAmount = getCurrentProductAmount(saleId, productId);
+
+        return (currentAmount == 0 && newAmount > 0) || (currentAmount != newAmount);
+    }
+
+    private int getCurrentProductAmount(int saleId, int productId) {
+        String sql = "SELECT AMOUNT FROM SALEINFO WHERE ID_SALE = ? AND ID_PRODUCT = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, saleId);
+            stmt.setInt(2, productId);
+            ResultSet rs = stmt.executeQuery();
+
+            return rs.next() ? rs.getInt("AMOUNT") : 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
         }
     }
 

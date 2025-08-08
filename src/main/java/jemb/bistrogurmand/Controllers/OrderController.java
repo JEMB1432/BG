@@ -74,8 +74,9 @@ public class OrderController {
         // 1. Obtener los datos de la corrección
         String getSql = "SELECT * FROM ORDER_CORRECTION WHERE ID_CORRECTION = ?";
         String updateSql = "UPDATE SALEINFO SET AMOUNT = ? WHERE ID_SALE = ? AND ID_PRODUCT = ?";
+        String insertSql = "INSERT INTO SALEINFO (ID_SALE, ID_PRODUCT, AMOUNT) VALUES ( ?, ?, ?)";
         String approveSql = "UPDATE ORDER_CORRECTION SET APPROVED = 1 WHERE ID_CORRECTION = ?";
-        String deleteSql = "DELETE FROM SALEINFO WHERE ID_SALE = ? AND ID_PRODUCT = ? AND AMOUNT = 0";
+        String deleteSql = "DELETE FROM SALEINFO WHERE ID_SALE = ? AND ID_PRODUCT = ?";
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             conn.setAutoCommit(false);
@@ -90,20 +91,35 @@ public class OrderController {
                     int productId = rs.getInt("ID_PRODUCT");
                     int newAmount = rs.getInt("NEW_AMOUNT");
 
-                    // Actualizar cantidad en SALEINFO
-                    try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
-                        updateStmt.setInt(1, newAmount);
-                        updateStmt.setInt(2, saleId);
-                        updateStmt.setInt(3, productId);
-                        updateStmt.executeUpdate();
-                    }
+                    // Verificar si el producto ya existe en la venta
+                    boolean productExists = checkIfProductExists(conn, saleId, productId);
 
-                    // Si la nueva cantidad es 0, eliminar el producto
-                    if (newAmount == 0) {
-                        try (PreparedStatement deleteStmt = conn.prepareStatement(deleteSql)) {
-                            deleteStmt.setInt(1, saleId);
-                            deleteStmt.setInt(2, productId);
-                            deleteStmt.executeUpdate();
+                    if (productExists) {
+                        // Actualizar cantidad existente
+                        if (newAmount > 0) {
+                            try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                                updateStmt.setInt(1, newAmount);
+                                updateStmt.setInt(2, saleId);
+                                updateStmt.setInt(3, productId);
+                                updateStmt.executeUpdate();
+                            }
+                        } else {
+                            // Eliminar producto si cantidad es 0
+                            try (PreparedStatement deleteStmt = conn.prepareStatement(deleteSql)) {
+                                deleteStmt.setInt(1, saleId);
+                                deleteStmt.setInt(2, productId);
+                                deleteStmt.executeUpdate();
+                            }
+                        }
+                    } else {
+                        // Insertar nuevo producto (solo si cantidad > 0)
+                        if (newAmount > 0) {
+                            try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+                                insertStmt.setInt(1, saleId);
+                                insertStmt.setInt(2, productId);
+                                insertStmt.setInt(3, newAmount);
+                                insertStmt.executeUpdate();
+                            }
                         }
                     }
 
@@ -123,8 +139,18 @@ public class OrderController {
         return false;
     }
 
+    private boolean checkIfProductExists(Connection conn, int saleId, int productId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM SALEINFO WHERE ID_SALE = ? AND ID_PRODUCT = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, saleId);
+            stmt.setInt(2, productId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        }
+    }
+
     public boolean rejectCorrection(int correctionId) {
-        String sql = "UPDATE ORDER_CORRECTION SET APPROVED = 2 WHERE ID_CORRECTION = ?"; // 2 = rechazado
+        String sql = "UPDATE ORDER_CORRECTION SET APPROVED = 2 WHERE ID_CORRECTION = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
