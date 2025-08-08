@@ -3,6 +3,7 @@ package jemb.bistrogurmand.views.waiter;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
+import jemb.bistrogurmand.utils.HistoryCorrectionColumnFactory;
 import jemb.bistrogurmand.utils.User;
 import jemb.bistrogurmand.utils.UserSession;
 import jemb.bistrogurmand.views.Leader.SidebarLeader;
@@ -35,11 +36,15 @@ public class DayView {
     private void changeCentralContent(String views) {
         Region newContent = null;
         switch (views.toLowerCase()) {
-            case "jornada": case "resumen de turno":
+            case "jornada":
+            case "resumen de turno":
                 newContent = new DayViewInfo().getView();
                 break;
             case "asignaciones":
                 newContent = new AssignedTablesView().getView();
+                break;
+            case "correcciones":
+                newContent = new HistoryCorrectionsView().getView();
                 break;
             default:
                 newContent = new Label("Vista no encontrada");

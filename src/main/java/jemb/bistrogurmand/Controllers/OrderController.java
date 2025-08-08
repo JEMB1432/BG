@@ -2,8 +2,12 @@ package jemb.bistrogurmand.Controllers;
 
 import jemb.bistrogurmand.DbConection.DatabaseConnection;
 import jemb.bistrogurmand.utils.OrderItem;
+import jemb.bistrogurmand.utils.OrderRestaurant;
+import jemb.bistrogurmand.utils.SaleCorrectionSummary;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderController {
@@ -161,6 +165,83 @@ public class OrderController {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<SaleCorrectionSummary> getCorrectionSummaryByEmployeeId(int employeeId) {
+        List<SaleCorrectionSummary> summaries = new ArrayList<>();
+        String sql = "SELECT " +
+                "  s.ID_Sale, " +
+                "  MIN(s.SaleDate) AS SaleDate, " +
+                "  COUNT(oc.ID_Correction) AS CorrectionCount, " +
+                "  MAX(s.Total) AS OriginalTotal, " +
+                "  SUM(p.Price * oc.New_Amount) AS NewTotal, " +
+                "  MIN(CASE WHEN oc.Approved = 0 THEN 'Pendiente' " +
+                "           WHEN oc.Approved = 1 THEN 'Aprobado' " +
+                "           ELSE 'Rechazado' END) AS Status " +
+                "FROM Sale s " +
+                "JOIN Order_Correction oc ON s.ID_Sale = oc.ID_Sale " +
+                "JOIN Product p ON oc.ID_Product = p.ID_Product " +
+                "WHERE oc.ID_Employee = ? " +
+                "  AND s.SaleDate >= TRUNC(SYSDATE) - 30 " + // Últimos 30 días
+                "GROUP BY s.ID_Sale " +
+                "ORDER BY SaleDate DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, employeeId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                summaries.add(new SaleCorrectionSummary(
+                        rs.getInt("ID_Sale"),
+                        rs.getTimestamp("SaleDate").toLocalDateTime(),
+                        rs.getInt("CorrectionCount"),
+                        rs.getDouble("OriginalTotal"),
+                        rs.getDouble("NewTotal"),
+                        rs.getString("Status")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return summaries;
+    }
+
+    public List<OrderRestaurant> getCorrectionDetailsBySaleId(int saleId) {
+        List<OrderRestaurant> details = new ArrayList<>();
+        String sql = "SELECT oc.ID_Correction, oc.ID_Employee, oc.ID_Sale, oc.ID_Product, oc.Approved, " +
+                "e.Name AS EmployeeName, e.LastName AS EmployeeLastName, p.Name AS ProductName, " +
+                "s.SaleDate " +
+                "FROM Order_Correction oc " +
+                "JOIN Employee e ON oc.ID_Employee = e.ID_Employee " +
+                "JOIN Product p ON oc.ID_Product = p.ID_Product " +
+                "JOIN Sale s ON oc.ID_Sale = s.ID_Sale " +
+                "WHERE oc.ID_Sale = ? " +
+                "ORDER BY s.SaleDate DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, saleId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                details.add(new OrderRestaurant(
+                        rs.getInt("ID_Correction"),
+                        rs.getInt("ID_Employee"),
+                        rs.getString("EmployeeName") + " " + rs.getString("EmployeeLastName"),
+                        rs.getInt("ID_Sale"),
+                        rs.getInt("ID_Product"),
+                        rs.getString("ProductName"),
+                        rs.getInt("Approved"),
+                        rs.getTimestamp("SaleDate").toLocalDateTime()
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return details;
     }
 
 }

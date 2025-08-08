@@ -26,6 +26,7 @@ public class SidebarWaiter extends VBox {
     private Button btnMeseros;
     private Button btnMenu;
     private Button btnMesas;
+    private Button btnCorrection;
 
     User currentUser = new UserSession().getCurrentUser();
 
@@ -114,13 +115,15 @@ public class SidebarWaiter extends VBox {
         // Botones del menú
         btnDashboard = crearMenuButton("Jornada", "M3.497 15.602a.7.7 0 1 1 0 1.398H.7a.7.7 0 1 1 0-1.398zm15.803 0a.7.7 0 1 1 0 1.398H5.529a.7.7 0 1 1 0-1.398zM3.497 9.334a.7.7 0 1 1 0 1.399H.7a.7.7 0 1 1 0-1.399zm15.803 0a.7.7 0 1 1 0 1.399H5.528a.7.7 0 1 1 0-1.399zM3.497 3a.7.7 0 1 1 0 1.398H.7A.7.7 0 1 1 .7 3zM19.3 3a.7.7 0 1 1 0 1.398H5.528a.7.7 0 1 1 0-1.398z");
         btnMeseros = crearMenuButton("Asignaciones", "m6 20l1.5-3.75q.225-.575.725-.913T9.35 15H11v-4.025Q7.175 10.85 4.587 9.85T2 7.5q0-1.45 2.925-2.475T12 4q4.175 0 7.088 1.025T22 7.5q0 1.35-2.588 2.35T13 10.975V15h1.65q.6 0 1.113.338t.737.912L18 20h-2l-1.2-3H9.2L8 20z");
+        btnCorrection = crearMenuButton("Correcciones","M7.46 2a5.52 5.52 0 0 0-3.91 1.61a5.44 5.44 0 0 0-1.54 2.97a.503.503 0 0 1-.992-.166a6.514 6.514 0 0 1 6.44-5.41a6.55 6.55 0 0 1 4.65 1.93l1.89 2.21v-2.64a.502.502 0 0 1 1.006 0v4a.5.5 0 0 1-.503.5h-3.99a.5.5 0 0 1-.503-.5c0-.275.225-.5.503-.5h2.91l-2.06-2.4a5.53 5.53 0 0 0-3.9-1.6zm1.09 12a5.52 5.52 " +
+                "0 0 0 3.91-1.61A5.44 5.44 0 0 0 14 9.42a.504.504 0 0 1 .992.166a6.514 6.514 0 0 1-6.44 5.41a6.55 6.55 0 0 1-4.65-1.93l-1.89-2.21v2.64a.501.501 0 0 1-.858.353a.5.5 0 0 1-.148-.354v-4c0-.276.225-.5.503-.5H5.5c.278 0 .503.224.503.5s-.225.5-.503.5H2.59l2.06 2.4a5.53 5.53 0 0 0 3.9 1.6z");
 
 
         // Set dashboard as active by default
         btnDashboard.getStyleClass().add("active");
 
         // Crear contenedor para los botones del menú
-        VBox menuButtons = new VBox(8, btnDashboard, btnMeseros);
+        VBox menuButtons = new VBox(8, btnDashboard, btnMeseros, btnCorrection);
         menuButtons.getStyleClass().add("sidebar-menu");
 
         VBox.setVgrow(menuButtons, Priority.ALWAYS);

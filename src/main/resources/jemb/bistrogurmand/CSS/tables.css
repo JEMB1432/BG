@@ -111,7 +111,7 @@
 }
 
 .table-row-cell:hover {
-    -fx-background-color: rgba(153, 13, 53, 0.1);
+    -fx-background-color: rgba(168, 168, 168, 0.1);
     -fx-text-fill: -fx-dark-color;
 }
 
@@ -496,15 +496,37 @@
 }
 
 .badge-yellow {
-    -fx-background-color: #FFF3E0; /* Amarillo muy claro */
-    -fx-text-fill: #E65100; /* Naranja oscuro */
+    -fx-background-color: #FFF3E0;
+    -fx-text-fill: #E65100;
     -fx-padding: 3 8;
     -fx-border-radius: 4;
     -fx-background-radius: 4;
     -fx-font-size: 12;
     -fx-font-weight: bold;
-    -fx-border-color: #FFB300; /* Amarillo dorado */
-    -fx-border-width: 1;
+    -fx-border-color: #FFB300;
+    -fx-border-width: 0;
+}
+
+.badge {
+    -fx-background-color: #eef8f0;
+    -fx-text-fill: #009b57;
+    -fx-padding: 3 8;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+    -fx-border-width: 0;
+}
+
+.badge-red {
+    -fx-background-color: #ffe0e0;
+    -fx-text-fill: #e60000;
+    -fx-padding: 3 8;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+    -fx-border-width: 0;
 }
 
 .edit-button {
@@ -541,4 +563,18 @@
     -fx-text-fill: white;
     -fx-padding: 3 8 3 8;
     -fx-border-width: 0;
+}
+
+.btn-detils{
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-text-fill: -fx-primary-color;
+    -fx-font-weight: bold;
+    -fx-underline: true;
+    -fx-font-size: 12px;
+}
+
+.btn-detils:hover{
+    -fx-opacity: 0.8;
+    -fx-cursor: hand;
 }

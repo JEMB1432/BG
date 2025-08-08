@@ -5,10 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f8dec4d-4ac8-4fea-8cf2-12c6327726d2" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/HistoryCorrectionColumnFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/Modals/CorrectionDetailsDialog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/SaleCorrectionSummary.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/HistoryCorrectionsView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/OrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/DbConection/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/DbConection/DatabaseConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/Modals/ViewSalesDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/Modals/ViewSalesDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/DayView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/DayView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/SidebarWaiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/waiter/SidebarWaiter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/tables.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/tables.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
