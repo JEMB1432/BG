@@ -20,7 +20,7 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0.5, 4, 4);
     -fx-padding: 40px;
     -fx-min-width: 400px;
-    -fx-pref-width: 600px;
+    -fx-pref-width: 500px;
     -fx-max-width: 800px;
 }
 
@@ -109,6 +109,7 @@
 
 .login-button:hover {
     -fx-background-color: #800a2c;
+    -fx-cursor: hand;
 }
 
 /* Enlaces del footer */

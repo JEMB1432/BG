@@ -115,6 +115,10 @@
     -fx-pref-width: 230px;
 }
 
+.primary-button:hover {
+    -fx-cursor: hand;
+}
+
 .logoutContainer{
     -fx-padding: 10 10 10 10;
 }

@@ -46,6 +46,9 @@ public class DayView {
             case "correcciones":
                 newContent = new HistoryCorrectionsView().getView();
                 break;
+            case "ventas pasadas":
+                newContent = new HistorySalesView().getView();
+                break;
             default:
                 newContent = new Label("Vista no encontrada");
         }

@@ -111,15 +111,31 @@ public class SaleController {
         return corrections;
     }
 
-
-    public static void main(String[] args) {
+    public List<Sale> getActiveSalesByEmployeeHistory(int assignmentId) {
         List<Sale> sales = new ArrayList<>();
-        SaleController saleController = new SaleController();
-        sales.addAll(saleController.getActiveSalesbyEmployee(41));
-
-        for (Sale sale : sales) {
-            System.out.println(sale.getTotal());
+        String sql = "SELECT ID_SALE, ID_ASSIGNMENT, ID_EMPLOYEE, TOTAL, " +
+                "SALEDATE, RATING, STATUS FROM sale WHERE ID_EMPLOYEE = ? AND STATUS = 1 " +
+                "ORDER BY SALEDATE DESC";
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, assignmentId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                sales.add(new Sale(
+                        rs.getInt("ID_SALE"),
+                        rs.getInt("ID_ASSIGNMENT"),
+                        rs.getInt("ID_EMPLOYEE"),
+                        rs.getFloat("TOTAL"),
+                        rs.getTimestamp("SALEDATE"),
+                        rs.getFloat("RATING"),
+                        rs.getInt("STATUS")
+                ));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+        return sales;
     }
 
 }

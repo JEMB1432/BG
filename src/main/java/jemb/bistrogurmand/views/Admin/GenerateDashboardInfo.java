@@ -1,6 +1,7 @@
 package jemb.bistrogurmand.views.Admin;
 
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -26,22 +27,27 @@ import java.time.LocalDate;
 import static jemb.bistrogurmand.utils.AssignmentColumnFactory.*;
 
 public class GenerateDashboardInfo {
-    private BorderPane view;
-    private TableView<Assignment> table;
-    private AssignmentController assignmentController;
-    private TextField searchField;
-    private Pagination pagination;
+    private final BorderPane view;
+    private final TableView<Assignment> table;
+    private final AssignmentController assignmentController;
+    private final TextField searchField;
+    private final Pagination pagination;
     private Label paginationInfo;
     private final int rowsPerPage = 10;
 
     private LocalDate dateSelected = LocalDate.now();
 
-    private ObservableList<Assignment> masterAssignmentList;
-    private ObservableList<Assignment> currentDisplayedList;
+    private final ObservableList<Assignment> masterAssignmentList;
+    private final ObservableList<Assignment> currentDisplayedList;
 
-    private DashboardController dashboardController;
+    private final DashboardController dashboardController;
 
-    DatePicker datePicker = new DatePicker();
+    // Componentes reutilizables
+    private DatePicker datePicker;
+    private VBox salesChartBox;
+    private VBox ratingsChartBox;
+    private HBox cardsContainer;
+    private Label titleTable;
 
     public GenerateDashboardInfo() {
         masterAssignmentList = FXCollections.observableArrayList();
@@ -62,27 +68,33 @@ public class GenerateDashboardInfo {
         pagination = new Pagination();
 
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
-            // Agregar un pequeño retardo para evitar procesamiento excesivo
             PauseTransition pause = new PauseTransition(Duration.millis(100));
             pause.setOnFinished(e -> filterAndPaginateTable());
             pause.playFromStart();
         });
 
+        datePicker = new DatePicker();
         datePicker.setEditable(false);
         datePicker.setPrefWidth(270);
         datePicker.setValue(LocalDate.now());
         datePicker.getStyleClass().add("date-picker");
         datePicker.setOnAction(e -> {
-            dateSelected = datePicker.getValue();
-            createTopSection();
-            refreshTable();
+            if (datePicker.getValue() != null) {
+                dateSelected = datePicker.getValue();
+                updateUIForSelectedDate();
+            }
         });
 
         createTopSection();
         configureTable();
         configurePagination();
 
-        loadInitialData();
+        // Solución: Retrasar la carga inicial para permitir que la UI se establezca
+        PauseTransition initialDelay = new PauseTransition(Duration.millis(50));
+        initialDelay.setOnFinished(e -> {
+            updateUIForSelectedDate();
+        });
+        initialDelay.play();
     }
 
     private void createTopSection() {
@@ -110,26 +122,20 @@ public class GenerateDashboardInfo {
         chartsContainer.setFillHeight(true);
 
         // Gráfico de ventas por turno
-        VBox salesChartBox = new VBox(10);
+        salesChartBox = new VBox(10);
         salesChartBox.getStyleClass().add("chart-container");
-        BarChart<String, Number> salesChart = dashboardController.createShiftSalesChart(dateSelected);
-        salesChartBox.getChildren().addAll(
-                new Label(" "),
-                salesChart
-        );
+        // Solución: Establecer altura mínima para el contenedor
+        salesChartBox.setMinHeight(300);
+
+        // Gráfico de calificaciones
+        ratingsChartBox = new VBox(10);
+        ratingsChartBox.getStyleClass().add("chart-container");
+        // Solución: Establecer altura mínima para el contenedor
+        ratingsChartBox.setMinHeight(300);
 
         Label salesChartTitle = new Label("Gráficas de información: ");
         salesChartTitle.getStyleClass().add("title-chart");
         salesChartTitle.setPrefWidth(Double.MAX_VALUE);
-
-        // Gráfico de calificaciones
-        VBox ratingsChartBox = new VBox(10);
-        ratingsChartBox.getStyleClass().add("chart-container");
-        RadarChartCustom ratingsChart = dashboardController.createEmployeeRatingsChart(dateSelected);
-        ratingsChartBox.getChildren().addAll(
-                new Label("Evaluación de Empleados"),
-                ratingsChart
-        );
 
         HBox.setHgrow(salesChartBox, Priority.ALWAYS);
         HBox.setHgrow(ratingsChartBox, Priority.ALWAYS);
@@ -156,31 +162,34 @@ public class GenerateDashboardInfo {
         Button todayButton = new Button("Hoy");
         todayButton.getStyleClass().add("primary-button");
         todayButton.setOnAction(e -> {
-                    dateSelected = LocalDate.now();
-                    createTopSection();
-                    refreshTable();
+            dateSelected = LocalDate.now();
+            datePicker.setValue(dateSelected);
+            updateUIForSelectedDate();
         });
 
-        Label titleTable = new Label("Asignaciones del día: " + dateSelected.toString());
+        titleTable = new Label();
         titleTable.getStyleClass().add("title-table");
         titleTable.setPrefWidth(Double.MAX_VALUE);
         titleTable.setAlignment(Pos.CENTER);
 
+        // Contenedor de tarjetas
+        cardsContainer = new HBox(50);
+
         topBox.getChildren().addAll(todayButton, datePicker, searchField, refreshButton);
         titleCardView.getChildren().addAll(iconTitle, titleView);
-        chartsContainer.getChildren().addAll( salesChartBox, ratingsChartBox);
-        topContent.getChildren().addAll(titleCardView, createCards(), salesChartTitle, chartsContainer, titleTable, topBox);
+        chartsContainer.getChildren().addAll(salesChartBox, ratingsChartBox);
+        topContent.getChildren().addAll(titleCardView, cardsContainer, salesChartTitle, chartsContainer, titleTable, topBox);
         view.setTop(topContent);
     }
 
     private void configureTable() {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.getStyleClass().add("table-view");
-        table.setMaxHeight(Double.MAX_VALUE); // Permite crecer
+        table.setMaxHeight(Double.MAX_VALUE);
         table.setPrefHeight(400);
 
         table.getColumns().addAll(
-                AssignmentColumnFactory.createIndexColumn(pagination,rowsPerPage),
+                AssignmentColumnFactory.createIndexColumn(pagination, rowsPerPage),
                 createTableColumn(),
                 createEmployeeColumn(),
                 createShiftColumn(),
@@ -202,14 +211,10 @@ public class GenerateDashboardInfo {
     }
 
     private void updatePaginationInfo(int pageIndex) {
-        int from  = pageIndex * rowsPerPage +1;
+        int from = pageIndex * rowsPerPage + 1;
         int to = Math.min((pageIndex + 1) * rowsPerPage, currentDisplayedList.size());
         int total = currentDisplayedList.size();
         paginationInfo.setText(String.format("Mostrando %d-%d de %d resultados", from, to, total));
-    }
-
-    private void loadInitialData(){
-        refreshTable();
     }
 
     private void refreshTable() {
@@ -222,11 +227,11 @@ public class GenerateDashboardInfo {
         String filter = searchField.getText().toLowerCase();
         ObservableList<Assignment> filteredList = FXCollections.observableArrayList();
 
-        if(filter.isEmpty()) {
+        if (filter.isEmpty()) {
             filteredList.addAll(masterAssignmentList);
-        }else {
+        } else {
             for (Assignment assignment : masterAssignmentList) {
-                if (matchesFilter(assignment, filter)){
+                if (matchesFilter(assignment, filter)) {
                     filteredList.add(assignment);
                 }
             }
@@ -248,7 +253,7 @@ public class GenerateDashboardInfo {
 
         pagination.setPageCount(pageCount > 0 ? pageCount : 1);
 
-        if(pagination.getCurrentPageIndex() >= pageCount && pageCount > 0) {
+        if (pagination.getCurrentPageIndex() >= pageCount && pageCount > 0) {
             pagination.setCurrentPageIndex(0);
         }
 
@@ -259,9 +264,9 @@ public class GenerateDashboardInfo {
         int fromIndex = pageIndex * rowsPerPage;
         int toIndex = Math.min(fromIndex + rowsPerPage, currentDisplayedList.size());
 
-        if(currentDisplayedList.isEmpty()){
+        if (currentDisplayedList.isEmpty()) {
             table.setItems(FXCollections.observableArrayList());
-        }else {
+        } else {
             table.setItems(FXCollections.observableArrayList(currentDisplayedList.subList(fromIndex, toIndex)));
         }
 
@@ -269,7 +274,7 @@ public class GenerateDashboardInfo {
         table.refresh();
     }
 
-    public HBox createCards(){
+    private HBox createCards() {
         HBox cards = new HBox(50);
 
         BigDecimal saleInfo = dashboardController.getDailySalesTotal(dateSelected);
@@ -286,12 +291,41 @@ public class GenerateDashboardInfo {
         cardOrder.getStyleClass().add("card-sale");
         Label titleOrder = new Label("Órdenes totales");
         titleOrder.getStyleClass().add("title-card");
-        Label totalOrder = new Label(""+ orderInfo);
+        Label totalOrder = new Label("" + orderInfo);
         totalOrder.getStyleClass().add("total-card");
         cardOrder.getChildren().addAll(titleOrder, totalOrder);
 
-        cards.getChildren().addAll(cardSale,cardOrder);
+        cards.getChildren().addAll(cardSale, cardOrder);
         return cards;
+    }
+
+    // Método centralizado para actualizar la UI
+    private void updateUIForSelectedDate() {
+        updateCharts();
+        updateCards();
+        updateTitleTable();
+        refreshTable();
+    }
+
+    private void updateCharts() {
+        // Solución: Usar Platform.runLater para asegurar que los gráficos se creen después del layout
+        Platform.runLater(() -> {
+            salesChartBox.getChildren().clear();
+            BarChart<String, Number> salesChart = dashboardController.createShiftSalesChart(dateSelected);
+            salesChartBox.getChildren().addAll(new Label(" "), salesChart);
+
+            ratingsChartBox.getChildren().clear();
+            RadarChartCustom ratingsChart = dashboardController.createEmployeeRatingsChart(dateSelected);
+            ratingsChartBox.getChildren().addAll(new Label("Evaluación de Empleados"), ratingsChart);
+        });
+    }
+
+    private void updateCards() {
+        cardsContainer.getChildren().setAll(createCards().getChildren());
+    }
+
+    private void updateTitleTable() {
+        titleTable.setText("Asignaciones del día: " + dateSelected.toString());
     }
 
     public BorderPane getView() {

@@ -25,24 +25,20 @@ import java.time.LocalDate;
 import static jemb.bistrogurmand.utils.AssignmentColumnFactory.*;
 
 public class AssignedTablesView extends BorderPane {
-    private BorderPane view;
-    private TableView<Assignment> table;
-    private AssignedTableController assignedTableController;
-    private TextField searchField;
-    private Pagination pagination;
+    private final BorderPane view;
+    private final TableView<Assignment> table;
+    private final AssignedTableController assignedTableController;
+    private final TextField searchField;
+    private final Pagination pagination;
     private Label paginationInfo;
     private final int rowsPerPage = 10;
 
-    private LocalDate dateSelected = LocalDate.now();
-    private int currentWaiterId;
-
-    private ObservableList<Assignment> masterAssignmentList;
-    private ObservableList<Assignment> currentDisplayedList;
+    private final ObservableList<Assignment> masterAssignmentList;
+    private final ObservableList<Assignment> currentDisplayedList;
 
     public AssignedTablesView() {
-        User currentUser = new UserSession().getCurrentUser();
+        User currentUser = UserSession.getCurrentUser();
         int id = Integer.parseInt(currentUser.getUserID());
-        this.currentWaiterId = id;
 
         masterAssignmentList = FXCollections.observableArrayList();
         currentDisplayedList = FXCollections.observableArrayList();
@@ -58,7 +54,7 @@ public class AssignedTablesView extends BorderPane {
         // Inicializar controladores
         ProductController productController = new ProductController();
         OrderController orderController = new OrderController();
-        AssignmentColumnFactory.initialize(productController, orderController, currentWaiterId);
+        AssignmentColumnFactory.initialize(productController, orderController, id);
 
         searchField = new TextField();
         table = new TableView<>();

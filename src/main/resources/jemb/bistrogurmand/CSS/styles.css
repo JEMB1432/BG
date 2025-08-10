@@ -41,3 +41,14 @@
 .title-card-view{
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0.5, 4, 4);
 }
+
+.close-button-d {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+    -fx-font-size: 3px;
+    -fx-padding: 0px;
+}
+
+.close-button-d:hover, .edit-button-d:hover {
+    -fx-cursor: hand;
+}

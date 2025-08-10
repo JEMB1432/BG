@@ -42,7 +42,7 @@ public class OrderCorrectionDialog extends Dialog<Map<Integer, Integer>> {
 
         // Configurar icono
         Stage stage = (Stage) getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/edit.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/dish.png")));
 
         // Configurar botones
         ButtonType saveButtonType = new ButtonType("Solicitar Corrección", ButtonData.OK_DONE);

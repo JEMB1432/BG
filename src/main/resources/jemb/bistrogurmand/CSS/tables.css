@@ -105,13 +105,13 @@
     -fx-text-fill: #232323;
 }
 
-.table-row-cell:selected {
-    -fx-background-color: rgba(153, 13, 53, 0.2);
-    -fx-text-fill: #232323 !important;
+.table-row-cell:selected, .table-row-cell:selected:hover {
+    -fx-background-color: rgba(152, 34, 59, 0.2);
+    -fx-text-fill: #fff ;
 }
 
 .table-row-cell:hover {
-    -fx-background-color: rgba(168, 168, 168, 0.1);
+    -fx-background-color: rgba(147, 147, 147, 0.1);
     -fx-text-fill: -fx-dark-color;
 }
 
@@ -155,7 +155,7 @@
 }
 
 .pagination .button:selected {
-    -fx-background-color: -fx-dark-color; /* Usar la variable con -fx- */
+    -fx-background-color: -fx-dark-color;
     -fx-text-fill: white;
 }
 
@@ -506,7 +506,7 @@
     -fx-border-color: #FFB300;
     -fx-border-width: 0;
 }
-
+/*
 .badge {
     -fx-background-color: #eef8f0;
     -fx-text-fill: #009b57;
@@ -527,7 +527,7 @@
     -fx-font-size: 12;
     -fx-font-weight: bold;
     -fx-border-width: 0;
-}
+}*/
 
 .edit-button {
     -fx-background-color: rgb(0, 100, 12);

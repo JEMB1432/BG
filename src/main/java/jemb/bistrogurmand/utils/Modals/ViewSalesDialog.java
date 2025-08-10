@@ -4,14 +4,17 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import jemb.bistrogurmand.Controllers.OrderController;
 import jemb.bistrogurmand.Controllers.ProductController;
 import jemb.bistrogurmand.Controllers.SaleController;
@@ -47,7 +50,7 @@ public class ViewSalesDialog extends Dialog<Void> {
 
         // Configurar icono
         Stage stage = (Stage) getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/see.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/sale.png")));
 
         // Configurar botones
         ButtonType closeButtonType = new ButtonType("Cerrar", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -63,23 +66,17 @@ public class ViewSalesDialog extends Dialog<Void> {
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         grid.add(salesTable, 0, 0);
-
+        GridPane.setHgrow(salesTable, Priority.ALWAYS);
+        salesTable.setMaxWidth(Double.MAX_VALUE);
+        getDialogPane().setPrefWidth(600);
         getDialogPane().setContent(grid);
     }
 
     private void setupSalesTable(List<Sale> sales) {
-        GridPane grid = new GridPane();
-        grid.getStyleClass().add("grid-pane");
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-
         ObservableList<Sale> salesList = FXCollections.observableArrayList(sales);
         salesTable.setItems(salesList);
 
-        TableColumn<Sale, Integer> idCol = new TableColumn<>("ID");
-        idCol.setCellValueFactory(new PropertyValueFactory<>("idSale"));
-        //idCol.setPrefWidth(60);
+        salesTable.getColumns().clear();
 
         TableColumn<Sale, String> dateCol = new TableColumn<>("Fecha");
         dateCol.setCellValueFactory(cellData -> {
@@ -91,25 +88,17 @@ public class ViewSalesDialog extends Dialog<Void> {
             }
             return new ReadOnlyStringWrapper("");
         });
-        //dateCol.setPrefWidth(150);
 
         TableColumn<Sale, Float> totalCol = new TableColumn<>("Total");
         totalCol.setCellValueFactory(new PropertyValueFactory<>("total"));
-        //totalCol.setPrefWidth(80);
 
         TableColumn<Sale, Void> actionCol = new TableColumn<>("Acciones");
         actionCol.setCellFactory(param -> new ActionsCell());
-        //actionCol.setPrefWidth(250);
 
-        salesTable.getColumns().addAll(idCol, dateCol, totalCol, actionCol);
-        salesTable.setPrefHeight(300);
-        salesTable.setPrefWidth(600);
-        salesTable.setMinWidth(500);
+        salesTable.getColumns().addAll(dateCol, totalCol, actionCol);
 
-        grid.add(salesTable, 0, 0);
-        GridPane.setHgrow(salesTable, Priority.ALWAYS);
-        salesTable.setMaxWidth(Double.MAX_VALUE);
-
+        // Configurar para que la tabla crezca horizontalmente
+        salesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
     private class ActionsCell extends TableCell<Sale, Void> {
@@ -260,7 +249,6 @@ public class ViewSalesDialog extends Dialog<Void> {
     }
 
     private Optional<Double> showRatingDialog() {
-        // Mismo método de calificación que ya existe
         Dialog<Double> dialog = new Dialog<>();
         dialog.setTitle("Calificar Venta");
         dialog.setHeaderText("Por favor califique la experiencia del cliente");
@@ -268,24 +256,86 @@ public class ViewSalesDialog extends Dialog<Void> {
         ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 
+        dialog.getDialogPane().getStylesheets().add(
+                getClass().getResource("/jemb/bistrogurmand/CSS/Dialog.css").toExternalForm()
+        );
+
+        dialog.getDialogPane().applyCss();
+        dialog.getDialogPane().layout();
+
+        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/star_full.png")));
+
+        // Contenedor de estrellas
+        HBox starsBox = new HBox(5);
+        starsBox.setAlignment(Pos.CENTER);
+
         Slider slider = new Slider(0, 5, 3);
         slider.setShowTickLabels(true);
         slider.setShowTickMarks(true);
         slider.setMajorTickUnit(1);
+        slider.setMinorTickCount(1);
         slider.setBlockIncrement(0.5);
         slider.setSnapToTicks(true);
 
-        Label valueLabel = new Label(String.format("Calificación: %.1f", slider.getValue()));
-        slider.valueProperty().addListener((obs, oldVal, newVal) ->
-                valueLabel.setText(String.format("Calificación: %.1f", newVal)));
+        slider.setLabelFormatter(new StringConverter<Double>() {
+            @Override
+            public String toString(Double value) {
+                if (value % 1 == 0) return String.valueOf(value.intValue());
+                return "";
+            }
 
-        VBox content = new VBox(10, slider, valueLabel);
+            @Override
+            public Double fromString(String string) {
+                try {
+                    return Double.parseDouble(string);
+                } catch (NumberFormatException e) {
+                    return 0.0;
+                }
+            }
+        });
+
+        Label valueLabel = new Label(String.format("Calificación: %.1f", slider.getValue()));
+        valueLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+        Runnable updateStars = () -> {
+            starsBox.getChildren().clear();
+            double val = Math.round(slider.getValue() * 2) / 2.0;
+            int fullStars = (int) val;
+            boolean halfStar = (val - fullStars) >= 0.5;
+            int emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+            for (int i = 0; i < fullStars; i++) {
+                starsBox.getChildren().add(new ImageView(
+                        new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/star_full.png"))
+                ));
+            }
+            if (halfStar) {
+                starsBox.getChildren().add(new ImageView(
+                        new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/star_half.png"))
+                ));
+            }
+            for (int i = 0; i < emptyStars; i++) {
+                starsBox.getChildren().add(new ImageView(
+                        new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/star_empty.png"))
+                ));
+            }
+
+            valueLabel.setText(String.format("Calificación: %.1f", val));
+        };
+
+        slider.valueProperty().addListener((obs, oldVal, newVal) -> updateStars.run());
+        updateStars.run();
+
+        VBox content = new VBox(10, starsBox, slider, valueLabel);
         content.setPadding(new Insets(20));
+        content.setAlignment(Pos.CENTER);
+
         dialog.getDialogPane().setContent(content);
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == okButtonType) {
-                return slider.getValue();
+                return Math.round(slider.getValue() * 2) / 2.0;
             }
             return null;
         });

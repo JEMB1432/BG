@@ -134,13 +134,13 @@
 .edit-button-d {
     -fx-background-color: -fx-secondary-color;
     -fx-text-fill: #fff;
-    -fx-font-size: 12px;
+    -fx-font-size: 13px;
 }
 
 .close-button-d {
     -fx-background-color: -fx-primary-color;
     -fx-text-fill: white;
-    -fx-font-size: 12px;
+    -fx-font-size: 13px;
 }
 
 .close-button-d:hover, .edit-button-d:hover {
