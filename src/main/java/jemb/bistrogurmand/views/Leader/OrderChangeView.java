@@ -16,12 +16,14 @@ import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.OrderChangeController;
 import jemb.bistrogurmand.Controllers.OrderController;
 import jemb.bistrogurmand.Controllers.TableController;
+import jemb.bistrogurmand.utils.Modals.CorrectionDetailsDialog;
 import jemb.bistrogurmand.utils.OrderColumnFactory;
 import jemb.bistrogurmand.utils.OrderRestaurant;
 import jemb.bistrogurmand.utils.TableRestaurant;
 import jemb.bistrogurmand.utils.TableRestaurantColumnFactory;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static jemb.bistrogurmand.utils.OrderColumnFactory.*;
 import static jemb.bistrogurmand.utils.TableRestaurantColumnFactory.*;
@@ -123,10 +125,14 @@ public class OrderChangeView {
         table.getStyleClass().add("table-view");
 
         table.getColumns().addAll(
-                OrderColumnFactory.createIndexColumn(pagination, rowsPerPage),
+                //OrderColumnFactory.createIndexColumn(pagination, rowsPerPage),
                 createID_EmployeeColumn(),
-                createID_ProductColumn(),
-                OrderColumnFactory.createStateColumn()
+                createDateColumn(),
+                createCountColumn(),
+                createOriginalTotalColumn(),
+                createNewTotalColumn(),
+                OrderColumnFactory.createStatusColumn(),
+                createDetailsColumn()
         );
 
         table.setRowFactory(tv -> new TableRow<OrderRestaurant>() {
@@ -252,11 +258,10 @@ public class OrderChangeView {
     private void acceptSelectedTable() {
         OrderRestaurant selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            // Llama al controlador para aprobar la corrección en la base de datos
-            if (tableController.approveOrderCorrection(selected.getID_Correction())) {
+            if (tableController.approveOrderCorrection(selected.getID_Sale())) {
                 showAlert("Éxito", "La corrección ha sido aprobada.", Alert.AlertType.INFORMATION);
                 OrderController orderController = new OrderController();
-                orderController.applyCorrection(selected.getID_Correction());
+                orderController.applyCorrection(selected.getID_Sale());
                 refreshTable();
             } else {
                 showAlert("Error", "No se pudo aprobar la corrección. Inténtelo de nuevo.", Alert.AlertType.ERROR);
@@ -282,7 +287,7 @@ public class OrderChangeView {
     private void cancelSelectedTable() {
         OrderRestaurant selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            if (tableController.rejectOrderCorrection(selected.getID_Correction())) {
+            if (tableController.rejectOrderCorrection(selected.getID_Sale())) {
                 selected.setApproved(2); // Usamos 2 para "No Aprobado"
                 refreshTable();
                 showAlert("Éxito", "La corrección ha sido marcada como no aprobada.", Alert.AlertType.INFORMATION);
@@ -313,31 +318,41 @@ public class OrderChangeView {
         return view;
     }
 
-    /*
-    // En tu método que maneja el botón de aprobar
-private void handleApproveButton(OrderCorrection correction) {
-    try {
-        // 1. Primero sincronizar los cambios
-        syncApprovedCorrectionWithSale(correction.getIdCorrection());
+    private  TableColumn<OrderRestaurant, Void> createDetailsColumn() {
+        TableColumn<OrderRestaurant, Void> col = new TableColumn<>("Detalles");
+        col.setStyle("-fx-alignment: center");
+        col.setCellFactory(param -> new TableCell<>() {
+            private final Button btn = new Button("Ver Detalles");
 
-        // 2. Luego marcar como aprobado
-        String updateSql = "UPDATE Order_Correction SET Approved = 1 WHERE ID_Correction = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(updateSql)) {
-            stmt.setInt(1, correction.getIdCorrection());
-            stmt.executeUpdate();
-        }
+            {
+                btn.getStyleClass().add("btn-detils");
+                btn.setOnAction(event -> {
+                    OrderRestaurant summary = getTableView().getItems().get(getIndex());
+                    showCorrectionDetails(summary.getID_Sale());
+                });
+            }
 
-        // 3. Mostrar mensaje de éxito
-        showAlert("Éxito", "Corrección aprobada y sincronizada con la venta", Alert.AlertType.INFORMATION);
-
-        // 4. Refrescar la vista
-        refreshTable();
-
-    } catch (SQLException e) {
-        showAlert("Error", "No se pudo completar la aprobación: " + e.getMessage(), Alert.AlertType.ERROR);
-        e.printStackTrace();
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(btn);
+                }
+            }
+        });
+        return col;
     }
-}
-     */
+
+    private void showCorrectionDetails(int saleId) {
+        try {
+            List<OrderRestaurant> details = OrderChangeController.getCorrectionDetailsBySaleId2(saleId);
+            CorrectionDetailsDialog dialog = new CorrectionDetailsDialog(details);
+            dialog.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error", "No se pudieron cargar los detalles: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
 }
