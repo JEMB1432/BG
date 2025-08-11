@@ -107,7 +107,7 @@ public class AddProductDialog extends Dialog<AddProductDialog.ProductWithCategor
         this.imageView.getStyleClass().add("product-image-placeholder");
 
         // Imagen placeholder por defecto
-        this.imageView.setImage(new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/logo.png")));
+        this.imageView.setImage(new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/no-image.png")));
 
         // Grupo de radio buttons para disponibilidad
         this.availableToggleGroup = new ToggleGroup();

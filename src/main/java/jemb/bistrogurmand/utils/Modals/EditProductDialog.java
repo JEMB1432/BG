@@ -34,9 +34,9 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
     private List<Category> availableCategories;
     private List<Category> originalCategories;
 
-    // Patrones de validación
-    private static final Pattern NAME_PATTERN = Pattern.compile("^[\\p{L}\\p{N}\\p{Pd}\\p{Zs}]{2,100}$");
-    private static final Pattern PRICE_PATTERN = Pattern.compile("^\\d{1,6}(\\.\\d{1,2})?$");
+    // Patrones de validación consistentes con AddProductDialog
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[\\p{L}][\\p{L}\\p{N} .'-]{1,99}$");
+    private static final Pattern PRICE_PATTERN = Pattern.compile("^\\d+(\\.\\d{1,2})?$");
     private final Map<TextField, PauseTransition> validationPauses = new HashMap<>();
 
     public EditProductDialog(Product product, List<Category> availableCategories, List<Category> currentCategories) {
@@ -68,18 +68,13 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
 
         // Crear formulario
         GridPane grid = createFormGrid(product);
+        getDialogPane().setContent(grid);
 
-        ScrollPane scrollPane = new ScrollPane(grid);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setFitToHeight(true);
-        scrollPane.setPrefViewportHeight(500);
-        scrollPane.setMaxHeight(600);
-        scrollPane.setPadding(new Insets(10));
-        scrollPane.setStyle("-fx-background-color: transparent;");
-
-        getDialogPane().setContent(scrollPane);
-
+        // Configurar validaciones en tiempo real
         setupValidationPauses();
+
+        // Validar campos inicialmente
+        validateFields();
 
         // Configurar conversor de resultados
         setResultConverter(dialogButton -> {
@@ -97,12 +92,15 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
-        // Campos del formulario
-        nameField = createTextField(product.getName());
-        priceField = createTextField(String.valueOf(product.getPrice()));
+        // Campos del formulario con placeholders y clases CSS específicas
+        nameField = createTextField(product.getName(), "Nombre del producto");
+        priceField = createTextField(String.valueOf(product.getPrice()), "0.00");
+
         descriptionArea = new TextArea(product.getDescription());
         descriptionArea.getStyleClass().add("text-area");
         descriptionArea.setWrapText(true);
+        descriptionArea.setPromptText("Descripción del producto (opcional)");
+        descriptionArea.setPrefRowCount(3);
 
         // Configurar vista de imagen
         imageView = new ImageView();
@@ -127,67 +125,52 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
         categoriesListView.setItems(FXCollections.observableArrayList(availableCategories));
         categoriesListView.setPrefHeight(150);
 
+        // Etiquetas con estilos
+        Label nameLabel = new Label("Nombre:");
+        nameLabel.getStyleClass().add("form-label");
+
+        Label priceLabel = new Label("Precio:");
+        priceLabel.getStyleClass().add("form-label");
+
+        Label descriptionLabel = new Label("Descripción:");
+        descriptionLabel.getStyleClass().add("form-label");
+
+        Label availabilityLabel = new Label("Disponibilidad:");
+        availabilityLabel.getStyleClass().add("form-label");
+
+        Label imageLabel = new Label("Imagen:");
+        imageLabel.getStyleClass().add("form-label");
+
+        Label categoriesLabel = new Label("Categorías:");
+        categoriesLabel.getStyleClass().add("form-label");
+
         // Añadir controles al grid
-        grid.add(new Label("Nombre:"), 1, 0);
+        grid.add(nameLabel, 1, 0);
         grid.add(nameField, 2, 0);
 
-        grid.add(new Label("Precio:"), 1, 1);
+        grid.add(priceLabel, 1, 1);
         grid.add(priceField, 2, 1);
 
-        grid.add(new Label("Descripción:"), 1, 2);
+        grid.add(descriptionLabel, 1, 2);
         grid.add(descriptionArea, 2, 2, 2, 1);
 
-        grid.add(new Label("Disponibilidad:"), 1, 3);
+        grid.add(availabilityLabel, 1, 3);
         grid.add(availabilityHBox, 2, 3);
 
-        grid.add(new Label("Imagen:"), 1, 4);
+        grid.add(imageLabel, 1, 4);
         grid.add(imageView, 2, 4);
         grid.add(changeImageBtn, 3, 4);
 
-        grid.add(new Label("Categorías:"), 1, 5);
+        grid.add(categoriesLabel, 1, 5);
         grid.add(categoriesListView, 2, 5, 2, 1);
 
         return grid;
     }
 
-    private class CategoryListCell extends ListCell<Category> {
-        private final CheckBox checkBox = new CheckBox();
-        private final HBox hbox = new HBox(checkBox);
-
-        public CategoryListCell() {
-            super();
-            hbox.setSpacing(10);
-
-            checkBox.setOnAction(event -> {
-                Category category = getItem();
-                if (category != null) {
-                    int categoryId = category.getID_Category();
-
-                    if (checkBox.isSelected()) {
-                        selectedCategoryIds.add(categoryId);
-                    } else {
-                        selectedCategoryIds.remove(categoryId);
-                    }
-                }
-            });
-        }
-
-        @Override
-        protected void updateItem(Category category, boolean empty) {
-            super.updateItem(category, empty);
-            if (empty || category == null) {
-                setGraphic(null);
-            } else {
-                checkBox.setText(category.getName());
-                checkBox.setSelected(selectedCategoryIds.contains(category.getID_Category()));
-                setGraphic(hbox);
-            }
-        }
-    }
-
-    private TextField createTextField(String initialValue) {
+    private TextField createTextField(String initialValue, String promptText) {
         TextField textField = new TextField(initialValue);
-        textField.getStyleClass().add("text-field");
+        textField.getStyleClass().addAll("text-field", "product-field");
+        textField.setPromptText(promptText);
         return textField;
     }
 
@@ -209,14 +192,52 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
             unavailableRadio.setSelected(true);
         }
 
-        return new HBox(5, availableRadio, unavailableRadio);
+        return new HBox(10, availableRadio, unavailableRadio);
+    }
+
+    private class CategoryListCell extends ListCell<Category> {
+        private final CheckBox checkBox = new CheckBox();
+        private final HBox hbox = new HBox(checkBox);
+
+        public CategoryListCell() {
+            super();
+            hbox.setSpacing(10);
+            checkBox.setOnAction(event -> {
+                Category category = getItem();
+                if (checkBox.isSelected()) {
+                    if (!selectedCategoryIds.contains(category.getID_Category())) {
+                        selectedCategoryIds.add(category.getID_Category());
+                    }
+                } else {
+                    selectedCategoryIds.remove(category.getID_Category());
+                }
+                validateFields(); // Revalidar cuando cambian las categorías
+            });
+        }
+
+        @Override
+        protected void updateItem(Category category, boolean empty) {
+            super.updateItem(category, empty);
+            if (empty || category == null) {
+                setGraphic(null);
+            } else {
+                checkBox.setText(category.getName());
+                checkBox.setSelected(selectedCategoryIds.contains(category.getID_Category()));
+                setGraphic(hbox);
+            }
+        }
     }
 
     private void loadImage(String imageUrl) {
         try {
             if (imageUrl != null && !imageUrl.isEmpty()) {
-                Image image = new Image(imageUrl, true);
-                imageView.setImage(image);
+                imageView.setImage(new Image(imageUrl, true));
+                imageView.getStyleClass().remove("product-image-placeholder");
+                imageView.getStyleClass().add("product-image-loaded");
+            } else {
+                // Imagen placeholder por defecto
+                imageView.setImage(new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/no-image.png")));
+                imageView.getStyleClass().add("product-image-placeholder");
             }
         } catch (Exception e) {
             System.err.println("Error al cargar la imagen: " + e.getMessage());
@@ -232,18 +253,19 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
 
         File selectedFile = fileChooser.showOpenDialog(getDialogPane().getScene().getWindow());
         if (selectedFile != null) {
-            // Validar tamaño del archivo (3MB máximo)
-            long fileSizeInMB = selectedFile.length() / (1024 * 1024);
-            if (fileSizeInMB > 3) {
-                showAlert("Error", "La imagen no debe exceder 3MB", Alert.AlertType.ERROR);
-                return;
-            }
-
             try {
-                String imageUrl = ImgBBUploader.uploadImage(selectedFile.getAbsolutePath());
-                if (imageUrl != null && !imageUrl.trim().isEmpty()) {
-                    newImageUrl = imageUrl;
-                    loadImage(imageUrl);
+                // Validar tamaño del archivo (3MB máximo)
+                long fileSizeInMB = selectedFile.length() / (1024 * 1024);
+                if (fileSizeInMB > 3) {
+                    showAlert("Error", "La imagen no debe exceder 3MB", Alert.AlertType.ERROR);
+                    return;
+                }
+
+                // Subir la imagen a ImgBB
+                newImageUrl = ImgBBUploader.uploadImage(selectedFile.getAbsolutePath());
+                if (newImageUrl != null) {
+                    loadImage(newImageUrl);
+                    validateFields(); // Revalidar cuando se carga una imagen
                 } else {
                     showAlert("Error", "No se pudo subir la imagen", Alert.AlertType.ERROR);
                 }
@@ -254,19 +276,28 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
     }
 
     private void setupValidationPauses() {
-        initValidationPause(nameField, NAME_PATTERN, 250);
-        initValidationPause(priceField, PRICE_PATTERN, 250);
+        initValidationPause(nameField, NAME_PATTERN, 100);
+        initValidationPause(priceField, PRICE_PATTERN, 100);
+
+        // Listener para categorías seleccionadas
+        categoriesListView.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> {
+            validateFields();
+        });
     }
 
     private void initValidationPause(TextField field, Pattern pattern, int delayMs) {
         PauseTransition pause = new PauseTransition(Duration.millis(delayMs));
-        pause.setOnFinished(e -> validateField(field, pattern));
+        pause.setOnFinished(e -> {
+            validateField(field, pattern);
+            validateFields(); // Revalidar el formulario completo
+        });
         validationPauses.put(field, pause);
 
         field.textProperty().addListener((obs, oldVal, newVal) -> {
+            // Limpiar estilos previos mientras se escribe
             field.getStyleClass().removeAll("input-error", "input-valid");
 
-            // Reiniciar el timer de validación
+            // Reiniciar timer de validación
             PauseTransition fieldPause = validationPauses.get(field);
             fieldPause.stop();
             fieldPause.playFromStart();
@@ -275,13 +306,13 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
 
     private void validateField(TextField field, Pattern pattern) {
         String text = field.getText().trim();
-        boolean isValid = pattern.matcher(text).matches();
+        boolean isValid = !text.isEmpty() && pattern.matcher(text).matches();
 
         // Limpiar clases previas
         field.getStyleClass().removeAll("input-error", "input-valid");
 
         if (text.isEmpty()) {
-            // No aplicar ningún estilo si está vacío
+            // Campo vacío - sin estilo especial pero es inválido
             return;
         }
 
@@ -292,26 +323,48 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
         }
     }
 
+    private void validateFields() {
+        Button saveButton = (Button) getDialogPane().lookupButton(getDialogPane().getButtonTypes().get(1));
+
+        boolean nameValid = !nameField.getText().trim().isEmpty() &&
+                NAME_PATTERN.matcher(nameField.getText().trim()).matches();
+
+        boolean priceValid = !priceField.getText().trim().isEmpty() &&
+                PRICE_PATTERN.matcher(priceField.getText().trim()).matches();
+
+        boolean availabilityValid = availableToggleGroup.getSelectedToggle() != null;
+        boolean categoriesValid = !selectedCategoryIds.isEmpty();
+
+        boolean isValid = nameValid && priceValid && availabilityValid && categoriesValid;
+        saveButton.setDisable(!isValid);
+    }
+
     private ProductWithCategories updateProductWithCategoriesFromForm(Product product) {
-        List<String> errores = new ArrayList<>();
+        // Validación final antes de actualizar el producto
+        List<String> errors = new ArrayList<>();
 
-        // Validar campos
-        if (!validateFieldOnSave(nameField, NAME_PATTERN))
-            errores.add("Nombre inválido (2-100 caracteres, solo letras, números, guiones y espacios)");
+        if (nameField.getText().trim().isEmpty()) {
+            errors.add("El nombre es requerido");
+        } else if (!NAME_PATTERN.matcher(nameField.getText().trim()).matches()) {
+            errors.add("Nombre inválido");
+        }
 
-        if (!validateFieldOnSave(priceField, PRICE_PATTERN))
-            errores.add("Precio inválido (formato: 123.45)");
+        if (priceField.getText().trim().isEmpty()) {
+            errors.add("El precio es requerido");
+        } else if (!PRICE_PATTERN.matcher(priceField.getText().trim()).matches()) {
+            errors.add("Precio inválido");
+        }
 
         if (availableToggleGroup.getSelectedToggle() == null) {
-            errores.add("Debe seleccionar la disponibilidad del producto");
+            errors.add("Debe seleccionar la disponibilidad");
         }
 
         if (selectedCategoryIds.isEmpty()) {
-            errores.add("Debe seleccionar al menos una categoría");
+            errors.add("Debe seleccionar al menos una categoría");
         }
 
-        if (!errores.isEmpty()) {
-            showAlert("Error", String.join("\n", errores), Alert.AlertType.ERROR);
+        if (!errors.isEmpty()) {
+            showAlert("Errores de validación", String.join("\n", errors), Alert.AlertType.ERROR);
             return null;
         }
 
@@ -331,35 +384,15 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
             product.setAvailable(availableToggleGroup.getSelectedToggle().getUserData().toString());
 
             // Actualizar la URL de la imagen solo si se seleccionó una nueva
-            if (newImageUrl != null && !newImageUrl.trim().isEmpty()) {
+            if (newImageUrl != null) {
                 product.setUrlImage(newImageUrl);
             }
 
             return new ProductWithCategories(product, selectedCategories);
-
-        } catch (Exception e) {
-            showAlert("Error", "Error inesperado al procesar los datos", Alert.AlertType.ERROR);
+        } catch (NumberFormatException e) {
+            showAlert("Error", "Por favor ingrese un precio válido", Alert.AlertType.ERROR);
             return null;
         }
-    }
-
-    private boolean validateFieldOnSave(TextField field, Pattern pattern) {
-        String text = field.getText().trim();
-        boolean isValid = pattern.matcher(text).matches();
-
-        if (text.isEmpty()) {
-            field.getStyleClass().add("input-error");
-            return false;
-        }
-
-        if (!isValid) {
-            if (!field.getStyleClass().contains("input-error")) {
-                field.getStyleClass().add("input-error");
-            }
-            return false;
-        }
-
-        return true;
     }
 
     private void showAlert(String title, String message, Alert.AlertType type) {

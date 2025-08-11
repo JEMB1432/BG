@@ -56,11 +56,13 @@
 .profile-field.input-valid {
     -fx-border-width: 0px 0px 3px 0px;
     -fx-border-color: #28a745 !important;
+    -fx-background-color: #fcfffc;
     /*-fx-background-color: #fbfffc;*/
 }
 
 .profile-field.input-error {
     -fx-border-width: 0px 0px 3px 0px;
+    -fx-background-color: #fdf7f7;
     -fx-border-color: #990D35 !important;
     /*-fx-background-color: #fffafa;*/
 }

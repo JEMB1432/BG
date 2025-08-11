@@ -116,7 +116,7 @@ public class LoginView {
         version.getStyleClass().add("version");
 
         // Construcción de la interfaz
-        form.getChildren().addAll(usernameGroup, passwordGroup, loginButton, errorLogin, footerLinks);
+        form.getChildren().addAll(usernameGroup, passwordGroup, loginButton, errorLogin);
         loginContainer.getChildren().addAll(logoSection, form, version);
         view.getChildren().add(loginContainer);
 
