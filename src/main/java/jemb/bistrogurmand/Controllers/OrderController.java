@@ -73,85 +73,101 @@ public class OrderController {
             return false;
         }
     }
+//comineza cambios
+public boolean applyCorrection(int saleId) {
+    // Consultas SQL
+    String getCorrectionsSql = "SELECT * FROM ORDER_CORRECTION WHERE ID_SALE = ? AND APPROVED = 0";
+    String updateSql = "UPDATE SALEINFO SET AMOUNT = ? WHERE ID_SALE = ? AND ID_PRODUCT = ?";
+    String insertSql = "INSERT INTO SALEINFO (ID_SALE, ID_PRODUCT, AMOUNT) VALUES (?, ?, ?)";
+    String approveSql = "UPDATE ORDER_CORRECTION SET APPROVED = 1 WHERE ID_CORRECTION = ?";
+    String deleteSql = "DELETE FROM SALEINFO WHERE ID_SALE = ? AND ID_PRODUCT = ?";
+    String checkExistsSql = "SELECT COUNT(*) FROM SALEINFO WHERE ID_SALE = ? AND ID_PRODUCT = ?";
 
-    public boolean applyCorrection(int correctionId) {
-        // 1. Obtener los datos de la corrección
-        String getSql = "SELECT * FROM ORDER_CORRECTION WHERE ID_CORRECTION = ?";
-        String updateSql = "UPDATE SALEINFO SET AMOUNT = ? WHERE ID_SALE = ? AND ID_PRODUCT = ?";
-        String insertSql = "INSERT INTO SALEINFO (ID_SALE, ID_PRODUCT, AMOUNT) VALUES ( ?, ?, ?)";
-        String approveSql = "UPDATE ORDER_CORRECTION SET APPROVED = 1 WHERE ID_CORRECTION = ?";
-        String deleteSql = "DELETE FROM SALEINFO WHERE ID_SALE = ? AND ID_PRODUCT = ?";
+    try (Connection conn = DatabaseConnection.getConnection()) {
+        conn.setAutoCommit(false);
 
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            conn.setAutoCommit(false);
+        // 1. Obtener todas las correcciones pendientes para esta venta
+        List<OrderRestaurant> corrections = new ArrayList<>();
+        try (PreparedStatement getStmt = conn.prepareStatement(getCorrectionsSql)) {
+            getStmt.setInt(1, saleId);
+            ResultSet rs = getStmt.executeQuery();
 
-            // Obtener datos de corrección
-            try (PreparedStatement getStmt = conn.prepareStatement(getSql)) {
-                getStmt.setInt(1, correctionId);
-                ResultSet rs = getStmt.executeQuery();
+            while (rs.next()) {
+                corrections.add(new OrderRestaurant(
+                        rs.getInt("ID_CORRECTION"),
+                        rs.getInt("ID_SALE"),
+                        rs.getInt("ID_PRODUCT"),
+                        rs.getInt("NEW_AMOUNT")
+                ));
+            }
+        }
 
+        if (corrections.isEmpty()) {
+            return false; // No hay correcciones pendientes
+        }
+
+        // 2. Procesar cada corrección
+        for (OrderRestaurant correction : corrections) {
+            // Verificar si el producto existe en la venta
+            boolean productExists = false;
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkExistsSql)) {
+                checkStmt.setInt(1, correction.getID_Sale());
+                checkStmt.setInt(2, correction.getID_Product());
+                ResultSet rs = checkStmt.executeQuery();
                 if (rs.next()) {
-                    int saleId = rs.getInt("ID_SALE");
-                    int productId = rs.getInt("ID_PRODUCT");
-                    int newAmount = rs.getInt("NEW_AMOUNT");
-
-                    // Verificar si el producto ya existe en la venta
-                    boolean productExists = checkIfProductExists(conn, saleId, productId);
-
-                    if (productExists) {
-                        // Actualizar cantidad existente
-                        if (newAmount > 0) {
-                            try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
-                                updateStmt.setInt(1, newAmount);
-                                updateStmt.setInt(2, saleId);
-                                updateStmt.setInt(3, productId);
-                                updateStmt.executeUpdate();
-                            }
-                        } else {
-                            // Eliminar producto si cantidad es 0
-                            try (PreparedStatement deleteStmt = conn.prepareStatement(deleteSql)) {
-                                deleteStmt.setInt(1, saleId);
-                                deleteStmt.setInt(2, productId);
-                                deleteStmt.executeUpdate();
-                            }
-                        }
-                    } else {
-                        // Insertar nuevo producto (solo si cantidad > 0)
-                        if (newAmount > 0) {
-                            try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
-                                insertStmt.setInt(1, saleId);
-                                insertStmt.setInt(2, productId);
-                                insertStmt.setInt(3, newAmount);
-                                insertStmt.executeUpdate();
-                            }
-                        }
-                    }
-
-                    // Marcar corrección como aprobada
-                    try (PreparedStatement approveStmt = conn.prepareStatement(approveSql)) {
-                        approveStmt.setInt(1, correctionId);
-                        approveStmt.executeUpdate();
-                    }
-
-                    conn.commit();
-                    return true;
+                    productExists = rs.getInt(1) > 0;
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+            if (productExists) {
+                if (correction.getNew_Amount() > 0) {
+                    // Actualizar cantidad existente
+                    try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                        updateStmt.setInt(1, correction.getNew_Amount());
+                        updateStmt.setInt(2, correction.getID_Sale());
+                        updateStmt.setInt(3, correction.getID_Product());
+                        updateStmt.executeUpdate();
+                    }
+                } else {
+                    // Eliminar producto si cantidad es 0
+                    try (PreparedStatement deleteStmt = conn.prepareStatement(deleteSql)) {
+                        deleteStmt.setInt(1, correction.getID_Sale());
+                        deleteStmt.setInt(2, correction.getID_Product());
+                        deleteStmt.executeUpdate();
+                    }
+                }
+            } else if (correction.getNew_Amount() > 0) {
+                // Insertar nuevo producto
+                try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+                    insertStmt.setInt(1, correction.getID_Sale());
+                    insertStmt.setInt(2, correction.getID_Product());
+                    insertStmt.setInt(3, correction.getNew_Amount());
+                    insertStmt.executeUpdate();
+                }
+            }
+
+            // Marcar corrección como aprobada
+            try (PreparedStatement approveStmt = conn.prepareStatement(approveSql)) {
+                approveStmt.setInt(1, correction.getID_Correction());
+                approveStmt.executeUpdate();
+            }
+        }
+
+        conn.commit();
+        return true;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            if (conn != null) {
+                conn.rollback();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return false;
     }
-
-    private boolean checkIfProductExists(Connection conn, int saleId, int productId) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM SALEINFO WHERE ID_SALE = ? AND ID_PRODUCT = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, saleId);
-            stmt.setInt(2, productId);
-            ResultSet rs = stmt.executeQuery();
-            return rs.next() && rs.getInt(1) > 0;
-        }
-    }
+}
 
     public boolean rejectCorrection(int correctionId) {
         String sql = "UPDATE ORDER_CORRECTION SET APPROVED = 2 WHERE ID_CORRECTION = ?";

@@ -8,9 +8,15 @@ public class OrderRestaurant {
     private int ID_Sale;
     private int ID_Product;
     private int Approved;
+    private int New_Amount;
     private String EmployeeName;
     private String ProductName;
     private LocalDateTime SaleDate;
+
+    private int correctionCount;
+    private double originalTotal;
+    private double newTotal;
+    private String status;
 
     public OrderRestaurant(int ID_Correction, int ID_Employee, int ID_Sale, int ID_Product, int Approved) {
         this.ID_Correction = ID_Correction;
@@ -94,5 +100,47 @@ public class OrderRestaurant {
 
     public void setSaleDate(LocalDateTime saleDate) {
         SaleDate = saleDate;
+    }
+
+    public OrderRestaurant(int ID_Correction, int ID_Employee, String EmployeeName, int ID_Sale, int ID_Product, String ProductName, int State, LocalDateTime SaleDate, int CorrectionCount, double OriginalTotal, double NewTotal, String Status) {
+        this.ID_Correction = ID_Correction;
+        this.ID_Employee = ID_Employee;
+        this.ID_Sale = ID_Sale;
+        this.ID_Product = ID_Product;
+        this.Approved = State;
+        this.EmployeeName = EmployeeName;
+        this.ProductName = ProductName;
+        this.SaleDate = SaleDate;
+        this.correctionCount = CorrectionCount;
+        this.originalTotal = OriginalTotal;
+        this.newTotal = NewTotal;
+        this.status = Status;
+    }
+
+    public OrderRestaurant(int ID_Correction, int ID_Sale, int ID_Product,int New_Amount) {
+        this.ID_Correction = ID_Correction;
+        this.ID_Sale = ID_Sale;
+        this.ID_Product = ID_Product;
+        this.New_Amount= New_Amount;
+    }
+
+    public int getCorrectionCount() {
+        return correctionCount;
+    }
+
+    public double getOriginalTotal() {
+        return originalTotal;
+    }
+
+    public double getNewTotal() {
+        return newTotal;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public int getNew_Amount(){
+        return New_Amount;
     }
 }
