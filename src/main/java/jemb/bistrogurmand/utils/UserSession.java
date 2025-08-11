@@ -13,7 +13,6 @@ public class UserSession {
             return currentUser;
         }
 
-        // Opcional: Limpiar sesión al hacer logout
         public static void clearCurrentUser() {
             currentUser = null;
             App.loadView("login");

@@ -1,0 +1,126 @@
+/* Contenedor principal */
+.profile-container {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0.5, 4, 4);
+    -fx-padding: 40px;
+}
+
+/* Sección del avatar */
+.avatar-section {
+    -fx-alignment: center;
+    -fx-padding: 30px 0 0px 0;
+}
+
+.user-avatar {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.5, 0, 2);
+}
+
+.user-name {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+/* Grid del formulario */
+.form-grid {
+    -fx-hgap: 20px;
+    -fx-vgap: 15px;
+}
+
+/* Etiquetas de campos */
+.input-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #232323;
+}
+
+/* Campos de texto - Estado base */
+.profile-field {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: #d5d5d5;
+    -fx-border-radius: 4px;
+    -fx-border-width: 0px 0px 3px 0px;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(72, 72, 72, 0.1), 10, 0.5, 0, 2);
+}
+
+.profile-field:disabled {
+    -fx-opacity: 1.0;
+    -fx-background-color: #f5f5f5;
+}
+
+/* Estados de validación - MAYOR ESPECIFICIDAD */
+.profile-field.input-valid {
+    -fx-border-width: 0px 0px 3px 0px;
+    -fx-border-color: #28a745 !important;
+    /*-fx-background-color: #fbfffc;*/
+}
+
+.profile-field.input-error {
+    -fx-border-width: 0px 0px 3px 0px;
+    -fx-border-color: #990D35 !important;
+    /*-fx-background-color: #fffafa;*/
+}
+
+/* Foco - Solo cuando NO tiene clases de validación */
+.profile-field:focused {
+    -fx-border-color: #1C7C54;
+}
+
+/* Foco con validación - Mayor especificidad */
+.profile-field.input-valid:focused {
+    -fx-border-color: #28a745 !important;
+}
+
+.profile-field.input-error:focused {
+    -fx-border-color: #990D35 !important;
+}
+
+/* Contenedor de botones */
+.button-container {
+    -fx-padding: 20px 0 0 0;
+}
+
+/* Botones */
+.action-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1C7C54;
+    -fx-border-color: #1C7C54;
+    -fx-border-radius: 4px;
+    -fx-border-width: 1px;
+    -fx-padding: 6px 12px;
+}
+
+.action-button:hover {
+    -fx-background-color: rgba(28, 124, 84, 0.1);
+}
+
+.primary-button {
+    -fx-background-color: #1C7C54;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 4px;
+}
+
+.primary-button:hover {
+    -fx-background-color: #165c40;
+    -fx-cursor: hand;
+}
+
+.secondary-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #555555;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 4px;
+    -fx-border-width: 1px;
+    -fx-padding: 8px 16px;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #f5f5f5;
+    -fx-cursor: hand;
+}

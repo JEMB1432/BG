@@ -115,9 +115,9 @@ public class HistoryCorrectionsView {
 
         table.getColumns().addAll(
                 HistoryCorrectionColumnFactory.createIndexColumn(pagination, rowsPerPage),
+                createNumberTableColumn(),
                 HistoryCorrectionColumnFactory.createDateColumn(),
                 createCountColumn(),
-                createOriginalTotalColumn(),
                 createNewTotalColumn(),
                 HistoryCorrectionColumnFactory.createStatusColumn(),
                 createDetailsColumn()
@@ -173,7 +173,11 @@ public class HistoryCorrectionsView {
     }
 
     private boolean matchesFilter(SaleCorrectionSummary correction, String filter) {
-        return correction.getSaleDate().toString().toLowerCase().contains(filter);
+        return correction.getSaleDate().toString().toLowerCase().contains(filter) ||
+                (correction.getTableNumber() + "").contains(filter) ||
+                (correction.getNewTotal() + "").contains(filter) ||
+                (correction.getStatus()).contains(filter) ||
+                (correction.getCorrectionCount() + "").contains(filter);
     }
 
     private void updatePagination() {
@@ -203,10 +207,9 @@ public class HistoryCorrectionsView {
         table.refresh();
     }
 
-
-    private  TableColumn<SaleCorrectionSummary, String> createSaleIdColumn() {
-        TableColumn<SaleCorrectionSummary, String> col = new TableColumn<>("ID Venta");
-        col.setCellValueFactory(cd -> new SimpleStringProperty(String.valueOf(cd.getValue().getSaleId())));
+    private  TableColumn<SaleCorrectionSummary, String> createNumberTableColumn() {
+        TableColumn<SaleCorrectionSummary, String> col = new TableColumn<>("Mesa");
+        col.setCellValueFactory(cd -> new SimpleStringProperty(String.valueOf("Mesa: " + cd.getValue().getTableNumber())));
         return col;
     }
 

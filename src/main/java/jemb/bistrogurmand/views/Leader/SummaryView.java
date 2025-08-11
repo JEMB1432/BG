@@ -4,6 +4,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import jemb.bistrogurmand.views.Admin.WaiterView;
+import jemb.bistrogurmand.views.ProfileView;
 
 public class SummaryView {
 
@@ -41,6 +42,9 @@ public class SummaryView {
                 break;
             case "planificacion":
                 newContent = new PlanificationView().getView();
+                break;
+            case "mi perfil":
+                newContent = new ProfileView().getView();
                 break;
             default:
                 newContent = new Label("Vista no encontrada");

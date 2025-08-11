@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import jemb.bistrogurmand.views.ProfileView;
 
 public class DashboardView {
     private BorderPane view;
@@ -53,6 +54,9 @@ public class DashboardView {
                 break;
             case "mesas":
                 newContent = new TablesView().getView();
+                break;
+            case "mi perfil":
+                newContent = new ProfileView().getView();
                 break;
             default:
                 newContent = new Label("Vista no encontrada");

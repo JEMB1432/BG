@@ -11,7 +11,7 @@ public class DayViewController {
 
     public double getAverageRating(int waiterId) {
         double rating = 0.0;
-        String sql = "SELECT AVG(RATING) as avg_rating FROM SALE WHERE ID_Employee = ?";
+        String sql = "SELECT AVG(RATING) as avg_rating FROM SALE WHERE ID_Employee = ? AND STATUS = 0";
 
         try {
             Connection conn = DatabaseConnection.getConnection();

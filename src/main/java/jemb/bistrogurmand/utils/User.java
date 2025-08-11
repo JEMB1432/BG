@@ -35,9 +35,9 @@ public class User {
 
     public String getEmail() { return email; }
 
-    public String getRolUser() { return rolUser; }
-
     public String getUserImage() { return userImage; }
+
+    public String getRolUser() { return rolUser; }
 
     public String getStateUser() { return stateUser; }
 

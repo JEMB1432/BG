@@ -74,11 +74,36 @@ public class WaiterController {
         }
     }
 
+    public boolean updateWaiterProfile(User user) {
+        String sql = "UPDATE EMPLOYEE SET NAME = ?, LASTNAME = ?, CELPHONE = ?, "
+                + "EMAIL = ?, ROL = ?, STATE = ?, IMAGE_URL = ? WHERE ID_EMPLOYEE = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, user.getFirstName());
+            ps.setString(2, user.getLastName());
+            ps.setString(3, user.getPhone());
+            ps.setString(4, user.getEmail());
+            ps.setString(5, user.getRolUser());
+            ps.setString(6, user.getStateUser());
+            ps.setString(7,user.getUserImage());
+            ps.setInt(8, Integer.parseInt(user.getUserID()));
+
+            int rowsAffected = ps.executeUpdate();
+
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean insertWaiter(User user, String password) {
         String sql = "INSERT INTO EMPLOYEE (NAME, LASTNAME, CELPHONE, EMAIL, ROL, PASSWORD, CREATIONDATE, IMAGE_URL, STATE) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try{
-            String imageURL = "/jemb/bistrogurmand/Icons/user.png";
+            String imageURL = "https://i.ibb.co/JFbMYwrB/fd07702d09de.png";
             Connection conn = DatabaseConnection.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, user.getFirstName());

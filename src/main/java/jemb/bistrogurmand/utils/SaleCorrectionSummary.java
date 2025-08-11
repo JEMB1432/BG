@@ -9,11 +9,23 @@ public class SaleCorrectionSummary {
     private double originalTotal;
     private double newTotal;
     private String status;
+    private int tableNumber;
 
     public SaleCorrectionSummary(int saleId, LocalDateTime saleDate, int correctionCount,
                                  double originalTotal, double newTotal, String status) {
         this.saleId = saleId;
         this.saleDate = saleDate;
+        this.correctionCount = correctionCount;
+        this.originalTotal = originalTotal;
+        this.newTotal = newTotal;
+        this.status = status;
+    }
+
+    public SaleCorrectionSummary(int saleId, LocalDateTime saleDate, int tableNumber,
+                                 int correctionCount, double originalTotal, double newTotal, String status) {
+        this.saleId = saleId;
+        this.saleDate = saleDate;
+        this.tableNumber = tableNumber;
         this.correctionCount = correctionCount;
         this.originalTotal = originalTotal;
         this.newTotal = newTotal;
@@ -27,4 +39,7 @@ public class SaleCorrectionSummary {
     public double getOriginalTotal() { return originalTotal; }
     public double getNewTotal() { return newTotal; }
     public String getStatus() { return status; }
+    public int getTableNumber() {
+        return tableNumber;
+    }
 }

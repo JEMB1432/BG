@@ -169,33 +169,50 @@ public class OrderController {
 
     public List<SaleCorrectionSummary> getCorrectionSummaryByEmployeeId(int employeeId) {
         List<SaleCorrectionSummary> summaries = new ArrayList<>();
-        String sql = "SELECT " +
-                "  s.ID_Sale, " +
-                "  MIN(s.SaleDate) AS SaleDate, " +
-                "  COUNT(oc.ID_Correction) AS CorrectionCount, " +
-                "  MAX(s.Total) AS OriginalTotal, " +
-                "  SUM(p.Price * oc.New_Amount) AS NewTotal, " +
-                "  MIN(CASE WHEN oc.Approved = 0 THEN 'Pendiente' " +
-                "           WHEN oc.Approved = 1 THEN 'Aprobado' " +
-                "           ELSE 'Rechazado' END) AS Status " +
-                "FROM Sale s " +
-                "JOIN Order_Correction oc ON s.ID_Sale = oc.ID_Sale " +
-                "JOIN Product p ON oc.ID_Product = p.ID_Product " +
-                "WHERE oc.ID_Employee = ? " +
-                "  AND s.SaleDate >= TRUNC(SYSDATE) - 30 " + // Últimos 30 días
-                "GROUP BY s.ID_Sale " +
-                "ORDER BY SaleDate DESC";
+        String sql = "SELECT "
+                + "  s.ID_Sale, "
+                + "  s.SaleDate, "
+                + "  t.NUMBERTABLE AS TableNumber, "
+                + "  COUNT(oc.ID_Correction) AS CorrectionCount, "
+                + "  s.Total AS OriginalTotal, "
+                + "  ( "
+                + "    SELECT SUM(p.Price * COALESCE(oc2.NEW_AMOUNT, si.AMOUNT)) "
+                + "    FROM SaleInfo si "
+                + "    LEFT JOIN Order_Correction oc2 "
+                + "      ON si.ID_Sale = oc2.ID_Sale "
+                + "      AND si.ID_Product = oc2.ID_Product "
+                + "      AND oc2.ID_Employee = ? "
+                + "    JOIN Product p ON si.ID_Product = p.ID_Product "
+                + "    WHERE si.ID_Sale = s.ID_Sale "
+                + "  ) AS NewTotal, "
+                + "  ( "
+                + "    CASE "
+                + "      WHEN COUNT(CASE WHEN oc.Approved = 0 THEN 1 END) > 0 THEN 'Pendiente' "
+                + "      WHEN COUNT(CASE WHEN oc.Approved = 2 THEN 1 END) > 0 THEN 'Rechazado' "
+                + "      ELSE 'Aprobado' "
+                + "    END "
+                + "  ) AS Status "
+                + "FROM Sale s "
+                + "JOIN Order_Correction oc ON s.ID_Sale = oc.ID_Sale "
+                + "JOIN Assignment a ON s.ID_ASSIGNMENT = a.ID_ASSIGNMENT "
+                + "JOIN TableRestaurant t ON a.ID_TABLE = t.ID_TABLE "
+                + "WHERE oc.ID_Employee = ? "
+                + "  AND s.SaleDate >= TRUNC(SYSDATE) - 30 "
+                + "GROUP BY s.ID_Sale, s.SaleDate, s.Total, t.NUMBERTABLE "
+                + "ORDER BY s.SaleDate DESC";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, employeeId);
+            stmt.setInt(2, employeeId);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 summaries.add(new SaleCorrectionSummary(
                         rs.getInt("ID_Sale"),
                         rs.getTimestamp("SaleDate").toLocalDateTime(),
+                        rs.getInt("TableNumber"),
                         rs.getInt("CorrectionCount"),
                         rs.getDouble("OriginalTotal"),
                         rs.getDouble("NewTotal"),

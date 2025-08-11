@@ -7,6 +7,7 @@ import jemb.bistrogurmand.utils.HistoryCorrectionColumnFactory;
 import jemb.bistrogurmand.utils.User;
 import jemb.bistrogurmand.utils.UserSession;
 import jemb.bistrogurmand.views.Leader.SidebarLeader;
+import jemb.bistrogurmand.views.ProfileView;
 
 public class DayView {
 
@@ -46,8 +47,11 @@ public class DayView {
             case "correcciones":
                 newContent = new HistoryCorrectionsView().getView();
                 break;
-            case "ventas pasadas":
+            case "ventas sin cerrar":
                 newContent = new HistorySalesView().getView();
+                break;
+            case "mi perfil":
+                newContent = new ProfileView().getView();
                 break;
             default:
                 newContent = new Label("Vista no encontrada");

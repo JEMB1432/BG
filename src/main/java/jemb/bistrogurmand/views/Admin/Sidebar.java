@@ -26,6 +26,7 @@ public class Sidebar extends VBox {
     private Button btnMeseros;
     private Button btnMenu;
     private Button btnMesas;
+    private Button btnProfile;
 
     User currentUser = new UserSession().getCurrentUser();
 
@@ -84,10 +85,29 @@ public class Sidebar extends VBox {
     }
 
     private void createUserInfo() {
-        String imageURL = currentUser.getUserImage();
-        ImageView userAvatar = new ImageView(new Image(imageURL));
+        String placeholderPath = "/jemb/bistrogurmand/Icons/user.png";
+
+        Image placeholderImage = new Image(getClass().getResourceAsStream(placeholderPath));
+        ImageView userAvatar = new ImageView(placeholderImage);
         userAvatar.setFitWidth(40);
         userAvatar.setFitHeight(40);
+
+        String imageURL = currentUser.getUserImage();
+        Image userImage = new Image(imageURL, 40, 40, true, true, true);
+
+        userImage.progressProperty().addListener((obs, oldProg, newProg) -> {
+            if (newProg.doubleValue() >= 1.0 && !userImage.isError()) {
+                // Cambiar a la imagen remota cuando ya esté cargada
+                userAvatar.setImage(userImage);
+                System.out.println("Imagen remota cargada y aplicada.");
+            }
+        });
+
+        userImage.errorProperty().addListener((obs, wasError, isError) -> {
+            if (isError) {
+                System.out.println("Error cargando la imagen remota, usando placeholder.");
+            }
+        });
         userAvatar.getStyleClass().add("user-avatar");
 
         Circle clip = new Circle(userAvatar.getFitWidth() / 2, userAvatar.getFitHeight() / 2, userAvatar.getFitWidth() / 2);
@@ -116,12 +136,13 @@ public class Sidebar extends VBox {
         btnMeseros = crearMenuButton("Meseros", "M7 14s-1 0-1-1s1-4 5-4s5 3 5 4s-1 1-1 1zm4-6a3 3 0 1 0 0-6a3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5");
         btnMenu = crearMenuButton("Productos", "M4.505 2h-.013a.5.5 0 0 0-.176.036a.5.5 0 0 0-.31.388C3.99 2.518 3.5 5.595 3.5 7c0 .95.442 1.797 1.13 2.345c.25.201.37.419.37.601v.5q0 .027-.003.054c-.027.26-.151 1.429-.268 2.631C4.614 14.316 4.5 15.581 4.5 16a2 2 0 1 0 4 0c0-.42-.114-1.684-.229-2.869a302 302 0 0 0-.268-2.63L8 10.446v-.5c0-.183.12-.4.37-.601A3 3 0 0 0 9.5 7c0-1.408-.493-4.499-.506-4.577a.5.5 0 0 0-.355-.403A.5.5 0 0 0 8.51 2h-.02h.001a.505.505 0 0 0-.501.505v4a.495.495 0 0 1-.99.021V2.5a.5.5 0 0 0-1 0v4l.001.032a.495.495 0 0 1-.99-.027V2.506A.506.506 0 0 0 4.506 2M11 6.5A4.5 4.5 0 0 1 15.5 2a.5.5 0 0 1 .5.5v6.978l.02.224a626 626 0 0 1 .228 2.696c.124 1.507.252 3.161.252 3.602a2 2 0 1 1-4 0c0-.44.128-2.095.252-3.602c.062-.761.125-1.497.172-2.042l.03-.356H12.5A1.5 1.5 0 0 1 11 8.5zM8.495 2h-.004z");
         btnMesas = crearMenuButton("Mesas", "m6 20l1.5-3.75q.225-.575.725-.913T9.35 15H11v-4.025Q7.175 10.85 4.587 9.85T2 7.5q0-1.45 2.925-2.475T12 4q4.175 0 7.088 1.025T22 7.5q0 1.35-2.588 2.35T13 10.975V15h1.65q.6 0 1.113.338t.737.912L18 20h-2l-1.2-3H9.2L8 20z");
+        btnProfile = crearMenuButton("Mi perfil","M8 9c3.85 0 7 2.5 7 4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5C1 11.5 4.15 9 8 9m0-8a3.5 3.5 0 1 1 0 7a3.5 3.5 0 0 1 0-7");
 
         // Set dashboard as active by default
         btnDashboard.getStyleClass().add("active");
 
         // Crear contenedor para los botones del menú
-        VBox menuButtons = new VBox(8, btnDashboard, btnMenu, btnMesas, btnMeseros);
+        VBox menuButtons = new VBox(8, btnDashboard, btnMenu, btnMesas, btnMeseros, btnProfile);
         menuButtons.getStyleClass().add("sidebar-menu");
 
         VBox.setVgrow(menuButtons, Priority.ALWAYS);
@@ -202,7 +223,7 @@ public class Sidebar extends VBox {
     }
 
     private void setActiveButton(Button activeButton) {
-        Arrays.asList(btnDashboard, btnMenu, btnMesas, btnMeseros)
+        Arrays.asList(btnDashboard, btnMenu, btnMesas, btnMeseros, btnProfile)
                 .forEach(btn -> btn.getStyleClass().remove("active"));
         activeButton.getStyleClass().add("active");
     }

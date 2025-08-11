@@ -569,7 +569,6 @@
     -fx-background-color: transparent;
     -fx-padding: 0;
     -fx-text-fill: -fx-primary-color;
-    -fx-font-weight: bold;
     -fx-underline: true;
     -fx-font-size: 12px;
 }
@@ -577,4 +576,5 @@
 .btn-detils:hover{
     -fx-opacity: 0.8;
     -fx-cursor: hand;
+    -fx-font-weight: bold;
 }
