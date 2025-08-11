@@ -1,5 +1,6 @@
 package jemb.bistrogurmand.utils.Modals;
 
+import javafx.animation.PauseTransition;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -7,7 +8,12 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import jemb.bistrogurmand.utils.User;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 public class AddWaiterDialog extends Dialog<User> {
 
@@ -19,6 +25,14 @@ public class AddWaiterDialog extends Dialog<User> {
     private PasswordField confirmPasswordField;
     private ToggleGroup stateToggleGroup;
     private ComboBox<String> rolComboBox;
+
+    // Patrones de validación como en ProfileView
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[\\p{L}][\\p{L} .'-]{1,49}$");
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^[+]?[0-9]{1,3}?\\s?[0-9]{6,14}$");
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+
+    // Mapa para pausas de validación
+    private final Map<TextField, PauseTransition> validationPauses = new HashMap<>();
 
     public AddWaiterDialog() {
         setTitle("Agregar Nuevo Mesero");
@@ -33,19 +47,24 @@ public class AddWaiterDialog extends Dialog<User> {
         Stage stage = (Stage) getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/user.png")));
 
-        // Configurar botones
-        ButtonType saveButtonType = new ButtonType("Guardar", ButtonData.OK_DONE);
+        // Botones
         ButtonType cancelButtonType = new ButtonType("Cancelar", ButtonData.CANCEL_CLOSE);
+        ButtonType saveButtonType = new ButtonType("Guardar", ButtonData.OK_DONE);
         getDialogPane().getButtonTypes().addAll(cancelButtonType, saveButtonType);
 
-        // Crear formulario
         GridPane grid = createFormGrid();
         getDialogPane().setContent(grid);
 
-        // Validar campos antes de habilitar el botón Guardar
-        validateFields();
+        // Configuración de validaciones
+        setupValidationPauses();
 
-        // Configurar conversor de resultados
+        Button saveButton = (Button) getDialogPane().lookupButton(saveButtonType);
+        saveButton.setDisable(true);
+
+        // Habilitar/Deshabilitar botón guardar según validaciones
+        validationPauses.values().forEach(pause -> pause.setOnFinished(e -> validateForm(saveButton)));
+
+        // Conversor de resultados
         setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
                 return createUserFromForm();
@@ -61,7 +80,6 @@ public class AddWaiterDialog extends Dialog<User> {
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
-        // Campos del formulario
         firstNameField = createTextField("");
         lastNameField = createTextField("");
         emailField = createTextField("");
@@ -71,14 +89,10 @@ public class AddWaiterDialog extends Dialog<User> {
         confirmPasswordField = new PasswordField();
         confirmPasswordField.getStyleClass().add("text-field");
 
-        // Grupo de radio buttons para estado
         stateToggleGroup = new ToggleGroup();
-        HBox stateHBox = createStateRadioButtons(stateToggleGroup, "1"); // Por defecto activo
-
-        // ComboBox para rol
+        HBox stateHBox = createStateRadioButtons(stateToggleGroup, "1");
         rolComboBox = createRolComboBox("Mesero");
 
-        // Añadir controles al grid
         grid.add(new Label("Nombre:"), 1, 0);
         grid.add(firstNameField, 2, 0);
 
@@ -124,14 +138,13 @@ public class AddWaiterDialog extends Dialog<User> {
         activeRadio.setToggleGroup(toggleGroup);
         inactiveRadio.setToggleGroup(toggleGroup);
 
-        if (defaultState.equals("1")) {
+        if ("1".equals(defaultState)) {
             activeRadio.setSelected(true);
         } else {
             inactiveRadio.setSelected(true);
         }
 
-        HBox hbox = new HBox(5, activeRadio, inactiveRadio);
-        return hbox;
+        return new HBox(5, activeRadio, inactiveRadio);
     }
 
     private ComboBox<String> createRolComboBox(String defaultRol) {
@@ -141,35 +154,63 @@ public class AddWaiterDialog extends Dialog<User> {
         return rolComboBox;
     }
 
-    private void validateFields() {
-        // Deshabilitar el botón Guardar inicialmente
-        Button saveButton = (Button) getDialogPane().lookupButton(getDialogPane().getButtonTypes().get(1));
-        saveButton.setDisable(true);
+    private void setupValidationPauses() {
+        initValidationPause(firstNameField, NAME_PATTERN, 250);
+        initValidationPause(lastNameField, NAME_PATTERN, 250);
+        initValidationPause(phoneField, PHONE_PATTERN, 250);
+        initValidationPause(emailField, EMAIL_PATTERN, 250);
 
-        // Listener para validar campos en tiempo real
-        firstNameField.textProperty().addListener((obs, oldVal, newVal) -> validateForm(saveButton));
-        lastNameField.textProperty().addListener((obs, oldVal, newVal) -> validateForm(saveButton));
-        emailField.textProperty().addListener((obs, oldVal, newVal) -> validateForm(saveButton));
-        phoneField.textProperty().addListener((obs, oldVal, newVal) -> validateForm(saveButton));
-        passwordField.textProperty().addListener((obs, oldVal, newVal) -> validateForm(saveButton));
-        confirmPasswordField.textProperty().addListener((obs, oldVal, newVal) -> validateForm(saveButton));
+        // Validación especial para contraseña
+        initValidationPause(passwordField, Pattern.compile("^.{6,}$"), 250); // mínimo 6 caracteres
+        initValidationPause(confirmPasswordField, Pattern.compile("^.{6,}$"), 250);
+    }
+
+    private void initValidationPause(TextField field, Pattern pattern, int delayMs) {
+        PauseTransition pause = new PauseTransition(Duration.millis(delayMs));
+        pause.setOnFinished(e -> validateField(field, pattern));
+        validationPauses.put(field, pause);
+
+        field.textProperty().addListener((obs, oldVal, newVal) -> {
+            field.getStyleClass().removeAll("input-error", "input-valid");
+            PauseTransition fieldPause = validationPauses.get(field);
+            fieldPause.stop();
+            fieldPause.playFromStart();
+        });
+    }
+
+    private void validateField(TextField field, Pattern pattern) {
+        String text = field.getText().trim();
+        boolean isValid = pattern.matcher(text).matches();
+
+        field.getStyleClass().removeAll("input-error", "input-valid");
+
+        if (text.isEmpty()) return;
+
+        if (isValid) {
+            field.getStyleClass().add("input-valid");
+        } else {
+            field.getStyleClass().add("input-error");
+        }
+
+        // Caso especial: confirmar contraseña
+        if (field == confirmPasswordField) {
+            if (!confirmPasswordField.getText().equals(passwordField.getText())) {
+                confirmPasswordField.getStyleClass().removeAll("input-valid");
+                confirmPasswordField.getStyleClass().add("input-error");
+            }
+        }
     }
 
     private void validateForm(Button saveButton) {
-        boolean isValid = !firstNameField.getText().trim().isEmpty()
-                && !lastNameField.getText().trim().isEmpty()
-                && !emailField.getText().trim().isEmpty()
-                && !phoneField.getText().trim().isEmpty()
-                && !passwordField.getText().trim().isEmpty()
-                && passwordField.getText().equals(confirmPasswordField.getText());
+        boolean valid =
+                NAME_PATTERN.matcher(firstNameField.getText().trim()).matches() &&
+                        NAME_PATTERN.matcher(lastNameField.getText().trim()).matches() &&
+                        EMAIL_PATTERN.matcher(emailField.getText().trim()).matches() &&
+                        PHONE_PATTERN.matcher(phoneField.getText().trim()).matches() &&
+                        passwordField.getText().trim().length() >= 6 &&
+                        passwordField.getText().equals(confirmPasswordField.getText());
 
-        saveButton.setDisable(!isValid);
-
-        if (!passwordField.getText().equals(confirmPasswordField.getText())) {
-            confirmPasswordField.setStyle("-fx-border-color: red;");
-        } else {
-            confirmPasswordField.setStyle("");
-        }
+        saveButton.setDisable(!valid);
     }
 
     private User createUserFromForm() {
@@ -180,7 +221,6 @@ public class AddWaiterDialog extends Dialog<User> {
         newUser.setPhone(phoneField.getText().trim());
         newUser.setRolUser(rolComboBox.getValue());
         newUser.setStateUser(stateToggleGroup.getSelectedToggle().getUserData().toString());
-
         return newUser;
     }
 

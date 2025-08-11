@@ -129,7 +129,7 @@ public class OrderChangeView {
                 createID_EmployeeColumn(),
                 createDateColumn(),
                 createCountColumn(),
-                createOriginalTotalColumn(),
+                //createOriginalTotalColumn(),
                 createNewTotalColumn(),
                 OrderColumnFactory.createStatusColumn(),
                 createDetailsColumn()

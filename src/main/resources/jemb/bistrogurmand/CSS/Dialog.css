@@ -236,3 +236,232 @@
     -fx-background-radius: 5px;
 }
 
+
+/* ===== ADICIONES PARA VALIDACIONES ===== */
+
+/* Campos de texto con validación - Mayor especificidad */
+.text-field.product-field {
+    -fx-pref-width: 200px;
+    -fx-background-color: #f5f5f5;
+    -fx-padding: 8px 12px;
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-color: #e5e5e5;
+    -fx-border-radius: 4px;
+}
+
+.text-field.product-field:focused {
+    -fx-border-color: -fx-secondary-color;
+    -fx-border-width: 0 0 2px 0;
+}
+
+/* Estados de validación para campos de producto */
+.text-field.product-field.input-valid,
+.profile-field.input-valid {
+    -fx-border-color: -fx-success-color !important;
+    -fx-border-width: 0 0 2px 0;
+    -fx-background-color: #f8fff9;
+}
+
+.text-field.product-field.input-error,
+.profile-field.input-error {
+    -fx-border-color: -fx-danger-color !important;
+    -fx-border-width: 0 0 2px 0;
+    -fx-background-color: #fff5f5;
+}
+
+/* Foco con validación - Mayor especificidad */
+.text-field.product-field.input-valid:focused,
+.profile-field.input-valid:focused {
+    -fx-border-color: -fx-success-color !important;
+}
+
+.text-field.product-field.input-error:focused,
+.profile-field.input-error:focused {
+    -fx-border-color: -fx-danger-color !important;
+}
+
+/* Estilos para ProfileView */
+.profile-field {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: #d5d5d5;
+    -fx-border-radius: 4px;
+    -fx-border-width: 0px 0px 3px 0px;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(72, 72, 72, 0.1), 10, 0.5, 0, 2);
+}
+
+.profile-field:disabled {
+    -fx-opacity: 1.0;
+    -fx-background-color: #f5f5f5;
+}
+
+.profile-field:focused {
+    -fx-border-color: -fx-secondary-color;
+}
+
+/* Etiquetas del formulario */
+.form-label,
+.input-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -fx-dark-color;
+}
+
+/* ListView mejorado para categorías */
+.list-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d0d0d0;
+    -fx-border-radius: 4px;
+    -fx-border-width: 1px;
+}
+
+.list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 8px 12px;
+    -fx-border-color: transparent;
+}
+
+.list-view .list-cell:hover {
+    -fx-background-color: rgba(28, 124, 84, 0.1);
+}
+
+.list-view .list-cell:selected {
+    -fx-background-color: transparent;
+}
+
+/* CheckBox dentro de las celdas */
+.list-view .check-box {
+    -fx-font-size: 13px;
+    -fx-text-fill: -fx-dark-color;
+}
+
+.list-view .check-box:selected .box {
+    -fx-background-color: -fx-secondary-color;
+    -fx-border-color: -fx-secondary-color;
+}
+
+/* Imagen del producto */
+.product-image-placeholder {
+    -fx-opacity: 0.6;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.5, 0, 1);
+}
+
+.product-image-loaded {
+    -fx-opacity: 1.0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.5, 0, 2);
+}
+
+/* Botón secundario mejorado */
+.secondary-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-secondary-color;
+    -fx-border-color: -fx-secondary-color;
+    -fx-border-radius: 4px;
+    -fx-border-width: 1px;
+    -fx-padding: 6px 12px;
+    -fx-font-size: 13px;
+}
+
+.secondary-button:hover {
+    -fx-background-color: rgba(28, 124, 84, 0.1);
+}
+
+/* Estados de botón deshabilitado */
+.dialog-pane .button-bar .button:default:disabled {
+    -fx-background-color: #cccccc !important;
+    -fx-text-fill: #666666 !important;
+    -fx-opacity: 0.6;
+}
+
+/* Prompt text mejorado */
+.text-field .text {
+    -fx-prompt-text-fill: #999999;
+}
+
+.text-area .text {
+    -fx-prompt-text-fill: #999999;
+}
+
+/* Profile View específicos */
+.profile-container {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0.5, 4, 4);
+    -fx-padding: 40px;
+}
+
+.avatar-section {
+    -fx-alignment: center;
+    -fx-padding: 30px 0 0px 0;
+}
+
+.user-avatar {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.5, 0, 2);
+}
+
+.user-name {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-dark-color;
+}
+
+.form-grid {
+    -fx-hgap: 20px;
+    -fx-vgap: 15px;
+}
+
+.button-container {
+    -fx-padding: 20px 0 0 0;
+}
+
+.action-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-secondary-color;
+    -fx-border-color: -fx-secondary-color;
+    -fx-border-radius: 4px;
+    -fx-border-width: 1px;
+    -fx-padding: 6px 12px;
+}
+
+.action-button:hover {
+    -fx-background-color: rgba(28, 124, 84, 0.1);
+}
+
+
+.text-field.table-field {
+    -fx-pref-width: 200px;
+    -fx-background-color: #f5f5f5;
+    -fx-padding: 8px 12px;
+    -fx-border-width: 1px;
+    -fx-border-color: #e5e5e5;
+    -fx-border-radius: 4px;
+}
+
+.text-field.table-field:focused {
+    -fx-border-color: -fx-secondary-color;
+    -fx-border-width: 2px;
+}
+
+/* Estados de validación para campos de mesa */
+.text-field.table-field.input-valid {
+    -fx-border-color: -fx-success-color !important;
+    -fx-border-width: 2px !important;
+    -fx-background-color: #f8fff9;
+}
+
+.text-field.table-field.input-error {
+    -fx-border-color: -fx-danger-color !important;
+    -fx-border-width: 2px !important;
+    -fx-background-color: #fff5f5;
+}
+
+/* Foco con validación para campos de mesa */
+.text-field.table-field.input-valid:focused {
+    -fx-border-color: -fx-success-color !important;
+}
+
+.text-field.table-field.input-error:focused {
+    -fx-border-color: -fx-danger-color !important;
+}

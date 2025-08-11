@@ -1,5 +1,6 @@
 package jemb.bistrogurmand.utils.Modals;
 
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -10,6 +11,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import jemb.bistrogurmand.utils.Category;
 import jemb.bistrogurmand.utils.ImgBBUploader;
 import jemb.bistrogurmand.utils.Product;
@@ -17,7 +19,10 @@ import jemb.bistrogurmand.utils.Product;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 public class AddProductDialog extends Dialog<AddProductDialog.ProductWithCategories> {
 
@@ -29,6 +34,11 @@ public class AddProductDialog extends Dialog<AddProductDialog.ProductWithCategor
     private ToggleGroup availableToggleGroup;
     private ListView<Category> categoriesListView;
     private List<Category> selectedCategories = new ArrayList<>();
+
+    // Validaciones en tiempo real
+    private final Map<TextField, PauseTransition> validationPauses = new HashMap<>();
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[\\p{L}][\\p{L}\\p{N} .'-]{1,99}$");
+    private static final Pattern PRICE_PATTERN = Pattern.compile("^\\d+(\\.\\d{1,2})?$");
 
     public AddProductDialog(List<Category> availableCategories) {
         setTitle("Agregar Nuevo Producto");
@@ -52,7 +62,10 @@ public class AddProductDialog extends Dialog<AddProductDialog.ProductWithCategor
         GridPane grid = createFormGrid(availableCategories);
         getDialogPane().setContent(grid);
 
-        // Validar campos antes de habilitar el botón Guardar
+        // Configurar validaciones en tiempo real
+        setupValidationPauses();
+
+        // Validar campos inicialmente
         validateFields();
 
         // Configurar conversor de resultados
@@ -71,22 +84,30 @@ public class AddProductDialog extends Dialog<AddProductDialog.ProductWithCategor
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
-        // Inicialización de campos
+        // Inicialización de campos con clases CSS específicas
         this.nameField = new TextField();
-        this.nameField.getStyleClass().add("text-field");
+        this.nameField.getStyleClass().addAll("text-field", "product-field");
+        this.nameField.setPromptText("Nombre del producto");
 
         this.priceField = new TextField();
-        this.priceField.getStyleClass().add("text-field");
+        this.priceField.getStyleClass().addAll("text-field", "product-field");
+        this.priceField.setPromptText("0.00");
 
         this.descriptionArea = new TextArea();
         this.descriptionArea.getStyleClass().add("text-area");
         this.descriptionArea.setWrapText(true);
+        this.descriptionArea.setPromptText("Descripción del producto (opcional)");
+        this.descriptionArea.setPrefRowCount(3);
 
         // Configurar vista de imagen
         this.imageView = new ImageView();
         this.imageView.setFitHeight(150);
         this.imageView.setFitWidth(150);
         this.imageView.setPreserveRatio(true);
+        this.imageView.getStyleClass().add("product-image-placeholder");
+
+        // Imagen placeholder por defecto
+        this.imageView.setImage(new Image(getClass().getResourceAsStream("/jemb/bistrogurmand/Icons/logo.png")));
 
         // Grupo de radio buttons para disponibilidad
         this.availableToggleGroup = new ToggleGroup();
@@ -104,27 +125,94 @@ public class AddProductDialog extends Dialog<AddProductDialog.ProductWithCategor
         categoriesListView.setItems(FXCollections.observableArrayList(availableCategories));
         categoriesListView.setPrefHeight(150);
 
+        // Etiquetas con estilos
+        Label nameLabel = new Label("Nombre:");
+        nameLabel.getStyleClass().add("form-label");
+
+        Label priceLabel = new Label("Precio:");
+        priceLabel.getStyleClass().add("form-label");
+
+        Label descriptionLabel = new Label("Descripción:");
+        descriptionLabel.getStyleClass().add("form-label");
+
+        Label availabilityLabel = new Label("Disponibilidad:");
+        availabilityLabel.getStyleClass().add("form-label");
+
+        Label imageLabel = new Label("Imagen:");
+        imageLabel.getStyleClass().add("form-label");
+
+        Label categoriesLabel = new Label("Categorías:");
+        categoriesLabel.getStyleClass().add("form-label");
+
         // Añadir controles al grid
-        grid.add(new Label("Nombre:"), 1, 0);
+        grid.add(nameLabel, 1, 0);
         grid.add(nameField, 2, 0);
 
-        grid.add(new Label("Precio:"), 1, 1);
+        grid.add(priceLabel, 1, 1);
         grid.add(priceField, 2, 1);
 
-        grid.add(new Label("Descripción:"), 1, 2);
+        grid.add(descriptionLabel, 1, 2);
         grid.add(descriptionArea, 2, 2, 2, 1);
 
-        grid.add(new Label("Disponibilidad:"), 1, 3);
+        grid.add(availabilityLabel, 1, 3);
         grid.add(availabilityHBox, 2, 3);
 
-        grid.add(new Label("Imagen:"), 1, 4);
+        grid.add(imageLabel, 1, 4);
         grid.add(imageView, 2, 4);
         grid.add(selectImageBtn, 3, 4);
 
-        grid.add(new Label("Categorías:"), 1, 5);
+        grid.add(categoriesLabel, 1, 5);
         grid.add(categoriesListView, 2, 5, 2, 1);
 
         return grid;
+    }
+
+    private void setupValidationPauses() {
+        initValidationPause(nameField, NAME_PATTERN, 100);
+        initValidationPause(priceField, PRICE_PATTERN, 100);
+
+        // Listener para categorías seleccionadas
+        categoriesListView.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> {
+            validateFields();
+        });
+    }
+
+    private void initValidationPause(TextField field, Pattern pattern, int delayMs) {
+        PauseTransition pause = new PauseTransition(Duration.millis(delayMs));
+        pause.setOnFinished(e -> {
+            validateField(field, pattern);
+            validateFields(); // Revalidar el formulario completo
+        });
+        validationPauses.put(field, pause);
+
+        field.textProperty().addListener((obs, oldVal, newVal) -> {
+            // Limpiar estilos previos mientras se escribe
+            field.getStyleClass().removeAll("input-error", "input-valid");
+
+            // Reiniciar timer de validación
+            PauseTransition fieldPause = validationPauses.get(field);
+            fieldPause.stop();
+            fieldPause.playFromStart();
+        });
+    }
+
+    private void validateField(TextField field, Pattern pattern) {
+        String text = field.getText().trim();
+        boolean isValid = !text.isEmpty() && pattern.matcher(text).matches();
+
+        // Limpiar clases previas
+        field.getStyleClass().removeAll("input-error", "input-valid");
+
+        if (text.isEmpty()) {
+            // Campo vacío - sin estilo especial pero es inválido
+            return;
+        }
+
+        if (isValid) {
+            field.getStyleClass().add("input-valid");
+        } else {
+            field.getStyleClass().add("input-error");
+        }
     }
 
     private class CategoryListCell extends ListCell<Category> {
@@ -143,6 +231,7 @@ public class AddProductDialog extends Dialog<AddProductDialog.ProductWithCategor
                 } else {
                     selectedCategories.remove(category);
                 }
+                validateFields(); // Revalidar cuando cambian las categorías
             });
         }
 
@@ -194,6 +283,9 @@ public class AddProductDialog extends Dialog<AddProductDialog.ProductWithCategor
                 this.imageUrl = ImgBBUploader.uploadImage(selectedFile.getAbsolutePath());
                 if (this.imageUrl != null) {
                     imageView.setImage(new Image(this.imageUrl, true));
+                    imageView.getStyleClass().remove("product-image-placeholder");
+                    imageView.getStyleClass().add("product-image-loaded");
+                    validateFields(); // Revalidar cuando se carga una imagen
                 } else {
                     showAlert("Error", "No se pudo subir la imagen", Alert.AlertType.ERROR);
                 }
@@ -206,41 +298,60 @@ public class AddProductDialog extends Dialog<AddProductDialog.ProductWithCategor
 
     private void validateFields() {
         Button saveButton = (Button) getDialogPane().lookupButton(getDialogPane().getButtonTypes().get(1));
-        saveButton.setDisable(true);
 
-        nameField.textProperty().addListener((obs, oldVal, newVal) -> validateForm(saveButton));
-        priceField.textProperty().addListener((obs, oldVal, newVal) -> validateForm(saveButton));
-    }
+        boolean nameValid = !nameField.getText().trim().isEmpty() &&
+                NAME_PATTERN.matcher(nameField.getText().trim()).matches();
 
-    private void validateForm(Button saveButton) {
-        boolean isValid = !nameField.getText().trim().isEmpty()
-                && !priceField.getText().trim().isEmpty()
-                && isNumeric(priceField.getText())
-                && imageUrl != null
-                && !selectedCategories.isEmpty(); // Asegurar que se seleccione al menos una categoría
+        boolean priceValid = !priceField.getText().trim().isEmpty() &&
+                PRICE_PATTERN.matcher(priceField.getText().trim()).matches();
+
+        boolean imageValid = imageUrl != null;
+
+        boolean categoriesValid = !selectedCategories.isEmpty();
+
+        boolean isValid = nameValid && priceValid && imageValid && categoriesValid;
 
         saveButton.setDisable(!isValid);
     }
 
-    private boolean isNumeric(String str) {
-        try {
-            Double.parseDouble(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
     private ProductWithCategories createProductWithCategoriesFromForm() {
+        // Validación final antes de crear el producto
+        List<String> errors = new ArrayList<>();
+
+        if (nameField.getText().trim().isEmpty()) {
+            errors.add("El nombre es requerido");
+        } else if (!NAME_PATTERN.matcher(nameField.getText().trim()).matches()) {
+            errors.add("Nombre inválido");
+        }
+
+        if (priceField.getText().trim().isEmpty()) {
+            errors.add("El precio es requerido");
+        } else if (!PRICE_PATTERN.matcher(priceField.getText().trim()).matches()) {
+            errors.add("Precio inválido");
+        }
+
+        if (imageUrl == null) {
+            errors.add("Debe seleccionar una imagen");
+        }
+
+        if (selectedCategories.isEmpty()) {
+            errors.add("Debe seleccionar al menos una categoría");
+        }
+
+        if (!errors.isEmpty()) {
+            showAlert("Errores de validación", String.join("\n", errors), Alert.AlertType.ERROR);
+            return null;
+        }
+
         try {
             Product product = new Product();
-            product.setName(nameField.getText());
-            product.setPrice(Double.parseDouble(priceField.getText()));
-            product.setDescription(descriptionArea.getText());
+            product.setName(nameField.getText().trim());
+            product.setPrice(Double.parseDouble(priceField.getText().trim()));
+            product.setDescription(descriptionArea.getText().trim());
             product.setAvailable(availableToggleGroup.getSelectedToggle().getUserData().toString());
             product.setUrlImage(imageUrl);
 
-            return new ProductWithCategories(product, selectedCategories);
+            return new ProductWithCategories(product, new ArrayList<>(selectedCategories));
         } catch (NumberFormatException e) {
             showAlert("Error", "Por favor ingrese un precio válido", Alert.AlertType.ERROR);
             return null;

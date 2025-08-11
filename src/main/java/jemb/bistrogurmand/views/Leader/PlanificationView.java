@@ -171,7 +171,7 @@ public class PlanificationView {
         lblInfoDiaria.setStyle("-fx-alignment: center");
         lblInfoDiaria.getStyleClass().add("text-column");
 
-        buttomBox.getChildren().addAll(lblInfoDiaria, editButton, deleteButton); // Añadir los botones
+        buttomBox.getChildren().addAll(lblInfoDiaria, deleteButton); // Añadir los botones
         view.setBottom(buttomBox);
     }
 

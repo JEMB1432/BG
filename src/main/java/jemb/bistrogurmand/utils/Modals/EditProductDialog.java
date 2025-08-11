@@ -1,5 +1,6 @@
 package jemb.bistrogurmand.utils.Modals;
 
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -10,16 +11,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import jemb.bistrogurmand.utils.Category;
 import jemb.bistrogurmand.utils.ImgBBUploader;
 import jemb.bistrogurmand.utils.Product;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCategories> {
 
@@ -30,9 +30,14 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
     private String newImageUrl;
     private ToggleGroup availableToggleGroup;
     private ListView<Category> categoriesListView;
-    private Set<Integer> selectedCategoryIds; // Cambiado a Set de IDs para evitar duplicados
+    private Set<Integer> selectedCategoryIds;
     private List<Category> availableCategories;
     private List<Category> originalCategories;
+
+    // Patrones de validación
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[\\p{L}\\p{N}\\p{Pd}\\p{Zs}]{2,100}$");
+    private static final Pattern PRICE_PATTERN = Pattern.compile("^\\d{1,6}(\\.\\d{1,2})?$");
+    private final Map<TextField, PauseTransition> validationPauses = new HashMap<>();
 
     public EditProductDialog(Product product, List<Category> availableCategories, List<Category> currentCategories) {
         this.availableCategories = availableCategories;
@@ -73,6 +78,8 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
         scrollPane.setStyle("-fx-background-color: transparent;");
 
         getDialogPane().setContent(scrollPane);
+
+        setupValidationPauses();
 
         // Configurar conversor de resultados
         setResultConverter(dialogButton -> {
@@ -158,16 +165,8 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
 
                     if (checkBox.isSelected()) {
                         selectedCategoryIds.add(categoryId);
-                        System.out.println("Agregada categoría: " + category.getName() + " (ID: " + categoryId + ")");
                     } else {
                         selectedCategoryIds.remove(categoryId);
-                        System.out.println("Removida categoría: " + category.getName() + " (ID: " + categoryId + ")");
-                    }
-
-                    // Debug: mostrar categorías seleccionadas actuales
-                    System.out.println("Categorías seleccionadas actuales: " + selectedCategoryIds.size());
-                    for (Integer id : selectedCategoryIds) {
-                        System.out.println("  - ID: " + id);
                     }
                 }
             });
@@ -180,15 +179,8 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
                 setGraphic(null);
             } else {
                 checkBox.setText(category.getName());
-                // Verificar si esta categoría debe estar seleccionada
-                boolean shouldBeSelected = selectedCategoryIds.contains(category.getID_Category());
-                checkBox.setSelected(shouldBeSelected);
+                checkBox.setSelected(selectedCategoryIds.contains(category.getID_Category()));
                 setGraphic(hbox);
-
-                // Debug para verificar el estado inicial
-                if (shouldBeSelected) {
-                    System.out.println("Marcando como seleccionada: " + category.getName() + " (ID: " + category.getID_Category() + ")");
-                }
             }
         }
     }
@@ -240,10 +232,10 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
 
         File selectedFile = fileChooser.showOpenDialog(getDialogPane().getScene().getWindow());
         if (selectedFile != null) {
-            // Validar tamaño del archivo
+            // Validar tamaño del archivo (3MB máximo)
             long fileSizeInMB = selectedFile.length() / (1024 * 1024);
-            if (fileSizeInMB > 5) {
-                showAlert("Error", "La imagen no debe exceder 5MB", Alert.AlertType.ERROR);
+            if (fileSizeInMB > 3) {
+                showAlert("Error", "La imagen no debe exceder 3MB", Alert.AlertType.ERROR);
                 return;
             }
 
@@ -256,51 +248,74 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
                     showAlert("Error", "No se pudo subir la imagen", Alert.AlertType.ERROR);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
                 showAlert("Error", "Error al subir la imagen: " + e.getMessage(), Alert.AlertType.ERROR);
             }
         }
     }
 
+    private void setupValidationPauses() {
+        initValidationPause(nameField, NAME_PATTERN, 250);
+        initValidationPause(priceField, PRICE_PATTERN, 250);
+    }
+
+    private void initValidationPause(TextField field, Pattern pattern, int delayMs) {
+        PauseTransition pause = new PauseTransition(Duration.millis(delayMs));
+        pause.setOnFinished(e -> validateField(field, pattern));
+        validationPauses.put(field, pause);
+
+        field.textProperty().addListener((obs, oldVal, newVal) -> {
+            field.getStyleClass().removeAll("input-error", "input-valid");
+
+            // Reiniciar el timer de validación
+            PauseTransition fieldPause = validationPauses.get(field);
+            fieldPause.stop();
+            fieldPause.playFromStart();
+        });
+    }
+
+    private void validateField(TextField field, Pattern pattern) {
+        String text = field.getText().trim();
+        boolean isValid = pattern.matcher(text).matches();
+
+        // Limpiar clases previas
+        field.getStyleClass().removeAll("input-error", "input-valid");
+
+        if (text.isEmpty()) {
+            // No aplicar ningún estilo si está vacío
+            return;
+        }
+
+        if (isValid) {
+            field.getStyleClass().add("input-valid");
+        } else {
+            field.getStyleClass().add("input-error");
+        }
+    }
+
     private ProductWithCategories updateProductWithCategoriesFromForm(Product product) {
+        List<String> errores = new ArrayList<>();
+
+        // Validar campos
+        if (!validateFieldOnSave(nameField, NAME_PATTERN))
+            errores.add("Nombre inválido (2-100 caracteres, solo letras, números, guiones y espacios)");
+
+        if (!validateFieldOnSave(priceField, PRICE_PATTERN))
+            errores.add("Precio inválido (formato: 123.45)");
+
+        if (availableToggleGroup.getSelectedToggle() == null) {
+            errores.add("Debe seleccionar la disponibilidad del producto");
+        }
+
+        if (selectedCategoryIds.isEmpty()) {
+            errores.add("Debe seleccionar al menos una categoría");
+        }
+
+        if (!errores.isEmpty()) {
+            showAlert("Error", String.join("\n", errores), Alert.AlertType.ERROR);
+            return null;
+        }
+
         try {
-            // Validar nombre
-            String name = nameField.getText().trim();
-            if (name.isEmpty()) {
-                showAlert("Error", "El nombre del producto es obligatorio", Alert.AlertType.ERROR);
-                return null;
-            }
-
-            if (name.length() > 255) {
-                showAlert("Error", "El nombre no puede exceder 255 caracteres", Alert.AlertType.ERROR);
-                return null;
-            }
-
-            // Validar precio
-            double price;
-            try {
-                price = Double.parseDouble(priceField.getText().trim());
-                if (price < 0) {
-                    showAlert("Error", "El precio no puede ser negativo", Alert.AlertType.ERROR);
-                    return null;
-                }
-            } catch (NumberFormatException e) {
-                showAlert("Error", "Por favor ingrese un precio válido", Alert.AlertType.ERROR);
-                return null;
-            }
-
-            // Validar disponibilidad
-            if (availableToggleGroup.getSelectedToggle() == null) {
-                showAlert("Error", "Debe seleccionar la disponibilidad del producto", Alert.AlertType.ERROR);
-                return null;
-            }
-
-            // Validar categorías
-            if (selectedCategoryIds.isEmpty()) {
-                showAlert("Error", "Debe seleccionar al menos una categoría", Alert.AlertType.ERROR);
-                return null;
-            }
-
             // Convertir IDs seleccionados a objetos Category
             List<Category> selectedCategories = new ArrayList<>();
             for (Category category : availableCategories) {
@@ -310,8 +325,8 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
             }
 
             // Actualizar el producto
-            product.setName(name);
-            product.setPrice(price);
+            product.setName(nameField.getText().trim());
+            product.setPrice(Double.parseDouble(priceField.getText().trim()));
             product.setDescription(descriptionArea.getText().trim());
             product.setAvailable(availableToggleGroup.getSelectedToggle().getUserData().toString());
 
@@ -323,11 +338,28 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
             return new ProductWithCategories(product, selectedCategories);
 
         } catch (Exception e) {
-            System.err.println("Error al procesar datos del formulario: " + e.getMessage());
-            e.printStackTrace();
             showAlert("Error", "Error inesperado al procesar los datos", Alert.AlertType.ERROR);
             return null;
         }
+    }
+
+    private boolean validateFieldOnSave(TextField field, Pattern pattern) {
+        String text = field.getText().trim();
+        boolean isValid = pattern.matcher(text).matches();
+
+        if (text.isEmpty()) {
+            field.getStyleClass().add("input-error");
+            return false;
+        }
+
+        if (!isValid) {
+            if (!field.getStyleClass().contains("input-error")) {
+                field.getStyleClass().add("input-error");
+            }
+            return false;
+        }
+
+        return true;
     }
 
     private void showAlert(String title, String message, Alert.AlertType type) {
@@ -338,7 +370,6 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
         alert.showAndWait();
     }
 
-    // Clase para devolver el producto y categorías seleccionadas
     public static class ProductWithCategories {
         private final Product product;
         private final List<Category> selectedCategories;
@@ -346,26 +377,6 @@ public class EditProductDialog extends Dialog<EditProductDialog.ProductWithCateg
         public ProductWithCategories(Product product, List<Category> selectedCategories) {
             this.product = product;
             this.selectedCategories = new ArrayList<>(selectedCategories);
-
-            // Log mejorado para debugging
-            System.out.println("=============================");
-            System.out.println("=== PRODUCTO ACTUALIZADO ===");
-            System.out.println("ID: " + product.getID_Product());
-            System.out.println("Nombre: " + product.getName());
-            System.out.println("Precio: " + product.getPrice());
-            System.out.println("Disponible: " + product.getAvailable());
-            System.out.println("Categorías seleccionadas: " + selectedCategories.size());
-
-            // Usar Set para verificar duplicados
-            Set<Integer> uniqueIds = new HashSet<>();
-            for (Category category : selectedCategories) {
-                if (uniqueIds.add(category.getID_Category())) {
-                    System.out.println("  - " + category.getName() + " (ID: " + category.getID_Category() + ")");
-                } else {
-                    System.err.println("  - DUPLICADO: " + category.getName() + " (ID: " + category.getID_Category() + ")");
-                }
-            }
-            System.out.println("=============================");
         }
 
         public Product getProduct() {
