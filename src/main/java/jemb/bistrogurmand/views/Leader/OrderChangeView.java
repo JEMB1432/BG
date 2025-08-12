@@ -279,11 +279,10 @@ public class OrderChangeView {
 
     private void acceptSelectedTable() {
         OrderRestaurant selected = table.getSelectionModel().getSelectedItem();
+        OrderController orderController = new OrderController();
         if (selected != null) {
-            if (tableController.approveOrderCorrection(selected.getID_Sale())) {
+            if (orderController.applyCorrection(selected.getID_Sale())) {
                 showAlert("Éxito", "La corrección ha sido aprobada.", Alert.AlertType.INFORMATION);
-                OrderController orderController = new OrderController();
-                orderController.applyCorrection(selected.getID_Sale());
                 refreshTable();
             } else {
                 showAlert("Error", "No se pudo aprobar la corrección. Inténtelo de nuevo.", Alert.AlertType.ERROR);

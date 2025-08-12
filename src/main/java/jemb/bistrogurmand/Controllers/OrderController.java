@@ -118,7 +118,6 @@ public boolean applyCorrection(int saleId) {
                     productExists = rs.getInt(1) > 0;
                 }
             }
-
             if (productExists) {
                 if (correction.getNew_Amount() > 0) {
                     // Actualizar cantidad existente
@@ -145,14 +144,12 @@ public boolean applyCorrection(int saleId) {
                     insertStmt.executeUpdate();
                 }
             }
-
             // Marcar corrección como aprobada
             try (PreparedStatement approveStmt = conn.prepareStatement(approveSql)) {
                 approveStmt.setInt(1, correction.getID_Correction());
                 approveStmt.executeUpdate();
             }
         }
-
         conn.commit();
         return true;
 
