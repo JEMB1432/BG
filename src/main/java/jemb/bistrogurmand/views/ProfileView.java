@@ -296,7 +296,7 @@ public class ProfileView {
             currentUser.setPhone(phoneField.getText().trim());
             currentUser.setEmail(emailField.getText().trim());
             currentUser.setUserImage(newImageUrl);
-            showAlert("Éxito", "Perfil actualizado correctamente", Alert.AlertType.INFORMATION);
+            showAlert("Éxito", "Perfil actualizado correctamente. \n Por favor vuelva a iniciar sesión para visualizar los cambios.", Alert.AlertType.INFORMATION);
         }else {
             showAlert(null, "Error al actualizar el usuario", Alert.AlertType.ERROR);
         }

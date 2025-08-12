@@ -23,6 +23,7 @@ import jemb.bistrogurmand.utils.TableRestaurant;
 import jemb.bistrogurmand.utils.TableRestaurantColumnFactory;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static jemb.bistrogurmand.utils.OrderColumnFactory.*;
@@ -215,9 +216,31 @@ public class OrderChangeView {
             filteredList.addAll(masterTableRestaurantList);
         } else {
             for (OrderRestaurant order : masterTableRestaurantList) {
+                DateTimeFormatter[] formatters = {
+                        DateTimeFormatter.ofPattern("dd/MM/yy"),
+                        DateTimeFormatter.ofPattern("dd-MM-yyyy"),
+                        DateTimeFormatter.ofPattern("dd/MM/yyyy"),
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                };
+
+                String saleDateFormatted = order.getSaleDate()
+                        .toLocalDate()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+                boolean matchesDate = false;
+                for (DateTimeFormatter fmt : formatters) {
+                    String formatted = order.getSaleDate().toLocalDate().format(fmt);
+                    if (formatted.contains(filter)) {
+                        matchesDate = true;
+                        break;
+                    }
+                }
+
                 if (order.getEmployeeName().toLowerCase().contains(filter) ||
-                        order.getProductName().toLowerCase().contains(filter) ||
-                        String.valueOf(order.getID_Correction()).contains(filter)) {
+                        (order.getCorrectionCount()+ "").contains(filter) ||
+                        String.valueOf(order.getID_Correction()).contains(filter) ||
+                        (order.getNewTotal() + "").contains(filter) ||
+                        matchesDate) {
                     filteredList.add(order);
                 }
             }
@@ -226,7 +249,6 @@ public class OrderChangeView {
         currentDisplayedList.setAll(filteredList);
         updatePagination();
     }
-
 
     private void updatePagination() {
         int itemCount = currentDisplayedList.size();

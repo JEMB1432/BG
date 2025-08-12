@@ -99,7 +99,7 @@ public class OrderChangeController {
         Connection conn = null;
         try {
             conn = DatabaseConnection.getConnection();
-            String sql = "UPDATE Order_Correction SET Approved = 1 WHERE ID_Correction = ?";
+            String sql = "UPDATE Order_Correction SET Approved = 1 WHERE ID_Sale = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, correctionId);
             int rowsAffected = pstmt.executeUpdate();

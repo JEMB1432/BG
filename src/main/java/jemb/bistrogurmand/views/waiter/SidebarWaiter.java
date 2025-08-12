@@ -27,6 +27,7 @@ public class SidebarWaiter extends VBox {
     private Button btnCorrection;
     private Button btnActiveSales;
     private Button btnProfile;
+    private Button btnClosedSales;
 
     User currentUser = new UserSession().getCurrentUser();
 
@@ -137,6 +138,7 @@ public class SidebarWaiter extends VBox {
                                         "4q4.175 0 7.088 1.025T22 7.5q0 1.35-2.588 2.35T13 10.975V15h1.65q.6 0 1.113.338t.737.912L18 20h-2l-1.2-3H9.2L8 20z");
         btnCorrection = crearMenuButton("Correcciones","M12 21q-1.875 0-3.512-.712t-2.85-1.925t-1.925-2.85T3 12t.713-3.512t1.924-2.85t2.85-1.925T12 3q2.05 0 3.888.875T19 6.35V5q0-.425.288-.712T20 4t.713.288T21 5v4q0 .425-.288.713T20 10h-4q-.425 0-.712-.288T15 9t.288-.712T16 8h1.75q-1.025-1.4-2.525-2.2T12 5Q9.075 5 7.038 7.038T5 12t2.038 4.963T12 19q2.375 0 4.25-1.425t2.475-3.675q.125-.4.45-.6t.725-.15q.425.05.675.362t.15.688q-.725 2.975-3.15 4.888T12 21m1-9.4l2.5 2.5q.275.275.275.7t-.275.7t-.7.275t-.7-.275l-2.8-2.8q-.15-.15-.225-.337T11 11.975V8q0-.425.288-.712T12 7t.713.288T13 8z");
         btnActiveSales = crearMenuButton("Ventas sin cerrar", "M17 9H7V4h10zm3 4.09c-.33-.05-.66-.09-1-.09c-3.31 0-6 2.69-6 6H4v-7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zM10 12H6v2h4zm6 10h2v-6h-2zm4-6v6h2v-6z");
+        btnClosedSales = crearMenuButton("Ventas cerradas", "M18 10H6a2 2 0 0 0-2 2v7h16v-7a2 2 0 0 0-2-2m0 4h-4v-2h4m-1-3H7V4h10Z");
         btnProfile = crearMenuButton("Mi perfil","M8 9c3.85 0 7 2.5 7 4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5C1 11.5 4.15 9 8 9m0-8a3.5 3.5 0 1 1 0 7a3.5 3.5 0 0 1 0-7");
 
 
@@ -144,7 +146,7 @@ public class SidebarWaiter extends VBox {
         btnDashboard.getStyleClass().add("active");
 
         // Crear contenedor para los botones del menú
-        VBox menuButtons = new VBox(8, btnDashboard, btnMeseros, btnCorrection, btnActiveSales, btnProfile);
+        VBox menuButtons = new VBox(8, btnDashboard, btnMeseros, btnCorrection, btnActiveSales, btnClosedSales, btnProfile);
         menuButtons.getStyleClass().add("sidebar-menu");
 
         VBox.setVgrow(menuButtons, Priority.ALWAYS);
@@ -225,7 +227,7 @@ public class SidebarWaiter extends VBox {
     }
 
     private void setActiveButton(Button activeButton) {
-        Arrays.asList(btnDashboard, btnMeseros, btnCorrection, btnActiveSales, btnProfile)
+        Arrays.asList(btnDashboard, btnMeseros, btnCorrection, btnActiveSales, btnClosedSales, btnProfile)
                 .forEach(btn -> btn.getStyleClass().remove("active"));
         activeButton.getStyleClass().add("active");
     }

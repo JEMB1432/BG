@@ -3,10 +3,6 @@ package jemb.bistrogurmand.views.waiter;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
-import jemb.bistrogurmand.utils.HistoryCorrectionColumnFactory;
-import jemb.bistrogurmand.utils.User;
-import jemb.bistrogurmand.utils.UserSession;
-import jemb.bistrogurmand.views.Leader.SidebarLeader;
 import jemb.bistrogurmand.views.ProfileView;
 
 public class DayView {
@@ -48,6 +44,9 @@ public class DayView {
                 newContent = new HistoryCorrectionsView().getView();
                 break;
             case "ventas sin cerrar":
+                newContent = new HistoryUnclosedSalesView().getView();
+                break;
+            case "ventas cerradas":
                 newContent = new HistorySalesView().getView();
                 break;
             case "mi perfil":

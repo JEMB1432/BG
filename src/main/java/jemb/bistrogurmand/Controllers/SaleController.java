@@ -2,6 +2,8 @@ package jemb.bistrogurmand.Controllers;
 
 import jemb.bistrogurmand.DbConection.DatabaseConnection;
 import jemb.bistrogurmand.utils.CorrectionRequest;
+import jemb.bistrogurmand.utils.OrderItem;
+import jemb.bistrogurmand.utils.Product;
 import jemb.bistrogurmand.utils.Sale;
 
 import java.sql.*;
@@ -136,6 +138,65 @@ public class SaleController {
             throw new RuntimeException(e);
         }
         return sales;
+    }
+
+    public List<Sale> getSalesByEmployeeHistory(int assignmentId) {
+        List<Sale> sales = new ArrayList<>();
+        String sql = "SELECT ID_SALE, ID_ASSIGNMENT, ID_EMPLOYEE, TOTAL, " +
+                "SALEDATE, RATING, STATUS FROM sale WHERE ID_EMPLOYEE = ? AND STATUS = 0 " +
+                "ORDER BY SALEDATE DESC " +
+                "FETCH FIRST 50 ROWS ONLY";
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, assignmentId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                sales.add(new Sale(
+                        rs.getInt("ID_SALE"),
+                        rs.getInt("ID_ASSIGNMENT"),
+                        rs.getInt("ID_EMPLOYEE"),
+                        rs.getFloat("TOTAL"),
+                        rs.getTimestamp("SALEDATE"),
+                        rs.getFloat("RATING"),
+                        rs.getInt("STATUS")
+                ));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return sales;
+    }
+
+    public List<OrderItem> getOrderItemsBySale(int idSale) {
+        List<OrderItem> items = new ArrayList<>();
+        String sql = "SELECT p.ID_PRODUCT, p.NAME, p.PRICE, si.AMOUNT " +
+                "FROM PRODUCT p " +
+                "JOIN SALEINFO si ON p.ID_PRODUCT = si.ID_PRODUCT " +
+                "WHERE si.ID_SALE = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idSale);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    OrderItem item = new OrderItem(
+                            rs.getInt("ID_PRODUCT"),
+                            rs.getString("NAME"),
+                            rs.getDouble("PRICE"),
+                            rs.getInt("AMOUNT")
+                    );
+                    items.add(item);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Manejo adecuado de excepciones
+        }
+
+        return items;
     }
 
 }

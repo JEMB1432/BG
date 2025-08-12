@@ -18,13 +18,12 @@ import jemb.bistrogurmand.Controllers.OrderController;
 import jemb.bistrogurmand.Controllers.ProductController;
 import jemb.bistrogurmand.Controllers.SaleController;
 import jemb.bistrogurmand.utils.*;
-import jemb.bistrogurmand.utils.Modals.HistoryProductDetailsDialog;
 
 import java.util.Optional;
 
 import static jemb.bistrogurmand.utils.HistorySalesColumnFactory.*;
 
-public class HistorySalesView {
+public class HistoryUnclosedSalesView {
     private final BorderPane view;
     private final TableView<Sale> table;
     private final SaleController saleController;
@@ -38,7 +37,7 @@ public class HistorySalesView {
 
     private int idWaiter;
 
-    public HistorySalesView() {
+    public HistoryUnclosedSalesView() {
         User currentUser = UserSession.getCurrentUser();
         idWaiter = Integer.parseInt(currentUser.getUserID());
 
@@ -50,6 +49,7 @@ public class HistorySalesView {
         view.getStyleClass().add("root");
         view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/styles.css").toExternalForm());
         view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/tables.css").toExternalForm());
+        //view.getStylesheets().add(getClass().getResource("/jemb/bistrogurmand/CSS/Dialog.css").toExternalForm());
         view.setPadding(new Insets(20));
         saleController = new SaleController();
 
@@ -88,7 +88,7 @@ public class HistorySalesView {
         ImageView iconTitle = new ImageView(new Image(getClass().getResource("/jemb/bistrogurmand/Icons/sale.png").toString()));
         iconTitle.setFitHeight(48);
         iconTitle.setFitWidth(48);
-        Label titleView = new Label("Historial de ventas cerradas");
+        Label titleView = new Label("Historial de ventas no cerradas");
         titleView.getStyleClass().add("title");
         titleView.setAlignment(Pos.BOTTOM_LEFT);
 
@@ -125,7 +125,7 @@ public class HistorySalesView {
                 createTotalColumn(),
                 createRatingColumn(),
                 createStatusColumn(),
-                createDetailsButtonColumn()
+                createCloseButtonColumn()
         );
     }
 
@@ -154,7 +154,7 @@ public class HistorySalesView {
     }
 
     private void refreshTable() {
-        masterSalesList.setAll(saleController.getSalesByEmployeeHistory(idWaiter));
+        masterSalesList.setAll(saleController.getActiveSalesByEmployeeHistory(idWaiter));
         searchField.clear();
         filterAndPaginateTable();
     }
@@ -210,20 +210,29 @@ public class HistorySalesView {
         table.refresh();
     }
 
-    private TableColumn<Sale, Void> createDetailsButtonColumn() {
+    private TableColumn<Sale, Void> createCloseButtonColumn() {
         TableColumn<Sale, Void> col = new TableColumn<>("Acciones");
         col.setStyle("-fx-alignment: center;");
 
         col.setCellFactory(param -> new TableCell<>() {
-            private final Button btndetails = new Button("Ver detalles");
+            private final Button closeButton = new Button("Cerrar Venta");
 
             {
-                btndetails.getStyleClass().add("btn-detils");
+                closeButton.getStyleClass().add("close-button-d");
 
-                btndetails.setOnAction(event -> {
+                closeButton.setOnAction(event -> {
                     Sale sale = getTableView().getItems().get(getIndex());
-                    HistoryProductDetailsDialog dialog = new HistoryProductDetailsDialog(sale);
-                    dialog.showAndWait();
+                    Optional<Double> rating = showRatingDialog();
+                    rating.ifPresent(r -> {
+                        if (new OrderController().finalizeSale(sale.getIdSale(), r)) {
+                            showAlert("Venta Cerrada", "La venta se ha cerrado correctamente", Alert.AlertType.INFORMATION);
+                            // Quitar de la lista actual
+                            currentDisplayedList.remove(sale);
+                            updatePagination();
+                        } else {
+                            showAlert("Error", "No se pudo cerrar la venta", Alert.AlertType.ERROR);
+                        }
+                    });
                 });
             }
 
@@ -233,7 +242,7 @@ public class HistorySalesView {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    setGraphic(btndetails);
+                    setGraphic(closeButton);
                 }
             }
         });
@@ -348,4 +357,3 @@ public class HistorySalesView {
         return view;
     }
 }
-
