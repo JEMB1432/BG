@@ -14,6 +14,7 @@ module jemb.bistrogurmand {
     requires org.apache.httpcomponents.client5.httpclient5;
     requires org.apache.httpcomponents.core5.httpcore5;
     requires com.fasterxml.jackson.databind;
+    requires jbcrypt;
 
     opens jemb.bistrogurmand.utils to javafx.base, javafx.fxml;
     opens jemb.bistrogurmand.utils.Modals to javafx.base;

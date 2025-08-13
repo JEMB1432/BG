@@ -268,6 +268,7 @@ public class AddWaiterDialog extends Dialog<User> {
                 PASSWORD_PATTERN.matcher(passwordField.getText().trim()).matches();
 
         boolean confirmPasswordValid = passwordValid &&
+                !confirmPasswordField.getText().trim().isEmpty() &&
                 passwordField.getText().equals(confirmPasswordField.getText());
 
         boolean stateValid = stateToggleGroup.getSelectedToggle() != null;

@@ -44,6 +44,38 @@ public class CategoryController {
         }
     }
 
+    public List<Category> getAllCategories( ){
+        String sql = "SELECT ID_CATEGORY, NAME, STATE_CATEGORY FROM CATEGORY";
+        List<Category> categories = new ArrayList<>();
+        try {
+            Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                categories.add(new Category(rs.getInt("ID_CATEGORY"), rs.getString("NAME"), rs.getString("STATE_CATEGORY")));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return categories;
+    }
+
+    public boolean updateCategory(Category category) {
+        String sql = "UPDATE CATEGORY SET NAME = ?, STATE_CATEGORY = ? WHERE ID_CATEGORY = ?";
+        try {
+            Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, category.getName());
+            ps.setString(2, category.getState());
+            ps.setInt(3, category.getID_Category());
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public static void main(String[] args) {
         CategoryController c = new CategoryController();

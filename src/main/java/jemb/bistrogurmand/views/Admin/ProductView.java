@@ -18,6 +18,7 @@ import jemb.bistrogurmand.Controllers.ProductController;
 import jemb.bistrogurmand.utils.Category;
 import jemb.bistrogurmand.utils.Modals.AddCategoryDialog;
 import jemb.bistrogurmand.utils.Modals.AddProductDialog;
+import jemb.bistrogurmand.utils.Modals.EditCategoryDialog;
 import jemb.bistrogurmand.utils.Modals.EditProductDialog;
 import jemb.bistrogurmand.utils.Product;
 import jemb.bistrogurmand.utils.ProductColumnFactory;
@@ -28,12 +29,12 @@ import java.util.Optional;
 import static jemb.bistrogurmand.utils.ProductColumnFactory.*;
 
 public class ProductView {
-    private BorderPane view;
-    private TableView<Product> table;
-    private ProductController productController;
-    private CategoryController categoryController;
-    private TextField searchField;
-    private Pagination pagination;
+    private final BorderPane view;
+    private final TableView<Product> table;
+    private final ProductController productController;
+    private final CategoryController categoryController;
+    private final TextField searchField;
+    private final Pagination pagination;
     private Label paginationInfo;
     private final int rowsPerPage = 10;
 
@@ -97,6 +98,12 @@ public class ProductView {
         addCategoryButton.getStyleClass().add("category-button");
         addCategoryButton.setOnAction(event -> addCategoryForm());
 
+        Button editCategoryButton = new Button("Editar Categoria");
+        editCategoryButton.getStyleClass().add("category-button-out");
+        editCategoryButton.setOnAction(event -> {
+            editCategories();
+        });
+
         titleContent.getChildren().addAll(iconTitle, title);
 
         searchField.setPromptText("Buscar roducto ...");
@@ -119,7 +126,7 @@ public class ProductView {
         refreshButton.getStyleClass().add("secondary-button");
         refreshButton.setOnAction(e -> refreshTable());
 
-        topBox.getChildren().addAll(addCategoryButton, searchField, addbutton, refreshButton);
+        topBox.getChildren().addAll(editCategoryButton, addCategoryButton, searchField, addbutton, refreshButton);
         globalSection.getChildren().addAll(titleContent, topBox);
         view.setTop(globalSection);
     }
@@ -243,7 +250,6 @@ public class ProductView {
         updatePaginationInfo(pageIndex);
         table.refresh();
     }
-
 
     private void editSelectedProduct() {
         Product selected = table.getSelectionModel().getSelectedItem();
@@ -392,6 +398,11 @@ public class ProductView {
                 }
             }
         });
+    }
+
+    private void editCategories() {
+        EditCategoryDialog dialog = new EditCategoryDialog();
+        dialog.showAndWait();
     }
 
     public BorderPane getView() {
