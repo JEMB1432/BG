@@ -72,6 +72,24 @@ public class WaiterController {
         }
     }
 
+    public boolean updatePassword(int userId, String newPassword) {
+        String sql = "UPDATE EMPLOYEE SET PASSWORD = ? WHERE ID_EMPLOYEE = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, newPassword);
+            ps.setInt(2, userId);
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean updateWaiterProfile(User user) {
         String sql = "UPDATE EMPLOYEE SET NAME = ?, LASTNAME = ?, CELPHONE = ?, "
                 + "EMAIL = ?, ROL = ?, STATE = ?, IMAGE_URL = ? WHERE ID_EMPLOYEE = ?";
@@ -125,18 +143,6 @@ public class WaiterController {
             return false;
         }
     }
-    /*
-    public static void main(String[] args) {
-        WaiterController wc = new WaiterController();
-        User user = new User();
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setPhone("123456789");
-        user.setEmail("John@restaurant.com");
-        user.setRolUser("Mesero");
-        user.setStateUser("0");
-        System.out.println(wc.insertWaiter(user, "1234"));
-    }*/
 
     public static void main(String[] args) {
         Connection conn = null;

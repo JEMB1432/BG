@@ -45,12 +45,33 @@ public class TableController {
         return tables;
     }
 
-    public boolean updateTableRestaurant(TableRestaurant table) {
+    public int updateTableRestaurant(TableRestaurant table) {
         String sql = "UPDATE TABLERESTAURANT SET NUMBERTABLE = ?, " +
                 "NUMBERSEATS = ?, STATE = ?, LOCATION = ? WHERE ID_Table = ?";
+
+        String checkTable = "SELECT ID_Table FROM TableRestaurant WHERE NUMBERTABLE = ? AND ID_Table != ?";
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
         try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+            conn = DatabaseConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            ps = conn.prepareStatement(checkTable);
+            ps.setInt(1, table.getNumberTable());
+            ps.setString(2, table.getID_Table());
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return 2;
+            }
+
+            rs.close();
+            ps.close();
+
+            ps = conn.prepareStatement(sql);
             ps.setInt(1, table.getNumberTable());
             ps.setInt(2, table.getNumberSeats());
             ps.setString(3, table.getState());
@@ -58,29 +79,78 @@ public class TableController {
             ps.setString(5, table.getID_Table());
 
             int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0;
+            conn.commit();
+
+            return (rowsAffected > 0) ? 1 : 0;
         } catch (SQLException e) {
+            try {
+                if (conn != null) conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
-            return false;
+            return 0;
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public boolean insertTableRestaurant(TableRestaurant table) {
-        String sql = "INSERT INTO TABLERESTAURANT (NUMBERTABLE, NUMBERSEATS, STATE, LOCATION)" +
-                "VALUES (?, ?, ?, ?)";
-        try{
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, table.getNumberTable());
-            ps.setInt(2, table.getNumberSeats());
-            ps.setString(3, table.getState());
-            ps.setString(4, table.getLocation());
+    public int insertTableRestaurant(TableRestaurant table) {
+        String checkTableSql = "SELECT COUNT(*) FROM TABLERESTAURANT WHERE NUMBERTABLE = ?";
 
-            int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0;
+        String insertSql = "INSERT INTO TABLERESTAURANT (NUMBERTABLE, NUMBERSEATS, STATE, LOCATION) " +
+                "VALUES (?, ?, ?, ?)";
+
+        Connection conn = null;
+        PreparedStatement checkPs = null;
+        PreparedStatement insertPs = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DatabaseConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            checkPs = conn.prepareStatement(checkTableSql);
+            checkPs.setInt(1, table.getNumberTable());
+            rs = checkPs.executeQuery();
+
+            if (rs.next() && rs.getInt(1) > 0) {
+                return 2;
+            }
+
+            insertPs = conn.prepareStatement(insertSql);
+            insertPs.setInt(1, table.getNumberTable());
+            insertPs.setInt(2, table.getNumberSeats());
+            insertPs.setString(3, table.getState());
+            insertPs.setString(4, table.getLocation());
+
+            int rowsAffected = insertPs.executeUpdate();
+            conn.commit();
+
+            return (rowsAffected > 0) ? 1 : 0;
         } catch (SQLException e) {
+            try {
+                if (conn != null) conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
-            return false;
+            return 0;
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (checkPs != null) checkPs.close();
+                if (insertPs != null) insertPs.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

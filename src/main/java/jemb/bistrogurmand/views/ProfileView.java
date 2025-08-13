@@ -17,6 +17,7 @@ import jemb.bistrogurmand.Controllers.WaiterController;
 import jemb.bistrogurmand.utils.ImgBBUploader;
 import jemb.bistrogurmand.utils.User;
 import jemb.bistrogurmand.utils.UserSession;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -46,6 +47,14 @@ public class ProfileView {
     private Button changeImageButton;
     private boolean editMode = false;
 
+    // Campos de contraseña simplificados
+    private PasswordField passwordField;
+    private PasswordField confirmPasswordField;
+    private TextField visiblePasswordField;
+    private TextField visibleConfirmPasswordField;
+    private boolean passwordVisible = false;
+    private boolean confirmPasswordVisible = false;
+
     private String originalImageUrl;
     private String newImageUrl;
 
@@ -54,6 +63,7 @@ public class ProfileView {
     private static final Pattern NAME_PATTERN = Pattern.compile("^[\\p{L}][\\p{L} .'-]{1,49}$");
     private static final Pattern PHONE_PATTERN = Pattern.compile("^[+]?[0-9]{1,3}?\\s?[0-9]{6,14}$");
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$");
 
     private final Map<TextField, PauseTransition> validationPauses = new HashMap<>();
 
@@ -71,7 +81,7 @@ public class ProfileView {
 
         grid.setHgap(20);
         grid.setVgap(15);
-        grid.setPadding(new Insets(30));
+        grid.setPadding(new Insets(15));
 
         createAvatarSection();
         createForm();
@@ -82,7 +92,7 @@ public class ProfileView {
     }
 
     private void createAvatarSection() {
-        VBox avatarContainer = new VBox(15);
+        VBox avatarContainer = new VBox(5);
         avatarContainer.setAlignment(Pos.CENTER);
         avatarContainer.getStyleClass().add("avatar-section");
 
@@ -92,8 +102,8 @@ public class ProfileView {
 
         Image image = new Image(originalImageUrl, true);
         userAvatar = new ImageView(image);
-        userAvatar.setFitWidth(120);
-        userAvatar.setFitHeight(120);
+        userAvatar.setFitWidth(140);
+        userAvatar.setFitHeight(140);
         userAvatar.setPreserveRatio(true);
 
         Circle clip = new Circle(60, 60, 60);
@@ -110,7 +120,7 @@ public class ProfileView {
 
         avatarContainer.getChildren().addAll(userAvatar, userName, changeImageButton);
         view.setTop(avatarContainer);
-        BorderPane.setMargin(avatarContainer, new Insets(0, 0, 30, 0));
+        BorderPane.setMargin(avatarContainer, new Insets(0, 0, 10, 0));
     }
 
     private void createForm() {
@@ -132,10 +142,18 @@ public class ProfileView {
         Label emailLabel = new Label("Email");
         emailField = createTextField(currentUser.getEmail());
 
+        Label passwordLabel = new Label("Nueva Contraseña");
+        StackPane passwordContainer = createPasswordFieldWithOverlayIcon(true);
+
+        Label confirmPasswordLabel = new Label("Confirmar Contraseña");
+        StackPane confirmPasswordContainer = createPasswordFieldWithOverlayIcon(false);
+
         firstNameLabel.getStyleClass().add("input-label");
         lastNameLabel.getStyleClass().add("input-label");
         phoneLabel.getStyleClass().add("input-label");
         emailLabel.getStyleClass().add("input-label");
+        passwordLabel.getStyleClass().add("input-label");
+        confirmPasswordLabel.getStyleClass().add("input-label");
 
         grid.add(firstNameLabel, 0, 0);
         grid.add(firstNameField, 0, 1);
@@ -145,6 +163,10 @@ public class ProfileView {
         grid.add(phoneField, 0, 3);
         grid.add(emailLabel, 1, 2);
         grid.add(emailField, 1, 3);
+        grid.add(passwordLabel, 0, 4);
+        grid.add(passwordContainer, 0, 5);
+        grid.add(confirmPasswordLabel, 1, 4);
+        grid.add(confirmPasswordContainer, 1, 5);
 
         HBox buttonBox = new HBox(15);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
@@ -162,7 +184,141 @@ public class ProfileView {
         cancelButton.setVisible(false);
 
         buttonBox.getChildren().addAll(cancelButton, saveButton, editButton);
-        grid.add(buttonBox, 0, 4, 2, 1);
+        grid.add(buttonBox, 0, 6, 2, 1);
+    }
+
+    // NUEVA IMPLEMENTACIÓN: Campo con icono superpuesto
+    private StackPane createPasswordFieldWithOverlayIcon(boolean isPasswordField) {
+        StackPane container = new StackPane();
+        container.setAlignment(Pos.CENTER_RIGHT);
+
+        if (isPasswordField) {
+            // Campo de contraseña principal
+            passwordField = new PasswordField();
+            passwordField.setDisable(true);
+            passwordField.getStyleClass().add("profile-field");
+            passwordField.setMaxWidth(Double.MAX_VALUE);
+
+            visiblePasswordField = new TextField();
+            visiblePasswordField.setDisable(true);
+            visiblePasswordField.getStyleClass().add("profile-field");
+            visiblePasswordField.setMaxWidth(Double.MAX_VALUE);
+            visiblePasswordField.setVisible(false);
+
+            // Sincronización de contenido
+            passwordField.textProperty().addListener((obs, oldVal, newVal) -> {
+                if (passwordVisible && !visiblePasswordField.getText().equals(newVal)) {
+                    visiblePasswordField.setText(newVal);
+                }
+            });
+
+            visiblePasswordField.textProperty().addListener((obs, oldVal, newVal) -> {
+                if (passwordVisible && !passwordField.getText().equals(newVal)) {
+                    passwordField.setText(newVal);
+                }
+            });
+
+            container.getChildren().addAll(passwordField, visiblePasswordField);
+        } else {
+            // Campo de confirmación de contraseña
+            confirmPasswordField = new PasswordField();
+            confirmPasswordField.setDisable(true);
+            confirmPasswordField.getStyleClass().add("profile-field");
+            confirmPasswordField.setMaxWidth(Double.MAX_VALUE);
+
+            visibleConfirmPasswordField = new TextField();
+            visibleConfirmPasswordField.setDisable(true);
+            visibleConfirmPasswordField.getStyleClass().add("profile-field");
+            visibleConfirmPasswordField.setMaxWidth(Double.MAX_VALUE);
+            visibleConfirmPasswordField.setVisible(false);
+
+            // Sincronización de contenido
+            confirmPasswordField.textProperty().addListener((obs, oldVal, newVal) -> {
+                if (confirmPasswordVisible && !visibleConfirmPasswordField.getText().equals(newVal)) {
+                    visibleConfirmPasswordField.setText(newVal);
+                }
+            });
+
+            visibleConfirmPasswordField.textProperty().addListener((obs, oldVal, newVal) -> {
+                if (confirmPasswordVisible && !confirmPasswordField.getText().equals(newVal)) {
+                    confirmPasswordField.setText(newVal);
+                }
+            });
+
+            container.getChildren().addAll(confirmPasswordField, visibleConfirmPasswordField);
+        }
+
+        // Botón de toggle superpuesto
+        Button toggleButton = new Button();
+        toggleButton.getStyleClass().addAll("eye-button", "overlay-button");
+        toggleButton.setFocusTraversable(false);
+
+        // Posicionar el botón en la esquina derecha del campo
+        StackPane.setAlignment(toggleButton, Pos.CENTER_RIGHT);
+        StackPane.setMargin(toggleButton, new Insets(0, 10, 0, 0));
+
+        updateToggleIcon(toggleButton, isPasswordField ? passwordVisible : confirmPasswordVisible);
+
+        toggleButton.setOnAction(e -> {
+            if (isPasswordField) {
+                togglePasswordVisibility();
+                updateToggleIcon(toggleButton, passwordVisible);
+            } else {
+                toggleConfirmPasswordVisibility();
+                updateToggleIcon(toggleButton, confirmPasswordVisible);
+            }
+        });
+
+        container.getChildren().add(toggleButton);
+        return container;
+    }
+
+    private void togglePasswordVisibility() {
+        passwordVisible = !passwordVisible;
+
+        if (passwordVisible) {
+            visiblePasswordField.setText(passwordField.getText());
+            passwordField.setVisible(false);
+            visiblePasswordField.setVisible(true);
+        } else {
+            passwordField.setText(visiblePasswordField.getText());
+            passwordField.setVisible(true);
+            visiblePasswordField.setVisible(false);
+        }
+    }
+
+    private void toggleConfirmPasswordVisibility() {
+        confirmPasswordVisible = !confirmPasswordVisible;
+
+        if (confirmPasswordVisible) {
+            visibleConfirmPasswordField.setText(confirmPasswordField.getText());
+            confirmPasswordField.setVisible(false);
+            visibleConfirmPasswordField.setVisible(true);
+        } else {
+            confirmPasswordField.setText(visibleConfirmPasswordField.getText());
+            confirmPasswordField.setVisible(true);
+            visibleConfirmPasswordField.setVisible(false);
+        }
+    }
+
+    private void updateToggleIcon(Button button, boolean isVisible) {
+        button.setText(isVisible ? "🙈" : "👁");
+        button.setTooltip(new Tooltip(isVisible ? "Ocultar contraseña" : "Mostrar contraseña"));
+
+        String iconPath = isVisible ?
+            "/jemb/bistrogurmand/Icons/eye-off.png" :
+            "/jemb/bistrogurmand/Icons/eye.png";
+
+        try {
+            ImageView eyeIcon = new ImageView(new Image(getClass().getResourceAsStream(iconPath)));
+            eyeIcon.setFitWidth(16);
+            eyeIcon.setFitHeight(16);
+            button.setGraphic(eyeIcon);
+            button.setText("");
+        } catch (Exception e) {
+            button.setText(isVisible ? "🙈" : "👁");
+        }
+
     }
 
     private TextField createTextField(String value) {
@@ -178,6 +334,39 @@ public class ProfileView {
         initValidationPause(lastNameField, NAME_PATTERN, 250);
         initValidationPause(phoneField, PHONE_PATTERN, 250);
         initValidationPause(emailField, EMAIL_PATTERN, 250);
+        initValidationPause(passwordField, PASSWORD_PATTERN, 250);
+        initValidationPause(visiblePasswordField, PASSWORD_PATTERN, 250);
+        initPasswordConfirmationPause(confirmPasswordField, 250);
+        initPasswordConfirmationPause(visibleConfirmPasswordField, 250);
+    }
+
+    private void initPasswordConfirmationPause(TextField field, int delayMs) {
+        PauseTransition pause = new PauseTransition(Duration.millis(delayMs));
+        pause.setOnFinished(e -> validatePasswordConfirmation(field));
+        validationPauses.put(field, pause);
+
+        field.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (field.isDisabled()) return;
+            field.getStyleClass().removeAll("input-error", "input-valid");
+            PauseTransition fieldPause = validationPauses.get(field);
+            fieldPause.stop();
+            fieldPause.playFromStart();
+        });
+    }
+
+    private void validatePasswordConfirmation(TextField field) {
+        if (field.isDisabled()) return;
+        String text = field.getText().trim();
+        String password = getCurrentPassword();
+        field.getStyleClass().removeAll("input-error", "input-valid");
+
+        if (text.isEmpty()) return;
+
+        if (!text.equals(password)) {
+            field.getStyleClass().add("input-error");
+        } else {
+            field.getStyleClass().add("input-valid");
+        }
     }
 
     private void initValidationPause(TextField field, Pattern pattern, int delayMs) {
@@ -187,10 +376,7 @@ public class ProfileView {
 
         field.textProperty().addListener((obs, oldVal, newVal) -> {
             if (field.isDisabled()) return;
-
             field.getStyleClass().removeAll("input-error", "input-valid");
-
-            // Reiniciar el timer de validación
             PauseTransition fieldPause = validationPauses.get(field);
             fieldPause.stop();
             fieldPause.playFromStart();
@@ -199,15 +385,11 @@ public class ProfileView {
 
     private void validateField(TextField field, Pattern pattern) {
         if (field.isDisabled()) return;
-
         String text = field.getText().trim();
         boolean isValid = pattern.matcher(text).matches();
-
-        // Limpiar clases previas
         field.getStyleClass().removeAll("input-error", "input-valid");
 
         if (text.isEmpty()) {
-            // No aplicar ningún estilo si está vacío
             return;
         }
 
@@ -231,8 +413,11 @@ public class ProfileView {
         lastNameField.setDisable(false);
         phoneField.setDisable(false);
         emailField.setDisable(false);
+        passwordField.setDisable(false);
+        visiblePasswordField.setDisable(false);
+        confirmPasswordField.setDisable(false);
+        visibleConfirmPasswordField.setDisable(false);
 
-        // Validar inmediatamente al entrar en modo edición
         validateField(firstNameField, NAME_PATTERN);
         validateField(lastNameField, NAME_PATTERN);
         validateField(phoneField, PHONE_PATTERN);
@@ -250,17 +435,36 @@ public class ProfileView {
         lastNameField.setDisable(true);
         phoneField.setDisable(true);
         emailField.setDisable(true);
+        passwordField.setDisable(true);
+        visiblePasswordField.setDisable(true);
+        confirmPasswordField.setDisable(true);
+        visibleConfirmPasswordField.setDisable(true);
 
-        // Limpiar estados de validación
-        firstNameField.getStyleClass().removeAll("input-error", "input-valid");
-        lastNameField.getStyleClass().removeAll("input-error", "input-valid");
-        phoneField.getStyleClass().removeAll("input-error", "input-valid");
-        emailField.getStyleClass().removeAll("input-error", "input-valid");
+        clearFieldStyles();
 
         saveButton.setVisible(false);
         cancelButton.setVisible(false);
         changeImageButton.setVisible(false);
         editButton.setVisible(true);
+    }
+
+    private void clearFieldStyles() {
+        firstNameField.getStyleClass().removeAll("input-error", "input-valid");
+        lastNameField.getStyleClass().removeAll("input-error", "input-valid");
+        phoneField.getStyleClass().removeAll("input-error", "input-valid");
+        emailField.getStyleClass().removeAll("input-error", "input-valid");
+        passwordField.getStyleClass().removeAll("input-error", "input-valid");
+        visiblePasswordField.getStyleClass().removeAll("input-error", "input-valid");
+        confirmPasswordField.getStyleClass().removeAll("input-error", "input-valid");
+        visibleConfirmPasswordField.getStyleClass().removeAll("input-error", "input-valid");
+    }
+
+    private String getCurrentPassword() {
+        return passwordVisible ? visiblePasswordField.getText().trim() : passwordField.getText().trim();
+    }
+
+    private String getCurrentConfirmPassword() {
+        return confirmPasswordVisible ? visibleConfirmPasswordField.getText().trim() : confirmPasswordField.getText().trim();
     }
 
     private void saveChanges() {
@@ -274,6 +478,21 @@ public class ProfileView {
             errores.add("Teléfono inválido");
         if (!validateFieldOnSave(emailField, EMAIL_PATTERN))
             errores.add("Email inválido");
+
+        String password = getCurrentPassword();
+        String confirmPassword = getCurrentConfirmPassword();
+
+        if (!password.isEmpty() || !confirmPassword.isEmpty()) {
+            TextField activePasswordField = passwordVisible ? visiblePasswordField : passwordField;
+            if (!validateFieldOnSave(activePasswordField, PASSWORD_PATTERN)) {
+                errores.add("Contraseña inválida: Mínimo 8 caracteres, 1 mayúscula, 1 minúscula, 1 número y 1 carácter especial");
+            }
+            if (!password.equals(confirmPassword)) {
+                errores.add("Las contraseñas no coinciden");
+                TextField activeConfirmField = confirmPasswordVisible ? visibleConfirmPasswordField : confirmPasswordField;
+                activeConfirmField.getStyleClass().add("input-error");
+            }
+        }
 
         if (!errores.isEmpty()) {
             showAlert("Error", String.join("\n", errores), Alert.AlertType.ERROR);
@@ -297,8 +516,18 @@ public class ProfileView {
             currentUser.setEmail(emailField.getText().trim());
             currentUser.setUserImage(newImageUrl);
             showAlert("Éxito", "Perfil actualizado correctamente. \n Por favor vuelva a iniciar sesión para visualizar los cambios.", Alert.AlertType.INFORMATION);
-        }else {
+        } else {
             showAlert(null, "Error al actualizar el usuario", Alert.AlertType.ERROR);
+        }
+
+        if (!password.isEmpty()) {
+            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+            if (!waiterController.updatePassword(
+                    Integer.parseInt(currentUser.getUserID()),
+                    hashedPassword))
+            {
+                showAlert("Error", "No se pudo actualizar la contraseña", Alert.AlertType.ERROR);
+            }
         }
 
         disableEditMode();
@@ -330,11 +559,20 @@ public class ProfileView {
         emailField.setText(currentUser.getEmail());
         userAvatar.setImage(new Image(originalImageUrl));
 
-        firstNameField.getStyleClass().removeAll("input-error", "input-valid");
-        lastNameField.getStyleClass().removeAll("input-error", "input-valid");
-        phoneField.getStyleClass().removeAll("input-error", "input-valid");
-        emailField.getStyleClass().removeAll("input-error", "input-valid");
+        // Limpiar campos de contraseña y resetear visibilidad
+        passwordField.clear();
+        visiblePasswordField.clear();
+        confirmPasswordField.clear();
+        visibleConfirmPasswordField.clear();
 
+        passwordVisible = false;
+        confirmPasswordVisible = false;
+        passwordField.setVisible(true);
+        visiblePasswordField.setVisible(false);
+        confirmPasswordField.setVisible(true);
+        visibleConfirmPasswordField.setVisible(false);
+
+        clearFieldStyles();
         disableEditMode();
     }
 
@@ -348,7 +586,7 @@ public class ProfileView {
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             try {
-                File processedFile = cropAndResizeCenterJPG(selectedFile, 200, 200, 0.7f); // Usar JPG con compresión
+                File processedFile = cropAndResizeCenterJPG(selectedFile, 200, 200, 0.7f);
 
                 String imageUrl = ImgBBUploader.uploadImage(processedFile.getAbsolutePath());
                 if (imageUrl != null) {
@@ -388,7 +626,7 @@ public class ProfileView {
             writer.setOutput(ios);
             ImageWriteParam param = writer.getDefaultWriteParam();
             param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-            param.setCompressionQuality(quality); // 0.0f - 1.0f (baja a alta calidad)
+            param.setCompressionQuality(quality);
             writer.write(null, new javax.imageio.IIOImage(resized, null, null), param);
             writer.dispose();
         }
@@ -402,6 +640,10 @@ public class ProfileView {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("/jemb/bistrogurmand/CSS/Dialog.css").toExternalForm()
+        );
     }
 
     public BorderPane getView() {

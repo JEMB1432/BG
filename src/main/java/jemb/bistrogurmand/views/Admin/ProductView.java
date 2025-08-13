@@ -12,6 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.CategoryController;
 import jemb.bistrogurmand.Controllers.ProductController;
@@ -352,6 +353,12 @@ public class ProductView {
             default:
                 alert = new Alert(Alert.AlertType.NONE);
         }
+
+        Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alertStage.getScene().getStylesheets().add(
+                getClass().getResource("/jemb/bistrogurmand/CSS/Dialog.css").toExternalForm()
+        );
+
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);

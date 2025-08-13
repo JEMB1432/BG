@@ -12,6 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import jemb.bistrogurmand.Controllers.TableController;
 import jemb.bistrogurmand.utils.Modals.AddTableDialog;
@@ -224,25 +225,35 @@ public class TablesView {
 
     private void editSelectedTable() {
         TableRestaurant selected = table.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            EditTableDialog dialog = new EditTableDialog(selected);
-
-            Optional<TableRestaurant> result = dialog.showAndWait();
-            result.ifPresent(updatedTable -> {
-                if (updatedTable != null) {  // Verificar que no hubo error de conversión
-                    if (tableController.updateTableRestaurant(updatedTable)) {
-                        showAlert("Mesa Actualizada", "La mesa se ha actualizado correctamente", 1);
-                        refreshTable(); // Actualizar la vista de la tabla
-                    } else {
-                        showAlert("Error", "Ocurrió un error al actualizar la mesa", 3);
-                    }
-                } else {
-                    showAlert("Error", "Por favor ingrese valores numéricos válidos", 3);
-                }
-            });
-        } else {
+        if (selected == null) {
             showAlert("Selección requerida", "Por favor seleccione una mesa para editar.", 2);
+            return;
         }
+
+        EditTableDialog dialog = new EditTableDialog(selected);
+        Optional<TableRestaurant> result = dialog.showAndWait();
+
+        result.ifPresent(updatedTable -> {
+            if (updatedTable == null) {
+                showAlert("Error", "Por favor ingrese valores numéricos válidos", 3);
+                return;
+            }
+
+            int resultQuery = tableController.updateTableRestaurant(updatedTable);
+
+            switch (resultQuery) {
+                case 1 -> {
+                    showAlert("Mesa Actualizada", "La mesa se ha actualizado correctamente", 1);
+                    try {
+                        refreshTable();
+                    } catch (Exception e) {
+                        showAlert("Error", "No se pudo actualizar la vista de la tabla", 3);
+                    }
+                }
+                case 2 -> showAlert("Error", "El número de mesa ya se utiliza en el sistema.", 3);
+                default -> showAlert("Error", "Ocurrió un error al actualizar la mesa", 3);
+            }
+        });
     }
 
     private void deleteSelectedTable() {
@@ -269,6 +280,12 @@ public class TablesView {
             default:
                 alert = new Alert(Alert.AlertType.NONE);
         }
+
+        Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alertStage.getScene().getStylesheets().add(
+                getClass().getResource("/jemb/bistrogurmand/CSS/Dialog.css").toExternalForm()
+        );
+
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
@@ -280,12 +297,17 @@ public class TablesView {
 
         Optional<TableRestaurant> result = dialog.showAndWait();
         result.ifPresent(newTable -> {
-            if (newTable != null) {  // Verificar que no hubo error de conversión
-                if (tableController.insertTableRestaurant(newTable)) {
+            if (newTable != null) {
+                int resultQuery = tableController.insertTableRestaurant(newTable);
+                if (resultQuery == 1) {
                     showAlert("Mesa Agregada", "La mesa se ha agregado correctamente", 1);
-                    refreshTable(); // Actualizar la vista de la tabla
+                    refreshTable();
                 } else {
-                    showAlert("Error", "Ocurrió un error al agregar la mesa", 3);
+                    if (resultQuery == 2) {
+                        showAlert("Error", "El número de mesa ya se utiliza en el sistema.", 3);
+                    }else {
+                        showAlert("Error", "Ocurrió un error al agregar la mesa", 3);
+                    }
                 }
             } else {
                 showAlert("Error", "Por favor ingrese valores numéricos válidos", 3);

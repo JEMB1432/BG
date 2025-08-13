@@ -289,11 +289,9 @@ public class WaiterView {
     }
 
     private void showAlert(String title, String message, int type) {
-        /*
-        1 -ALERTA DE INFORMACION
+        /* 1 -ALERTA DE INFORMACION
         2 -ALERTA DE WARNING
-        3 -ALERTA DE ERROR
-         */
+        3 -ALERTA DE ERROR */
         Alert alert;
         switch (type){
             case 1:
@@ -308,6 +306,12 @@ public class WaiterView {
             default:
                 alert = new Alert(Alert.AlertType.NONE);
         }
+
+        Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alertStage.getScene().getStylesheets().add(
+                getClass().getResource("/jemb/bistrogurmand/CSS/Dialog.css").toExternalForm()
+        );
+
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);

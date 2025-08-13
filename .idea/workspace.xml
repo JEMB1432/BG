@@ -5,15 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f8dec4d-4ac8-4fea-8cf2-12c6327726d2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/Modals/EditCategoryDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/CategoryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/DashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/TableController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/TableController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/WaiterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/Controllers/WaiterController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/Modals/AddWaiterDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/utils/Modals/AddWaiterDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/ProductView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/ProductView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/TablesView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/TablesView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/WaiterView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/Admin/WaiterView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/ProfileView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jemb/bistrogurmand/views/ProfileView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/profile.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/profile.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/tables.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/jemb/bistrogurmand/CSS/tables.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -270,7 +270,7 @@
       <workItem from="1754885231720" duration="7760000" />
       <workItem from="1754948186605" duration="15661000" />
       <workItem from="1755037577667" duration="2419000" />
-      <workItem from="1755040256366" duration="5421000" />
+      <workItem from="1755040256366" duration="14334000" />
     </task>
     <servers />
   </component>

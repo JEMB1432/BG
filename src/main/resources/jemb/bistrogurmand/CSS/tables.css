@@ -208,8 +208,7 @@
     -fx-text-fill: #d33600;
 }
 .category-button-out:hover {
-    -fx-background-color: #d33600;
-    -fx-text-fill: white;
+    -fx-background-color: #fff8f8;
     -fx-cursor: hand;
 }
 

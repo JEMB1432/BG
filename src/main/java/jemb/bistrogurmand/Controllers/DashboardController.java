@@ -97,11 +97,17 @@ public class DashboardController {
         // Estilo CSS
         for (XYChart.Data<String, Number> data : series.getData()) {
             Node node = data.getNode();
+            node.setStyle("-fx-bar-fill: #24986a; " +
+                    "-fx-border-width: 2px 2px 0px 2px; " +
+                    "-fx-border-color: rgba(168,121,0,0); " +
+                    "-fx-border-radius: 2px 2px 0 0; " +
+                    "-fx-background-radius: 3px 3px 0 0;");
+            /*
             switch (data.getXValue()) {
-                case "Mañana": node.setStyle("-fx-bar-fill: #FDA65D; -fx-border-width: 0.2px; -fx-border-color: #e36700;"); break;
-                case "Tarde": node.setStyle("-fx-bar-fill: #8DB4FF; -fx-border-width: 0.2px; -fx-border-color: #0051a2;"); break;
-                case "Noche": node.setStyle("-fx-bar-fill: #C58DFF; -fx-border-width: 0.2px; -fx-border-color: #7d00e3;"); break;
-            }
+                case "Mañana": node.setStyle("-fx-bar-fill: #24986a; -fx-border-width: 1px; -fx-border-color: #a87900;"); break;
+                case "Tarde": node.setStyle("-fx-bar-fill: #24986a; -fx-border-width: 1px; -fx-border-color: #a87900;"); break;
+                case "Noche": node.setStyle("-fx-bar-fill: #24986a; -fx-border-width: 1px; -fx-border-color: #a87900;"); break;
+            }*/
         }
 
         return chart;
@@ -117,7 +123,7 @@ public class DashboardController {
                 "FROM SALE s JOIN EMPLOYEE e ON s.ID_EMPLOYEE = e.ID_EMPLOYEE " +
                 "WHERE TRUNC(s.SALEDATE) = ? AND s.STATUS = 0 " +
                 "GROUP BY e.NAME, e.LASTNAME " +
-                "HAVING COUNT(s.ID_SALE) > 1 " +
+                "HAVING COUNT(s.ID_SALE) > 0 " +
                 "ORDER BY empleado";
 
         try (Connection conn = DatabaseConnection.getConnection();
